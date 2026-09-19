@@ -37,29 +37,50 @@ SmartRent/
 ├── backend/
 ├── database/
 ├── demo/
-│   └── chapter-03/
+│   ├── chapter-03/
+│   │   └── README.md
+│   └── chapter-04/
 │       └── README.md
+├── design/
+│   ├── user-flows/
+│   │   └── smartrent-maintenance-flow.md
+│   ├── wireframes/
+│   │   └── maintenance-request-wireframe.md
+│   ├── prototypes/
+│   │   └── maintenance-request-prototype.md
+│   └── design-reviews/
+│       └── maintenance-request-ai-review.md
 ├── docs/
-│   └── chapter-03-requirement-analysis/
-│       ├── 01-product-discovery.md
-│       ├── 02-PRD.md
-│       ├── 03-requirement-analysis.md
-│       ├── 04-user-stories.md
-│       └── 05-feature-specification.md
+│   ├── chapter-03-requirement-analysis/
+│   │   ├── 01-product-discovery.md
+│   │   ├── 02-PRD.md
+│   │   ├── 03-requirement-analysis.md
+│   │   ├── 04-user-stories.md
+│   │   └── 05-feature-specification.md
+│   └── chapter-04-product-design/
+│       ├── 01-user-flow.md
+│       ├── 02-wireframe.md
+│       ├── 03-prototype.md
+│       └── 04-ai-design-review.md
 ├── frontend/
 ├── prompts/
-│   └── chapter-03/
-│       ├── product-discovery-prompts.md
-│       ├── prd-prompts.md
-│       ├── requirement-prompts.md
-│       └── feature-prompts.md
+│   ├── chapter-03/
+│   │   ├── product-discovery-prompts.md
+│   │   ├── prd-prompts.md
+│   │   ├── requirement-prompts.md
+│   │   └── feature-prompts.md
+│   └── chapter-04/
+│       ├── user-flow-prompts.md
+│       ├── wireframe-prompts.md
+│       ├── prototype-prompts.md
+│       └── design-review-prompts.md
 └── README.md
 ```
 
 ## 6. Project Roadmap
 
 - [x] Chapter 3 – Requirement & Product Analysis
-- [ ] Chapter 4 – Product Design
+- [x] Chapter 4 – Product Design
 - [ ] Chapter 5 – Software Architecture
 - [ ] Chapter 6 – AI Programming
 - [ ] Chapter 7 – Code Review & Refactoring

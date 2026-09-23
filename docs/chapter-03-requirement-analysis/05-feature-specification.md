@@ -3,34 +3,34 @@
 ## Feature F-01: AI Maintenance Assistant
 
 ### 1. Objective
-Tự động phân tích nội dung yêu cầu sửa chữa của người thuê để hỗ trợ phân loại, ưu tiên và tóm tắt.
+Automatically analyze tenant maintenance request content to support classification, prioritization, and summarization.
 
 ### 2. User
-- Người thuê.
-- Chủ nhà/quản lý.
+- Tenant.
+- Landlord/property manager.
 
 ### 3. Input
 ```json
 {
-  "request_text": "Máy lạnh phòng tôi không lạnh và có tiếng kêu lớn.",
+  "request_text": "The air conditioner in my room is not cooling and is making a loud noise.",
   "room_id": "A101"
 }
 ```
 
 ### 4. AI Processing
-AI thực hiện:
-1. Đọc nội dung.
-2. Xác định loại sự cố.
-3. Xác định mức độ ưu tiên.
-4. Tóm tắt sự cố.
-5. Nêu thông tin còn thiếu nếu cần.
+AI performs the following steps:
+1. Read the content.
+2. Determine the incident type.
+3. Determine the priority level.
+4. Summarize the incident.
+5. Identify missing information when necessary.
 
 ### 5. Output
 ```json
 {
   "category": "AIR_CONDITIONER",
   "priority": "MEDIUM",
-  "summary": "Máy lạnh phòng A101 không làm lạnh và phát ra tiếng kêu lớn.",
+  "summary": "The air conditioner in room A101 is not cooling and is making a loud noise.",
   "missing_information": [],
   "confidence": 0.90
 }
@@ -51,35 +51,35 @@ AI thực hiện:
 - HIGH
 
 ### 8. Error Handling
-Nếu AI không thể phân loại:
+If AI cannot classify the request:
 ```json
 {
   "category": "OTHER",
   "priority": "MEDIUM",
   "summary": "...",
-  "missing_information": ["Vui lòng mô tả rõ thiết bị đang gặp vấn đề."]
+  "missing_information": ["Please clearly describe the equipment experiencing the issue."]
 }
 ```
 
-Nếu AI service không hoạt động, hệ thống vẫn cho phép lưu yêu cầu với trạng thái chưa phân loại.
+If the AI service is unavailable, the system still allows the request to be saved with an unclassified status.
 
 ## Feature F-02: AI Assistant
 
 ### Objective
-Cho phép người dùng đặt câu hỏi tự nhiên về các chức năng và thông tin mà họ được phép truy cập.
+Allow users to ask natural-language questions about functions and information they are authorized to access.
 
 ### Example
 User:
-> Tôi còn phải thanh toán bao nhiêu tiền tháng này?
+> How much do I still need to pay this month?
 
 AI:
-> Hệ thống có thể trả lời dựa trên dữ liệu thanh toán được backend cung cấp cho tài khoản của bạn.
+> The system can answer based on the payment data that the backend provides for your account.
 
 ### Rules
-- AI không được truy cập trực tiếp database nếu không thông qua cơ chế backend được kiểm soát.
-- Không tiết lộ dữ liệu của người dùng khác.
-- Không tự xác nhận giao dịch tài chính.
-- Không bịa thông tin khi dữ liệu không tồn tại.
+- AI must not access the database directly outside a controlled backend mechanism.
+- Do not disclose other users' data.
+- Do not autonomously confirm financial transactions.
+- Do not fabricate information when data does not exist.
 
 ## Feature F-03: Maintenance Request Management
 
@@ -99,8 +99,8 @@ Completed
 ```
 
 ### Acceptance Criteria
-- Request được lưu thành công.
-- Có request ID.
-- Có category/priority hoặc trạng thái chưa phân loại.
-- Người thuê xem được request.
-- Chủ nhà cập nhật được trạng thái.
+- The request is saved successfully.
+- The request has an ID.
+- The request has a category/priority or an unclassified status.
+- The tenant can view the request.
+- The landlord can update the status.

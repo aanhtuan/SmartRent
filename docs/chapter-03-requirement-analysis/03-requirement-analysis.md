@@ -4,22 +4,22 @@
 
 | ID | Requirement | Actor | Priority | Input | Output |
 |---|---|---|---|---|---|
-| FR-01 | Đăng nhập | User | High | Email, password | Session |
-| FR-02 | Quản lý phòng | Landlord | High | Room data | Room record |
-| FR-03 | Quản lý người thuê | Landlord | High | Tenant data | Tenant record |
-| FR-04 | Quản lý hợp đồng | Landlord | High | Contract data | Contract record |
-| FR-05 | Theo dõi tiền thuê | Landlord/Tenant | High | Payment data | Payment status |
-| FR-06 | Gửi yêu cầu sửa chữa | Tenant | High | Description, image | Request |
-| FR-07 | Xử lý yêu cầu | Landlord | High | Request ID, status | Updated request |
-| FR-08 | Gửi thông báo | System | Medium | Event | Notification |
-| FR-09 | Chat AI | User | High | Natural language | AI response |
-| FR-10 | Phân loại yêu cầu bằng AI | System/AI | High | Request text | Category, priority, summary |
+| FR-01 | Authentication | User | High | Email, password | Session |
+| FR-02 | Room management | Landlord | High | Room data | Room record |
+| FR-03 | Tenant management | Landlord | High | Tenant data | Tenant record |
+| FR-04 | Contract management | Landlord | High | Contract data | Contract record |
+| FR-05 | Rent tracking | Landlord/Tenant | High | Payment data | Payment status |
+| FR-06 | Submit maintenance request | Tenant | High | Description, image | Request |
+| FR-07 | Process maintenance request | Landlord | High | Request ID, status | Updated request |
+| FR-08 | Send notifications | System | Medium | Event | Notification |
+| FR-09 | AI chat | User | High | Natural language | AI response |
+| FR-10 | AI-based request classification | System/AI | High | Request text | Category, priority, summary |
 
 ## 2. Maintenance Request Flow
 ```text
 Tenant
   ↓
-Nhập nội dung sự cố
+Enter incident details
   ↓
 SmartRent Backend
   ↓
@@ -27,9 +27,9 @@ AI Classification
   ↓
 Category + Priority + Summary
   ↓
-Lưu database
+Persist to database
   ↓
-Landlord nhận thông báo
+Landlord receives notification
   ↓
 Processing
   ↓
@@ -43,31 +43,31 @@ PENDING → PROCESSING → COMPLETED
 ```
 
 ## 4. Business Rules
-- Chỉ người thuê của phòng đó mới được tạo yêu cầu liên quan đến phòng.
-- Người thuê chỉ xem được yêu cầu của mình.
-- Chủ nhà chỉ quản lý tài sản thuộc quyền quản lý.
-- Yêu cầu mới có trạng thái PENDING.
-- AI không tự chuyển trạng thái hoàn thành.
-- Dữ liệu AI trả về phải được kiểm tra trước khi thực hiện nghiệp vụ quan trọng.
+- Only the tenant assigned to a room may create requests related to that room.
+- Tenants can view only their own requests.
+- Landlords can manage only properties under their management.
+- New requests have the `PENDING` status.
+- AI must not autonomously change a request status to `COMPLETED`.
+- AI-generated data must be validated before executing critical business operations.
 
 ## 5. Edge Cases
-- Nội dung yêu cầu quá ngắn.
-- Người thuê không cung cấp đủ thông tin.
-- AI không xác định được category.
-- AI service không phản hồi.
-- Người dùng gửi yêu cầu trùng lặp.
-- Phòng không còn thuộc quyền quản lý.
-- Người thuê không còn hiệu lực hợp đồng.
+- The request description is too short.
+- The tenant provides insufficient information.
+- AI cannot determine a category.
+- The AI service does not respond.
+- The user submits a duplicate request.
+- The room is no longer under the landlord's management.
+- The tenant no longer has an active contract.
 
 ## 6. Non-functional Analysis
 ### Security
-Phân quyền theo role và kiểm tra quyền ở backend.
+Enforce role-based authorization and validate permissions in the backend.
 
 ### Performance
-Các truy vấn phổ biến cần có cấu trúc dữ liệu phù hợp; AI request có thể xử lý bất đồng bộ khi cần.
+Common queries require an appropriate data structure; AI requests can be processed asynchronously when needed.
 
 ### Reliability
-Nếu AI lỗi, người dùng vẫn có thể gửi yêu cầu thủ công.
+If AI fails, users can still submit requests manually.
 
 ### Usability
-Giao diện ưu tiên thao tác đơn giản, trạng thái rõ ràng và thông báo dễ hiểu.
+The interface prioritizes simple interactions, clear statuses, and understandable notifications.

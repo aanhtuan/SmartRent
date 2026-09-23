@@ -1,36 +1,36 @@
-# SmartRent – Hệ thống quản lý nhà cho thuê tích hợp AI
+# SmartRent – AI-Integrated Rental Property Management System
 
-## 1. Giới thiệu
+## 1. Introduction
 
-SmartRent là hệ thống hỗ trợ chủ nhà/người quản lý vận hành nhà cho thuê và chăm sóc người thuê. Hệ thống tập trung các nghiệp vụ quản lý phòng, người thuê, hợp đồng, tiền thuê và yêu cầu sửa chữa, đồng thời tích hợp AI để hỗ trợ giao tiếp, phân loại yêu cầu và khai thác thông tin.
+SmartRent is a system that helps landlords and property managers operate rental properties and support tenants. It centralizes room, tenant, contract, rent, and maintenance-request management while integrating AI to support communication, request classification, and information retrieval.
 
-## 2. Mục tiêu
+## 2. Objectives
 
-- Tập trung dữ liệu quản lý nhà cho thuê.
-- Giảm các thao tác quản lý thủ công.
-- Hỗ trợ người thuê gửi và theo dõi yêu cầu.
-- Ứng dụng AI vào phân tích, phân loại và hỗ trợ vận hành.
-- Xây dựng sản phẩm theo quy trình Product Discovery → PRD → Requirement Analysis → User Stories → Feature Specification.
+- Centralize rental property management data.
+- Reduce manual administrative tasks.
+- Enable tenants to submit and track requests.
+- Apply AI to analysis, classification, and operational support.
+- Develop the product through the Product Discovery → PRD → Requirement Analysis → User Stories → Feature Specification process.
 
-## 3. Đối tượng sử dụng
+## 3. Target Users
 
-- Chủ nhà / quản lý.
-- Người thuê.
+- Landlords / property managers.
+- Tenants.
 - AI Assistant.
 
-## 4. Phạm vi MVP
+## 4. MVP Scope
 
-1. Đăng nhập và phân quyền.
-2. Quản lý phòng.
-3. Quản lý người thuê.
-4. Quản lý hợp đồng.
-5. Theo dõi tiền thuê.
-6. Quản lý yêu cầu sửa chữa.
-7. Thông báo.
+1. Authentication and authorization.
+2. Room management.
+3. Tenant management.
+4. Contract management.
+5. Rent tracking.
+6. Maintenance request management.
+7. Notifications.
 8. AI Assistant.
-9. AI phân loại yêu cầu sửa chữa.
+9. AI-based maintenance request classification.
 
-## 5. Cấu trúc repository
+## 5. Repository Structure
 
 ```text
 SmartRent/
@@ -69,9 +69,9 @@ SmartRent/
 
 ## 7. AI Development Approach
 
-SmartRent sử dụng AI như một công cụ hỗ trợ trong quá trình phát triển phần mềm, không thay thế hoàn toàn quyết định của người phát triển.
+SmartRent uses AI as a supporting tool throughout software development; it does not replace developer decision-making.
 
-Quy trình làm việc:
+Workflow:
 
 1. Define context and requirements
 2. Write prompt
@@ -80,7 +80,7 @@ Quy trình làm việc:
 5. Refine and validate
 6. Apply to project
 
-AI được sử dụng trong các giai đoạn phù hợp của quá trình phát triển:
+AI is used at appropriate stages of the development lifecycle:
 
 - Product Discovery
 - PRD generation
@@ -94,10 +94,10 @@ AI được sử dụng trong các giai đoạn phù hợp của quá trình ph�
 - Testing
 - Technical Documentation
 
-## 8. Nguyên tắc sử dụng AI
+## 8. Principles for Using AI
 
-- Kết quả từ AI phải được người phát triển kiểm tra trước khi sử dụng.
-- Không đưa trực tiếp output của AI vào hệ thống nếu chưa được xác nhận.
-- Các quyết định quan trọng về nghiệp vụ, bảo mật và kiến trúc phải được người phát triển xem xét.
-- AI chỉ được truy cập dữ liệu và thực hiện thao tác trong phạm vi được hệ thống cho phép.
-- Khi AI không đủ thông tin, hệ thống cần yêu cầu bổ sung hoặc sử dụng phương án xử lý dự phòng phù hợp.
+- Developers must review AI-generated results before using them.
+- AI output must not be introduced directly into the system without validation.
+- Developers must review critical business, security, and architectural decisions.
+- AI may access data and perform actions only within the scope authorized by the system.
+- When AI lacks sufficient information, the system must request additional details or apply an appropriate fallback strategy.

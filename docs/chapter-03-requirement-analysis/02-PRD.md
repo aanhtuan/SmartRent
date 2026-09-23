@@ -1,86 +1,86 @@
 # 3.2 Product Requirements Document (PRD) – SmartRent
 
 ## 1. Product Overview
-SmartRent là hệ thống quản lý nhà cho thuê tích hợp AI, hỗ trợ chủ nhà/quản lý và người thuê trong các hoạt động vận hành hằng ngày.
+SmartRent is an AI-integrated rental property management system that supports landlords, property managers, and tenants in daily operational activities.
 
 ## 2. Product Goals
-- Quản lý dữ liệu nhà cho thuê tập trung.
-- Đơn giản hóa nghiệp vụ quản lý.
-- Minh bạch trạng thái yêu cầu sửa chữa.
-- Cải thiện trải nghiệm người thuê.
-- Ứng dụng AI vào các tác vụ có tính lặp lại hoặc cần phân loại thông tin.
+- Centrally manage rental property data.
+- Simplify management operations.
+- Provide transparent maintenance request statuses.
+- Improve the tenant experience.
+- Apply AI to repetitive tasks and tasks that require information classification.
 
 ## 3. User Roles
 
-| Role | Quyền chính |
+| Role | Primary Permissions |
 |---|---|
-| Admin/Landlord | Quản lý toàn bộ dữ liệu |
-| Tenant | Xem dữ liệu cá nhân và gửi yêu cầu |
-| AI Assistant | Hỗ trợ trả lời/phân tích theo dữ liệu được phép |
+| Admin/Landlord | Manage all data |
+| Tenant | View personal data and submit requests |
+| AI Assistant | Provide answers and analysis using authorized data |
 
 ## 4. Functional Requirements
 
 ### FR-01 – Authentication
-Người dùng đăng nhập và được phân quyền theo vai trò.
+Users can log in and are authorized according to their roles.
 
 ### FR-02 – Room Management
-Chủ nhà có thể thêm, sửa, xóa và xem trạng thái phòng.
+Landlords can add, edit, delete, and view room status.
 
 ### FR-03 – Tenant Management
-Chủ nhà quản lý thông tin người thuê và phòng đang thuê.
+Landlords manage tenant information and assigned rooms.
 
 ### FR-04 – Contract Management
-Lưu và tra cứu thông tin hợp đồng.
+Store and retrieve contract information.
 
 ### FR-05 – Rent Management
-Theo dõi tiền thuê và trạng thái thanh toán.
+Track rent and payment status.
 
 ### FR-06 – Maintenance Request
-Người thuê tạo yêu cầu sửa chữa; chủ nhà xem, cập nhật và hoàn tất yêu cầu.
+Tenants create maintenance requests; landlords view, update, and complete them.
 
 ### FR-07 – Notification
-Hệ thống gửi thông báo liên quan đến thanh toán, hợp đồng và xử lý yêu cầu.
+The system sends notifications related to payments, contracts, and request processing.
 
 ### FR-08 – AI Assistant
-Người dùng có thể đặt câu hỏi bằng ngôn ngữ tự nhiên.
+Users can ask questions in natural language.
 
 ### FR-09 – AI Request Classification
-AI phân loại yêu cầu sửa chữa và đề xuất mức độ ưu tiên.
+AI classifies maintenance requests and recommends priority levels.
 
 ## 5. Non-functional Requirements
-- Bảo mật thông tin người dùng.
-- Phân quyền truy cập dữ liệu.
-- Giao diện dễ sử dụng.
-- API có cấu trúc rõ ràng.
-- Có khả năng mở rộng.
-- AI phải có cơ chế xử lý trường hợp không đủ thông tin.
-- Không để AI tự ý thực hiện thao tác quan trọng nếu chưa được hệ thống cho phép.
+- Protect user information.
+- Enforce data-access authorization.
+- Provide an easy-to-use interface.
+- Provide clearly structured APIs.
+- Support scalability.
+- Provide a handling mechanism for cases where AI has insufficient information.
+- Prevent AI from autonomously performing critical actions unless explicitly authorized by the system.
 
 ## 6. AI Requirements
-AI Assistant cần:
-- Hiểu câu hỏi tiếng Việt tự nhiên.
-- Trả lời dựa trên ngữ cảnh SmartRent.
-- Không bịa dữ liệu khi hệ thống không cung cấp thông tin.
-- Yêu cầu người dùng bổ sung thông tin khi cần.
+The AI Assistant must:
+- Understand natural Vietnamese-language questions.
+- Respond using the SmartRent context.
+- Not fabricate data when the system does not provide the information.
+- Ask users for additional information when necessary.
 
-AI Classification cần:
-- Nhận nội dung yêu cầu.
-- Xác định category.
-- Xác định priority.
-- Sinh summary.
-- Trả kết quả có cấu trúc.
+AI Classification must:
+- Receive request content.
+- Determine a category.
+- Determine a priority.
+- Generate a summary.
+- Return structured results.
 
 ## 7. MVP Scope
 ### In Scope
-Quản lý phòng, người thuê, hợp đồng, tiền thuê, yêu cầu sửa chữa, thông báo và AI.
+Room, tenant, contract, rent, maintenance request, notification, and AI management.
 
 ### Out of Scope
-- Tích hợp ngân hàng thực tế.
-- Hệ thống kế toán chuyên nghiệp.
-- Nhận diện giấy tờ pháp lý tự động.
-- IoT điều khiển thiết bị trong phòng.
+- Live banking integration.
+- Professional accounting system.
+- Automated legal document recognition.
+- IoT-based control of in-room devices.
 
 ## 8. Assumptions
-- Người dùng có tài khoản hợp lệ.
-- Dữ liệu phòng và người thuê được lưu trong database.
-- AI chỉ truy cập dữ liệu mà backend cho phép.
+- Users have valid accounts.
+- Room and tenant data are stored in the database.
+- AI accesses only the data authorized by the backend.

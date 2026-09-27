@@ -7,10 +7,6 @@ All response/error conventions are defined in the [API Design](../../docs/chapte
 | Method / URL | Purpose | Authentication / authorization | Request → response | Validation / errors / statuses |
 |---|---|---|---|---|
 | `POST /api/auth/login` | Authenticate an existing account. | Public; rate limited. | `{email,password}` → `200 {access_token,token_type:"Bearer",user:{id,email,role}}`. | Email/password required; invalid credentials `401 UNAUTHENTICATED`; malformed `400`; rate limit `429`. |
-<<<<<<< HEAD
-=======
-| `POST /api/auth/logout` | End current session/token per chosen session strategy. | Bearer; caller only. | No body → `204`. | Invalid token `401`; no resource body. |
->>>>>>> origin/main
 | `GET /api/users/me` | Return current user identity/context. | Bearer; caller only. | No body → `200 {id,email,role,is_active}`. | `401` invalid token; inactive user is rejected by auth policy. |
 
 No registration endpoint is specified because valid accounts are an explicit Chapter 3 assumption. Password hashes are never returned.

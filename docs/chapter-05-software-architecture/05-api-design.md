@@ -8,11 +8,7 @@ SmartRent exposes a versioned JSON REST API under `/api`. This is a design contr
 
 | Resource | Artifact | Owner module |
 |---|---|---|
-<<<<<<< HEAD
 | Authentication, current User, Tenant Profile, AI Assistant | [authentication-api.md](../../design/api/authentication-api.md) | Identity & Access / Tenant / AI Assistant |
-=======
-| Authentication, current User, Tenant Profile | [authentication-api.md](../../design/api/authentication-api.md) | Identity & Access / Tenant |
->>>>>>> origin/main
 | Properties | [property-api.md](../../design/api/property-api.md) | Property |
 | Rooms | [room-api.md](../../design/api/room-api.md) | Room |
 | Contracts | [contract-api.md](../../design/api/contract-api.md) | Contract |

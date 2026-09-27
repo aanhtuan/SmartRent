@@ -4,11 +4,7 @@
 
 | File | Resources |
 |---|---|
-<<<<<<< HEAD
 | [authentication-api.md](authentication-api.md) | Authentication, current User, Tenant Profile và AI Assistant. |
-=======
-| [authentication-api.md](authentication-api.md) | Authentication, current User và Tenant Profile. |
->>>>>>> origin/main
 | [property-api.md](property-api.md) | Properties. |
 | [room-api.md](room-api.md) | Rooms. |
 | [contract-api.md](contract-api.md) | Contracts. |

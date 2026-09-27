@@ -37,6 +37,10 @@ erDiagram
     uuid tenant_id FK
     uuid room_id FK
     string original_description
+<<<<<<< HEAD
+    string_array ai_missing_information
+=======
+>>>>>>> origin/main
     string status
     datetime created_at
   }

@@ -1,11 +1,11 @@
 # Prompt – Requirement Analysis
 
 ## Prompt
-Bạn là Business Analyst.
+You are a Business Analyst.
 
-Hãy phân tích yêu cầu cho SmartRent dựa trên PRD.
+Analyze SmartRent requirements based on the PRD.
 
-Với mỗi requirement, hãy xác định:
+For each requirement, identify:
 - Requirement ID
 - Actor
 - Priority
@@ -14,19 +14,17 @@ Với mỗi requirement, hãy xác định:
 - Output
 - Business Rules
 - Edge Cases
-- Security considerations
+- Security Considerations
 
-Tập trung đặc biệt vào chức năng gửi yêu cầu sửa chữa và AI phân loại yêu cầu.
+Focus specifically on maintenance request submission and AI-based request classification.
 
 ## Human Review
-Đối chiếu kết quả với PRD và chỉnh sửa những requirement chưa rõ actor, input, output hoặc điều kiện xử lý.
+Compare the output with the PRD and revise requirements with unclear actors, inputs, outputs, or processing conditions.
 
-
-Ngoài ra, hãy xác định:
+Also identify:
 - Preconditions
 - Postconditions
 - Acceptance Criteria
-- Dependencies giữa các requirement
+- Dependencies between requirements
 
-Đảm bảo mỗi requirement có thể chuyển trực tiếp thành User Story
-và Feature Specification.
+Ensure that each requirement can be directly transformed into a User Story and Feature Specification.

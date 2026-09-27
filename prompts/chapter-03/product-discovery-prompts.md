@@ -1,14 +1,14 @@
 # Prompt – Product Discovery
 
-## Mục tiêu
-Dùng AI để hỗ trợ xác định vấn đề, người dùng và cơ hội sản phẩm cho SmartRent.
+## Objective
+Use AI to help identify SmartRent's problems, users, and product opportunities.
 
 ## Prompt
-Bạn là Senior Product Manager.
+You are a Senior Product Manager.
 
-Tôi đang xây dựng SmartRent – hệ thống quản lý nhà cho thuê tích hợp AI hỗ trợ vận hành và chăm sóc người thuê.
+I am building SmartRent, an AI-integrated rental property management system that supports operations and tenant services.
 
-Hãy thực hiện Product Discovery và phân tích:
+Conduct Product Discovery and analyze:
 1. Problem Statement
 2. Target Users
 3. Pain Points
@@ -17,14 +17,14 @@ Hãy thực hiện Product Discovery và phân tích:
 6. AI Opportunities
 7. MVP Features
 
-Hãy trình bày kết quả dạng bảng và ưu tiên các vấn đề có giá trị cao, khả thi để xây dựng trong một đồ án sinh viên.
+Present the results in a table and prioritize high-value problems that are feasible to implement as part of a student project.
 
 ## Human Review
-Sau khi nhận kết quả từ AI, người phát triển cần kiểm tra tính phù hợp với phạm vi SmartRent, loại bỏ chức năng quá lớn và xác định MVP.
+After receiving the AI output, the developer must assess its fit with the SmartRent scope, remove oversized features, and define the MVP.
 
-Với mỗi vấn đề hoặc cơ hội, hãy đánh giá:
+For each problem or opportunity, evaluate:
 - Business/User Value
 - Implementation Feasibility
 - Priority
 
-Không tự đề xuất các chức năng vượt quá phạm vi đồ án sinh viên.
+Do not propose features beyond the scope of a student project.

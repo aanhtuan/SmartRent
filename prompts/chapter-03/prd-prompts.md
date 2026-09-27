@@ -1,9 +1,9 @@
 # Prompt – PRD
 
 ## Prompt
-Bạn là Product Manager có kinh nghiệm viết PRD.
+You are a Product Manager experienced in writing PRDs.
 
-Dựa trên Product Discovery của SmartRent – hệ thống quản lý nhà cho thuê tích hợp AI, hãy xây dựng PRD gồm:
+Based on the Product Discovery for SmartRent, an AI-integrated rental property management system, create a PRD that includes:
 - Product Overview
 - Product Vision
 - Product Goals
@@ -16,17 +16,16 @@ Dựa trên Product Discovery của SmartRent – hệ thống quản lý nhà c
 - Out of Scope
 - Assumptions
 
-Yêu cầu các requirement phải có ID và mô tả rõ ràng để có thể chuyển thành User Story và Feature Specification.
+Each requirement must have an ID and a clear description so that it can be transformed into a User Story and Feature Specification.
 
 ## Human Review
-Kiểm tra lại từng requirement, đảm bảo requirement có thể kiểm thử và không đưa các chức năng ngoài phạm vi đồ án vào MVP.
+Review every requirement to ensure that it is testable and that the MVP does not include functionality outside the project scope.
 
-Mỗi Functional Requirement phải có:
+Each Functional Requirement must include:
 - Requirement ID
 - Description
 - Actor
 - Priority
-- Acceptance Criteria gợi ý
+- Suggested Acceptance Criteria
 
-Đảm bảo các requirement có thể truy vết từ Product Discovery
-và có thể chuyển tiếp sang Requirement Analysis.
+Ensure that requirements are traceable to Product Discovery and can flow into Requirement Analysis.

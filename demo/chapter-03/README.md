@@ -1,12 +1,12 @@
-# Bài thực hành 3 – Demo AI trong Phân tích Yêu cầu & Sản phẩm
+# Practice 3 – AI Demo for Product and Requirement Analysis
 
-## 1. Mục tiêu
+## 1. Objective
 
-Minh họa việc sử dụng Prompt AI trong các hoạt động của Chapter 3 và cách kết quả từ AI được người phát triển kiểm tra, điều chỉnh trước khi đưa vào tài liệu SmartRent.
+Demonstrate the use of AI prompts in Chapter 3 activities and how developers review and refine AI output before incorporating it into SmartRent documentation.
 
-## 2. Quy trình Demo
+## 2. Demo Process
 
-Mỗi demo được thực hiện theo quy trình:
+Each demo follows this process:
 
 ```text
 Context
@@ -24,15 +24,15 @@ Final Result
 
 ## 3. Demo 1 – Product Discovery
 
-Sử dụng:
+Use:
 
 `../../prompts/chapter-03/product-discovery-prompts.md`
 
-### Input chính
+### Primary Input
 
-> Phân tích Product Discovery cho SmartRent.
+> Perform Product Discovery analysis for SmartRent.
 
-### Kết quả cần minh họa
+### Expected Results
 
 - Target users
 - Pain points
@@ -42,15 +42,15 @@ Sử dụng:
 
 ### Human Review
 
-Kiểm tra kết quả có phù hợp với phạm vi đồ án SmartRent hay không, loại bỏ các chức năng quá lớn và xác định MVP có tính khả thi.
+Verify that the output fits the SmartRent project scope, remove oversized features, and define a feasible MVP.
 
 ## 4. Demo 2 – PRD
 
-Sử dụng:
+Use:
 
 `../../prompts/chapter-03/prd-prompts.md`
 
-### Kết quả cần minh họa
+### Expected Results
 
 - Product overview
 - Product goals
@@ -65,15 +65,15 @@ Sử dụng:
 
 ### Human Review
 
-Kiểm tra từng requirement, đặc biệt là ID, phạm vi chức năng và khả năng chuyển tiếp sang Requirement Analysis, User Story và Feature Specification.
+Review each requirement, especially its ID, functional scope, and ability to flow into Requirement Analysis, User Stories, and Feature Specification.
 
 ## 5. Demo 3 – Requirement Analysis
 
-Sử dụng:
+Use:
 
 `../../prompts/chapter-03/requirement-prompts.md`
 
-### Kết quả cần minh họa
+### Expected Results
 
 - Requirement ID
 - Actor
@@ -87,35 +87,35 @@ Sử dụng:
 
 ### Human Review
 
-Đối chiếu kết quả với PRD và chỉnh sửa các requirement chưa rõ actor, input, output, điều kiện xử lý hoặc quy tắc nghiệp vụ.
+Compare the output with the PRD and revise requirements with unclear actors, inputs, outputs, processing conditions, or business rules.
 
-Đặc biệt kiểm tra chức năng gửi yêu cầu sửa chữa và AI phân loại yêu cầu.
+Pay particular attention to maintenance request submission and AI-based request classification.
 
 ## 6. Demo 4 – User Story
 
-### Prompt mẫu
+### Sample Prompt
 
-> Từ chức năng gửi yêu cầu sửa chữa của SmartRent, hãy tạo User Story và Acceptance Criteria theo Agile.
+> Create an Agile User Story and Acceptance Criteria for SmartRent's maintenance request submission feature.
 
-### Kết quả cần minh họa
+### Expected Results
 
 - User Story
 - Actor / role
 - User goal
 - Acceptance Criteria
-- Các trường hợp hợp lệ và không hợp lệ
+- Valid and invalid scenarios
 
 ### Human Review
 
-Kiểm tra User Story có phản ánh đúng requirement hay không và Acceptance Criteria có thể kiểm thử được hay không.
+Verify that the User Story accurately reflects the requirement and that the Acceptance Criteria are testable.
 
 ## 7. Demo 5 – Feature Specification
 
-Sử dụng:
+Use:
 
 `../../prompts/chapter-03/feature-prompts.md`
 
-### Kết quả cần minh họa
+### Expected Results
 
 - Objective
 - User
@@ -132,34 +132,34 @@ Sử dụng:
 
 ### Human Review
 
-Kiểm tra:
+Verify:
 
-- JSON schema có hợp lệ không.
-- Category và Priority có phù hợp không.
-- AI có tự suy đoán khi thiếu thông tin không.
-- Confidence có được xử lý hợp lý không.
-- Error và fallback có đảm bảo hệ thống vẫn hoạt động không.
-- AI có thực hiện hoặc đề xuất thao tác vượt quyền không.
-- Backend có kiểm soát và xác thực kết quả AI hay không.
+- Whether the JSON schema is valid.
+- Whether the category and priority are appropriate.
+- Whether AI makes assumptions when information is missing.
+- Whether the confidence value is handled appropriately.
+- Whether error handling and fallbacks keep the system operational.
+- Whether AI performs or recommends unauthorized actions.
+- Whether the backend controls and validates AI results.
 
 ## 8. Evidence
 
-Mỗi demo nên lưu lại bằng chứng của quá trình sử dụng AI:
+Each demo should retain evidence of the AI usage process:
 
-- Prompt được sử dụng.
-- AI Output.
-- Human Review.
-- Final Result.
+- Prompt used.
+- AI output.
+- Human review.
+- Final result.
 
-Bằng chứng có thể được lưu dưới dạng:
+Evidence can be retained as:
 
-- Screenshot.
-- Markdown.
-- JSON.
-- Hoặc tài liệu kết quả tương ứng.
+- Screenshots.
+- Markdown files.
+- JSON files.
+- Relevant result documents.
 
-## 9. Kết luận
+## 9. Conclusion
 
-Các demo cho thấy AI có thể hỗ trợ từ giai đoạn khám phá sản phẩm đến đặc tả tính năng trong Chapter 3.
+These demos show that AI can support activities from product discovery through feature specification in Chapter 3.
 
-AI đóng vai trò hỗ trợ tạo và phân tích nội dung, trong khi người phát triển chịu trách nhiệm kiểm tra, điều chỉnh và xác nhận kết quả trước khi áp dụng vào SmartRent.
+AI supports content generation and analysis, while developers remain responsible for reviewing, refining, and validating results before applying them to SmartRent.

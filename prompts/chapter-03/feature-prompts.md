@@ -1,11 +1,11 @@
 # Prompt – Feature Specification
 
 ## Prompt
-Bạn là Senior Software/Product Analyst.
+You are a Senior Software/Product Analyst.
 
-Hãy viết Feature Specification cho tính năng AI Maintenance Assistant của SmartRent.
+Write a Feature Specification for SmartRent's AI Maintenance Assistant feature.
 
-Bao gồm:
+Include:
 1. Objective
 2. User
 3. User flow
@@ -19,24 +19,23 @@ Bao gồm:
 11. Acceptance Criteria
 12. Security considerations
 
-Kết quả phải đủ cụ thể để developer có thể dùng làm cơ sở thiết kế API và triển khai tính năng.
+The result must be sufficiently specific for developers to use as the basis for API design and feature implementation.
 
 ## Human Review
-Người phát triển phải kiểm tra:
-- JSON schema có hợp lệ không
-- Category và Priority có phù hợp không
-- AI có tự suy đoán khi thiếu thông tin không
-- Confidence có hợp lý không
-- Error/fallback có đảm bảo hệ thống vẫn hoạt động không
-- AI có thực hiện hoặc đề xuất thao tác vượt quyền không
+Developers must verify:
+- Whether the JSON schema is valid.
+- Whether the category and priority are appropriate.
+- Whether AI makes assumptions when information is missing.
+- Whether the confidence value is reasonable.
+- Whether error handling and fallbacks keep the system operational.
+- Whether AI performs or recommends unauthorized actions.
 
-
-Hãy xác định rõ:
+Clearly define:
 - JSON input/output schema
 - Validation rules
 - Confidence threshold
 - Missing information handling
-- Fallback khi AI không thể phân loại
-- Fallback khi AI service không khả dụng
-- Không để AI tự thực hiện các thao tác quan trọng
-- Backend phải kiểm soát và xác thực kết quả AI
+- Fallback when AI cannot classify a request
+- Fallback when the AI service is unavailable
+- Prevent AI from autonomously executing critical actions
+- Require the backend to control and validate AI results

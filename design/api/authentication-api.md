@@ -7,6 +7,10 @@ All response/error conventions are defined in the [API Design](../../docs/chapte
 | Method / URL | Purpose | Authentication / authorization | Request → response | Validation / errors / statuses |
 |---|---|---|---|---|
 | `POST /api/auth/login` | Authenticate an existing account. | Public; rate limited. | `{email,password}` → `200 {access_token,token_type:"Bearer",user:{id,email,role}}`. | Email/password required; invalid credentials `401 UNAUTHENTICATED`; malformed `400`; rate limit `429`. |
+<<<<<<< HEAD
+=======
+| `POST /api/auth/logout` | End current session/token per chosen session strategy. | Bearer; caller only. | No body → `204`. | Invalid token `401`; no resource body. |
+>>>>>>> origin/main
 | `GET /api/users/me` | Return current user identity/context. | Bearer; caller only. | No body → `200 {id,email,role,is_active}`. | `401` invalid token; inactive user is rejected by auth policy. |
 
 No registration endpoint is specified because valid accounts are an explicit Chapter 3 assumption. Password hashes are never returned.
@@ -21,6 +25,7 @@ No registration endpoint is specified because valid accounts are an explicit Cha
 | `PATCH /api/tenant-profiles/{id}` | Update tenant contact/profile fields. | Bearer; Manager/Landlord, or profile owner for own allowed contact fields. | `{full_name?,phone_number?}` → `200` updated profile. | At least one allowed field; name format `400`; ownership field changes forbidden `403`; absent `404`; `401`. |
 
 `user_id` is immutable after profile creation. The backend does not expose credentials or let client input change a user role through this API.
+<<<<<<< HEAD
 
 ## AI Assistant
 
@@ -29,3 +34,5 @@ No registration endpoint is specified because valid accounts are an explicit Cha
 | `POST /api/ai-assistant/messages` | Answer a natural-language SmartRent question using only caller-authorized backend context. | Bearer; Tenant or Manager/Landlord. Backend scopes all data retrieval to caller role/ownership before AI Integration is invoked. | `{question}` → `200 {answer,requires_more_information}`. | Nonblank question required; unsupported/unsafe data request `403`; malformed `400`; `401`; provider unavailable `502 AI_PROVIDER_ERROR`. |
 
 The endpoint sends a minimal authorized context through AI Integration and returns an answer or a request for more information. It does not expose provider credentials/raw responses, query PostgreSQL directly from AI, disclose another user’s data, confirm financial transactions, or perform any write operation.
+=======
+>>>>>>> origin/main

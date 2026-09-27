@@ -8,7 +8,11 @@ SmartRent exposes a versioned JSON REST API under `/api`. This is a design contr
 
 | Resource | Artifact | Owner module |
 |---|---|---|
+<<<<<<< HEAD
 | Authentication, current User, Tenant Profile, AI Assistant | [authentication-api.md](../../design/api/authentication-api.md) | Identity & Access / Tenant / AI Assistant |
+=======
+| Authentication, current User, Tenant Profile | [authentication-api.md](../../design/api/authentication-api.md) | Identity & Access / Tenant |
+>>>>>>> origin/main
 | Properties | [property-api.md](../../design/api/property-api.md) | Property |
 | Rooms | [room-api.md](../../design/api/room-api.md) | Room |
 | Contracts | [contract-api.md](../../design/api/contract-api.md) | Contract |
@@ -16,7 +20,11 @@ SmartRent exposes a versioned JSON REST API under `/api`. This is a design contr
 | Maintenance Requests + AI classification | [maintenance-api.md](../../design/api/maintenance-api.md) | Maintenance / AI Integration |
 | Notifications | [notification-api.md](../../design/api/notification-api.md) | Notification |
 
+<<<<<<< HEAD
 `Users` is intentionally limited to `GET /api/users/me`: Chapter 3 assumes users have valid accounts and defines no registration or generic user-administration feature. Tenant management is represented by protected Tenant Profile endpoints, as required by FR-03. The same artifact documents the existing FR-09 AI Assistant endpoint; it uses backend-filtered context and is not a direct provider endpoint.
+=======
+`Users` is intentionally limited to `GET /api/users/me`: Chapter 3 assumes users have valid accounts and defines no registration or generic user-administration feature. Tenant management is represented by protected Tenant Profile endpoints, as required by FR-03.
+>>>>>>> origin/main
 
 ## 3. Common API conventions
 

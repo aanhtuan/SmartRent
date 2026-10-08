@@ -1,5 +1,7 @@
 # SmartRent Chapter 5 – Database Design Prompts
 
+> Current-use context: read the [Sprint 0 decision baseline](../../docs/sprint-0-decisions.md) and relevant resource contract first. Canonical FR IDs follow Requirement Analysis; new business defaults require their review gate. These are reusable templates, not evidence of historical model runs. Preview never persists a business request; explicit confirmation/manual submit reauthorizes before save.
+
 ## Purpose
 
 Bộ prompt thiết kế logical/physical PostgreSQL schema SmartRent có thể trace về requirements, gồm entities, fields, relationships, integrity, indexes, normalization, AI metadata và security.

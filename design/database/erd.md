@@ -1,5 +1,7 @@
 # SmartRent – Entity Relationship Diagram
 
+> Sprint 0 revision: see the [decision baseline](../../docs/sprint-0-decisions.md). New ownership/lifecycle/billing/preview policies are working baseline until the named review gate passes; this document is a design artifact, not implemented behavior. Canonical FR IDs follow Requirement Analysis.
+
 ## Logical ERD
 
 ```mermaid
@@ -9,10 +11,12 @@ erDiagram
     varchar email UK
     user_role role
     boolean is_active
+    uuid provisioned_by_user_id FK
   }
   TENANT_PROFILES {
     uuid id PK
     uuid user_id FK, UK
+    uuid manager_landlord_id FK
     varchar full_name
     varchar phone_number
   }
@@ -42,6 +46,7 @@ erDiagram
     uuid contract_id FK
     date billing_period
     numeric amount
+    date due_date
     payment_status status
   }
   MAINTENANCE_REQUESTS {
@@ -49,6 +54,8 @@ erDiagram
     uuid tenant_profile_id FK
     uuid room_id FK
     text original_description
+    uuid submission_key
+    text submission_digest
     maintenance_category category
     maintenance_priority priority
     text ai_summary
@@ -70,6 +77,8 @@ erDiagram
   }
 
   USERS ||--o| TENANT_PROFILES : has
+  USERS ||--o{ TENANT_PROFILES : manages
+  USERS o|--o{ USERS : provisions
   USERS ||--o{ PROPERTIES : owns
   PROPERTIES ||--o{ ROOMS : contains
   TENANT_PROFILES ||--o{ CONTRACTS : signs

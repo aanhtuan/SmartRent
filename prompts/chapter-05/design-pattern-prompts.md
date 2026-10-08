@@ -1,5 +1,7 @@
 # SmartRent Chapter 5 – Design Pattern Prompts
 
+> Current-use context: read the [Sprint 0 decision baseline](../../docs/sprint-0-decisions.md) and relevant resource contract first. Canonical FR IDs follow Requirement Analysis; new business defaults require their review gate. These are reusable templates, not evidence of historical model runs. Preview never persists a business request; explicit confirmation/manual submit reauthorizes before save.
+
 ## Purpose
 
 Bộ prompt đánh giá có chọn lọc Repository Pattern, Service Layer, Adapter Pattern, Strategy Pattern và Factory Pattern trong các use case SmartRent. Mục tiêu là giải quyết vấn đề thiết kế thực, không tăng số lượng pattern được áp dụng.

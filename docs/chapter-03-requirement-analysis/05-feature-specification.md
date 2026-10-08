@@ -1,5 +1,7 @@
 # 3.5 Feature Specification – SmartRent
 
+> Sprint 0 revision: see the [decision baseline](../sprint-0-decisions.md). New ownership/lifecycle/billing/preview policies are working baseline until the named review gate passes; this document is a design artifact, not implemented behavior. Canonical FR IDs follow Requirement Analysis.
+
 ## Feature F-01: AI Maintenance Assistant
 
 ### 1. Objective
@@ -13,7 +15,7 @@ Automatically analyze tenant maintenance request content to support classificati
 ```json
 {
   "request_text": "The air conditioner in my room is not cooling and is making a loud noise.",
-  "room_id": "A101"
+  "room_id": "8e8b1b23-7aa8-4bfa-aedb-b64183c797f0"
 }
 ```
 
@@ -57,11 +59,12 @@ If AI cannot classify the request:
   "category": "OTHER",
   "priority": "MEDIUM",
   "summary": "...",
-  "missing_information": ["Please clearly describe the equipment experiencing the issue."]
+  "missing_information": ["Please clearly describe the equipment experiencing the issue."],
+  "confidence": 0.0
 }
 ```
 
-If the AI service is unavailable, the system still allows the request to be saved with an unclassified status.
+If Gemini is unavailable, preview shows fallback and the user can explicitly confirm manual submission. Preview alone does not save a business request. Missing-info outputs include confidence; example values are not policy thresholds.
 
 ## Feature F-02: AI Assistant
 
@@ -85,11 +88,13 @@ AI:
 
 ### Main Flow
 ```text
-Create Request
+Open Request Form
     ↓
-AI Classification
+Authorized AI Preview (no request persistence)
     ↓
-Save Request
+User Review / Explicit Confirm (or manual submit)
+    ↓
+Reauthorize and Save Request
     ↓
 Notify Landlord
     ↓

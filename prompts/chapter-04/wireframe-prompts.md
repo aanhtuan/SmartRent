@@ -1,5 +1,7 @@
 # Prompt – Wireframe
 
+> Current-use context: read the [Sprint 0 decision baseline](../../docs/sprint-0-decisions.md) and relevant resource contract first. Canonical FR IDs follow Requirement Analysis; new business defaults require their review gate. These are reusable templates, not evidence of historical model runs. Preview never persists a business request; explicit confirmation/manual submit reauthorizes before save.
+
 Bạn là UX/UI Designer.
 
 Dựa trên User Flow và tài liệu Chapter 3 của SmartRent, hãy thiết kế low-fidelity wireframe cho Maintenance Request.

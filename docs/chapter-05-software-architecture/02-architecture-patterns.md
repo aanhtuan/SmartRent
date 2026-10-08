@@ -1,5 +1,7 @@
 # 5.2 Architecture Patterns – SmartRent
 
+> Sprint 0 revision: see the [decision baseline](../sprint-0-decisions.md). New ownership/lifecycle/billing/preview policies are working baseline until the named review gate passes; this document is a design artifact, not implemented behavior. Canonical FR IDs follow Requirement Analysis.
+
 ## 1. Mục đích và tiêu chí đánh giá
 
 Tài liệu này phân tích các pattern phù hợp với SmartRent dựa trên phạm vi MVP và thiết kế 5.1. Các driver chính là: quản lý dữ liệu rental có quan hệ chặt chẽ; phân quyền tenant/landlord ở backend; lifecycle Maintenance Request; thông báo theo sự kiện; và AI hỗ trợ có output phải được validate, có fallback khi unavailable.
@@ -84,6 +86,7 @@ Modular Monolith là một ứng dụng/deployable thống nhất, chia thành c
 ```text
 SmartRent Backend (one deployable)
 ├── Identity & Access
+├── Property
 ├── Room
 ├── Tenant
 ├── Contract
@@ -99,7 +102,7 @@ Module giao tiếp qua public application interface hoặc domain event trong pr
 
 ### Cách áp dụng vào SmartRent
 
-- Maintenance sở hữu request, status history và rule transition; không module nào, kể cả AI, được thay đổi `COMPLETED` thay nó.
+- Maintenance sở hữu request, current status/audit timestamps và rule transition; không module nào, kể cả AI, được thay đổi `COMPLETED` thay nó.
 - Identity & Access cung cấp identity/policy; mọi module gọi policy để kiểm tra role và resource ownership server-side.
 - Room, Tenant, Contract và Payment sở hữu rule/dữ liệu nghiệp vụ tương ứng, cung cấp interface cần thiết cho authorization/workflow.
 - Notification phản ứng sau business transaction đã commit; lỗi delivery không rollback request state.
@@ -108,7 +111,7 @@ Module giao tiếp qua public application interface hoặc domain event trong pr
 ### Ưu điểm
 
 - Một deployment và một pipeline giúp phát triển/debug/rollback đơn giản cho MVP.
-- Transaction xuyên các dữ liệu liên quan (ví dụ request, status history, notification record) rõ ràng và nhất quán trên PostgreSQL.
+- Transaction xuyên các dữ liệu liên quan (ví dụ request và audit timestamps; notification được xử lý sau commit) rõ ràng và nhất quán trên PostgreSQL.
 - Không có network hop giữa module, giảm latency và failure mode so với microservices.
 - Module boundary vẫn tạo nền tảng để cô lập/tách workload sau này khi có dữ liệu tải và ownership ổn định.
 
@@ -252,7 +255,7 @@ Modular Monolith
   + AI Integration Boundary
 ```
 
-PostgreSQL tiếp tục là authoritative data store. Backend sở hữu authorization, business rules, transaction và Maintenance workflow. AI chỉ là dependency bên ngoài sau adapter: không direct DB access, không quyết định authorization, không thay đổi critical business state, không tự hoàn tất Maintenance Request. Khi AI failure/invalid output, request vẫn được lưu `PENDING` để xử lý thủ công.
+PostgreSQL tiếp tục là authoritative data store. Backend sở hữu authorization, business rules, transaction và Maintenance workflow. AI chỉ là dependency bên ngoài sau adapter: không direct DB access, không quyết định authorization, không thay đổi critical business state, không tự hoàn tất Maintenance Request. Khi AI failure/invalid output, user được chọn gửi thủ công; chỉ explicit confirm mới lưu PENDING để xử lý thủ công.
 
 ### Decision rationale and trade-offs
 

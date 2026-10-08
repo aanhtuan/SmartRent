@@ -1,5 +1,7 @@
 # 4.4 AI Design Review – SmartRent
 
+> Sprint 0 revision: see the [decision baseline](../sprint-0-decisions.md). New ownership/lifecycle/billing/preview policies are working baseline until the named review gate passes; this document is a design artifact, not implemented behavior. Canonical FR IDs follow Requirement Analysis.
+
 ## Mục tiêu
 Dùng AI để review thiết kế Chapter 4 trước khi chuyển sang Software Architecture.
 

@@ -1,5 +1,7 @@
 # 5.4 Database Design – SmartRent
 
+> Sprint 0 revision: see the [decision baseline](../sprint-0-decisions.md). New ownership/lifecycle/billing/preview policies are working baseline until the named review gate passes; this document is a design artifact, not implemented behavior. Canonical FR IDs follow Requirement Analysis.
+
 ## 1. Mục đích và scope
 
 Thiết kế này mô tả logical PostgreSQL schema cho MVP SmartRent. Nó cụ thể hóa các entity được yêu cầu: User, Tenant Profile, Property, Room, Contract, Payment, Maintenance Request và Notification. Không tạo migration, DDL/SQL implementation hoặc entity mới không có nhu cầu rõ trong requirements.
@@ -93,7 +95,7 @@ Khi provider fail/timeout hoặc result invalid, backend lưu mô tả gốc v�
 | Data | Module owner | Audit fields / responsibility |
 |---|---|---|
 | `users`, `tenant_profiles` | Identity & Access / Tenant | `created_at`, `updated_at`; credential management không lộ hash. |
-| `properties`, `rooms` | Room | Timestamps; ownership bởi `owner_user_id`. |
+| `properties`, `rooms` | Property / Room | Timestamps; ownership bởi `owner_user_id`. |
 | `contracts` | Contract | Timestamps + lifecycle status; link tenant-room. |
 | `payments` | Payment | Timestamps + period/status; immutable event trail có thể bổ sung sau. |
 | `maintenance_requests` | Maintenance | Created/updated timestamps, creator, latest updater, original description và validated AI state. |
@@ -130,3 +132,7 @@ Không thay đổi lựa chọn Modular Monolith. Các extension chỉ nên thê
 | Chapter 5.1 | PostgreSQL authoritative store, repository/transaction boundary, AI adapter without direct DB access. |
 | Chapter 5.2 | Modular owner per table and no premature microservice/database split. |
 | Chapter 5.3 UML | Entity/cardinality terminology aligned with class and ER overview; Property and Tenant Profile refine the required entity scope. |
+
+## Confirmation boundary
+
+Read-only preview, missing-info and provider errors never create a business request by themselves. All references to saving a fallback mean explicit user-confirmed manual submission followed by reauthorization and commit. Follow the shared Maintenance API/sequence and D04 rather than treating an earlier orchestration example as automatic persistence.

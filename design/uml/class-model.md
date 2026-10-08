@@ -1,5 +1,7 @@
 # SmartRent – Class Diagram Specification
 
+> Sprint 0 revision: see the [decision baseline](../../docs/sprint-0-decisions.md). New ownership/lifecycle/billing/preview policies are working baseline until the named review gate passes; this document is a design artifact, not implemented behavior. Canonical FR IDs follow Requirement Analysis.
+
 ## Logical domain model
 
 This diagram shows conceptual classes/entities and their important relationships. Attributes are a design-level view; it does not prescribe source-code classes, ORM mappings or every database column.
@@ -18,6 +20,15 @@ classDiagram
   class Tenant {
     +viewOwnRequest()
     +submitMaintenanceRequest()
+  }
+  class Property {
+    +UUID id
+    +UUID ownerUserId
+  }
+  class TenantProfile {
+    +UUID id
+    +UUID userId
+    +UUID managerLandlordId
   }
   class Room {
     +UUID id
@@ -73,11 +84,14 @@ classDiagram
 
   User <|-- Tenant
   User <|-- ManagerLandlord
-  ManagerLandlord "1" --> "0..*" Room : manages
-  Tenant "1" --> "0..*" Contract : party to
+  ManagerLandlord "1" --> "0..*" Property : owns
+  Property "1" --> "0..*" Room : contains
+  Tenant "1" --> "0..1" TenantProfile : has
+  ManagerLandlord "1" --> "0..*" TenantProfile : manages
+  TenantProfile "1" --> "0..*" Contract : party to
   Room "1" --> "0..*" Contract : covered by
   Contract "1" --> "0..*" Payment : has
-  Tenant "1" --> "0..*" MaintenanceRequest : creates
+  TenantProfile "1" --> "0..*" MaintenanceRequest : creates
   Room "1" --> "0..*" MaintenanceRequest : concerns
   MaintenanceRequest "1" --> "0..1" AIClassification : has validated metadata
   User "1" --> "0..*" Notification : receives
@@ -98,3 +112,5 @@ classDiagram
 | `Notification` | Created from a committed domain event and addressed to an authorized recipient. |
 
 `role`, `status`, category and priority are controlled value sets defined by Chapter 3, not arbitrary user/AI text. Optional image attachment is an acceptance criterion only “if supported”; it is intentionally not modeled as a required entity in this MVP overview.
+
+AIClassification is a conceptual value object embedded in MaintenanceRequest persistence, not an independent table/entity. Roles shown through conceptual inheritance do not require JPA entity inheritance. Working-baseline ownership and lifecycle rules require their named review gates.

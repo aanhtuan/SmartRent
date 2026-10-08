@@ -1,5 +1,7 @@
 # SmartRent – PostgreSQL Logical Schema
 
+> Sprint 0 revision: see the [decision baseline](../../docs/sprint-0-decisions.md). New ownership/lifecycle/billing/preview policies are working baseline until the named review gate passes; this document is a design artifact, not implemented behavior. Canonical FR IDs follow Requirement Analysis.
+
 ## Scope and conventions
 
 - Type là PostgreSQL logical type; tài liệu này không là DDL/migration.
@@ -34,6 +36,7 @@
 | `password_hash` | `text` | No | Password hash only | — |
 | `role` | `user_role` | No | Allowed role set | — |
 | `is_active` | `boolean` | No | — | `true` |
+| `provisioned_by_user_id` | `uuid` | Yes | WB D03: FK → users.id; required for Tenant assignment, null for operationally provisioned landlords; immutable via public API | `NULL` |
 | `created_at` | `timestamptz` | No | — | `CURRENT_TIMESTAMP` |
 | `updated_at` | `timestamptz` | No | — | `CURRENT_TIMESTAMP` |
 
@@ -47,12 +50,13 @@ Indexes: unique `users_email_uq (email)` supports login and identity uniqueness.
 |---|---|---:|---|---|
 | `id` | `uuid` | No | PK | UUID generated |
 | `user_id` | `uuid` | No | FK → `users.id`, UNIQUE, `ON DELETE RESTRICT` | — |
+| `manager_landlord_id` | `uuid` | No | WB D03: FK → users.id; server-owned; matches Tenant provisioning assignment | — |
 | `full_name` | `varchar(200)` | No | — | — |
 | `phone_number` | `varchar(30)` | Yes | — | `NULL` |
 | `created_at` | `timestamptz` | No | — | `CURRENT_TIMESTAMP` |
 | `updated_at` | `timestamptz` | No | — | `CURRENT_TIMESTAMP` |
 
-Indexes: unique `tenant_profiles_user_id_uq (user_id)`.
+Indexes: unique `tenant_profiles_user_id_uq (user_id)`; index manager_landlord_id for owner-scoped lists. Provisioning FK is indexed. These WB additions require G2 acceptance before migration; identity-only foundation may omit them and add forward migrations later.
 
 ## 3. `properties`
 
@@ -100,7 +104,7 @@ Indexes: unique `rooms_property_room_code_uq (property_id, room_code)`; this als
 | `created_at` | `timestamptz` | No | — | `CURRENT_TIMESTAMP` |
 | `updated_at` | `timestamptz` | No | — | `CURRENT_TIMESTAMP` |
 
-Indexes: `contracts_tenant_status_idx (tenant_profile_id, status)` and `contracts_room_status_idx (room_id, status)` for active-contract authorization and lookup. Preventing overlapping active periods is a business/database constraint to add deliberately in a migration when contract lifecycle rules are finalized; it is not assumed silently here.
+Indexes: `contracts_tenant_status_idx (tenant_profile_id, status)` and `contracts_room_status_idx (room_id, status)` for active-contract authorization and lookup. WB D06 requires non-overlapping inclusive ACTIVE reservations per room. Serialize create/date/status writes on the same room lock and recheck inside the transaction; choose additional DB exclusion enforcement during G2 migration design. This is a specified invariant, not an existing migration.
 
 ## 6. `payments`
 
@@ -111,7 +115,8 @@ Indexes: `contracts_tenant_status_idx (tenant_profile_id, status)` and `contract
 | `id` | `uuid` | No | PK | UUID generated |
 | `contract_id` | `uuid` | No | FK → `contracts.id`, `ON DELETE RESTRICT` | — |
 | `billing_period` | `date` | No | UNIQUE with `contract_id`; convention: first day of billing month | — |
-| `amount` | `numeric(12,2)` | No | `amount >= 0` | — |
+| `due_date` | `date` | No | WB D07: due_date >= billing_period | — |
+| `amount` | `numeric(12,2)` | No | WB D07: amount >= 0 and whole VND | — |
 | `status` | `payment_status` | No | Allowed status set | `PENDING` |
 | `created_at` | `timestamptz` | No | — | `CURRENT_TIMESTAMP` |
 | `updated_at` | `timestamptz` | No | — | `CURRENT_TIMESTAMP` |
@@ -128,6 +133,8 @@ Indexes: unique `payments_contract_period_uq (contract_id, billing_period)`; `pa
 | `tenant_profile_id` | `uuid` | No | FK → `tenant_profiles.id`, `ON DELETE RESTRICT` | — |
 | `room_id` | `uuid` | No | FK → `rooms.id`, `ON DELETE RESTRICT` | — |
 | `original_description` | `text` | No | Non-empty after trim is validated by backend | — |
+| `submission_key` | `uuid` | No | WB D04: UNIQUE with tenant_profile_id | — |
+| `submission_digest` | `text` | No | WB D04: server-computed canonical business input digest | — |
 | `category` | `maintenance_category` | Yes | Allowed category set if present | `NULL` |
 | `priority` | `maintenance_priority` | Yes | Allowed priority set if present | `NULL` |
 | `ai_summary` | `text` | Yes | Length/content validated by backend | `NULL` |
@@ -157,7 +164,7 @@ Indexes: `maintenance_tenant_created_idx (tenant_profile_id, created_at DESC)` f
 | `read_at` | `timestamptz` | Yes | — | `NULL` |
 | `created_at` | `timestamptz` | No | — | `CURRENT_TIMESTAMP` |
 
-Constraint: a `CHECK` requires exactly one of `maintenance_request_id`, `payment_id`, `contract_id` to be non-null. This preserves referential integrity while supporting all notification sources defined by FR-07.
+Constraint: a `CHECK` requires exactly one of `maintenance_request_id`, `payment_id`, `contract_id` to be non-null. This preserves referential integrity while supporting all notification sources defined by canonical FR-08.
 
 Indexes: `notifications_recipient_read_created_idx (recipient_user_id, read_at, created_at DESC)` supports unread/recent list; indexes on each non-null source FK support traceability as needed.
 
@@ -173,3 +180,9 @@ Indexes: `notifications_recipient_read_created_idx (recipient_user_id, read_at, 
 | `maintenance_requests` | notification | `RESTRICT` | Preserve request/notification traceability. |
 
 Application authorization must be performed before any status/deactivation change; FK action alone never determines whether an actor may mutate a record.
+
+## Working-baseline lifecycle constraints
+
+See D03–D07 in the decision register before migration. Room OCCUPIED/AVAILABLE is derived from effective contract dates/status; persisted status, if retained as a projection, is not authorization evidence. INACTIVE remains administrative. Payment OVERDUE is derived from unpaid + business today > due_date; stored status, if retained, must not override that calculation. PAID locks amount/due date. Migration implementation must document projection mapping without pretending a CHECK can reference today's clock or another table safely.
+
+Profile manager/provisioning roles and contract profile/property scope are verified in application use cases; FK existence alone does not prove ownership. New owner FK columns use ON DELETE RESTRICT and indexes. Maintenance submission key uniqueness plus digest comparison protects confirm retries and prevents duplicate creation events. Preview tokens do not add a database entity; no business request is persisted before confirmation. Historical reads use creator/owner relationships, not only current contract eligibility. No full lifecycle event table or notification outbox is claimed.

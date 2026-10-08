@@ -1,5 +1,7 @@
 # SmartRent – Architecture Design Artifact
 
+> Sprint 0 revision: see the [decision baseline](../../docs/sprint-0-decisions.md). New ownership/lifecycle/billing/preview policies are working baseline until the named review gate passes; this document is a design artifact, not implemented behavior. Canonical FR IDs follow Requirement Analysis.
+
 ## Scope and constraints
 
 - Architecture: **Modular Monolith**, **Layered Architecture**, **REST API**, **PostgreSQL**.
@@ -70,24 +72,7 @@ The controller does not query PostgreSQL directly. The AI provider does not join
 
 ## Maintenance request flow
 
-```mermaid
-flowchart TD
-  A[Tenant submits description and room] --> B[REST API validation]
-  B --> C{Backend authorizes\ntenant-room-active contract?}
-  C -- No --> D[Reject without creating request]
-  C -- Yes --> E[AI Gateway classification attempt]
-  E --> F{AI output valid?}
-  F -- Yes, enough info --> G[Create request: PENDING\nstore validated AI metadata]
-  F -- Missing information --> H[Ask tenant for specified information]
-  H --> A
-  F -- No / timeout / unavailable --> I[Create request: PENDING\nwithout trusted classification]
-  G --> J[Commit PostgreSQL transaction]
-  I --> J
-  J --> K[Publish request-created event]
-  K --> L[Notify landlord / manager]
-  L --> M[Authorized landlord starts: PROCESSING]
-  M --> N[Authorized landlord confirms work: COMPLETED]
-```
+Use the shared [Maintenance sequence](../uml/maintenance-sequence.md): preview -> user review/manual choice -> explicit confirm -> reauthorize -> commit PENDING -> notify. Preview alone never persists a business request.
 
 `PENDING`, `PROCESSING`, `COMPLETED` and optional `CANCELLED` are controlled by Maintenance domain rules. AI category, priority, summary and confidence are recommendations only. In particular, no AI response can transition an item to `COMPLETED`.
 
@@ -104,10 +89,10 @@ Backend validation
   = schema + allowed enums + field types/limits + confidence range + business rules
 
 Failure (provider/network/timeout/invalid response)
-  = save original request as PENDING → notify manual handling
+  = offer manual submit → user confirms → reauthorize → save original request as PENDING → notify
 ```
 
-The UI must clearly communicate the fallback specified in Chapter 4: request received, classification temporarily unavailable, manual processing continues. Original description is retained and shown in request detail.
+The UI first offers manual confirmation when preview classification is unavailable. Only after successful confirmed creation may it say request received/PENDING and manual processing continues. Original description is retained and shown in request detail.
 
 ## Notification event flow
 
@@ -125,7 +110,7 @@ sequenceDiagram
   N-->>R: In-app or configured delivery
 ```
 
-The notification is a reaction to an already-committed event. Delivery failure is retried/observed independently and does not reverse a completed business transaction.
+The notification is a reaction to an already-committed event. Delivery failure does not reverse a committed business transaction. In-process events are best-effort across crashes; durable delivery/retry is not promised without a separately approved mechanism.
 
 ## Requirement linkage
 

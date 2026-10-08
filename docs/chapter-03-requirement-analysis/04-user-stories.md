@@ -1,5 +1,7 @@
 # 3.4 User Stories & Acceptance Criteria – SmartRent
 
+> Sprint 0 revision: see the [decision baseline](../sprint-0-decisions.md). New ownership/lifecycle/billing/preview policies are working baseline until the named review gate passes; this document is a design artifact, not implemented behavior. Canonical FR IDs follow Requirement Analysis.
+
 ## US-01 – Authentication
 **As a** user, **I want** to log in, **so that** I can access features according to my role.
 
@@ -77,3 +79,17 @@
 ### Acceptance Criteria
 - AC01: The system sends a notification when a request is updated.
 - AC02: The system sends notifications for important payment and contract events.
+
+## Sprint 0 acceptance supplements (WB; approve owning gate first)
+
+- US-01: wrong/expired token and inactive user denied; no credential/hash exposure; dev/test provisioning only.
+- US-02/03: lists, filters, detail, mutation and profile onboarding deny cross-landlord access; account/profile ownership cannot be reassigned by client fields.
+- US-04: monthly whole-VND amount and due_date displayed; own historical payments visible; PAID edits denied, overdue uses business clock.
+- US-05: preview does not create business data; explicit confirmation rechecks current tenancy; retries with same key/input do not duplicate. Provider failure offers manual submit; original description retained.
+- US-06: own historical request remains visible after expiry; current state/audit timestamps shown, no unimplemented timeline claimed.
+- US-08: schema requires confidence including missing-info output; no numeric confidence cutoff alone triggers a business action.
+- US-09: recipients see only own notifications; no post-commit crash durability guarantee without an accepted implementation.
+
+## US-10 — Contract lifecycle (FR-04)
+
+As a landlord, manage dated contracts for owned rooms and managed tenants. AC: validate inclusive date order; reject overlapping ACTIVE reservations including concurrent writes; future/expired contract grants no present tenancy; tenant reads own history; forbidden owner/terminal mutation denied. These policies require G2 acceptance; implementation evidence belongs to C6-08.

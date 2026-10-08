@@ -1,84 +1,15 @@
-# SmartRent – Data Model / Entity Relationship Overview
+# SmartRent — Data Model / Entity Relationship Overview
 
-## ER overview
+The [logical database ERD](../database/erd.md) is the shared ER rendering; [schema](../database/schema.md) defines columns, keys and value sets. This overview intentionally does not maintain a competing Mermaid ERD.
 
-PostgreSQL is the authoritative store. The diagram is a logical relationship model, not a schema migration. AI provider data is never a database principal and is not an entity with direct persistence access.
-
-```mermaid
-erDiagram
-  USER {
-    uuid id PK
-    string email
-    string role
-  }
-  ROOM {
-    uuid id PK
-    uuid manager_landlord_id FK
-    string room_code
-    string status
-  }
-  CONTRACT {
-    uuid id PK
-    uuid tenant_id FK
-    uuid room_id FK
-    string status
-    date start_date
-    date end_date
-  }
-  PAYMENT {
-    uuid id PK
-    uuid contract_id FK
-    string billing_period
-    decimal amount
-    string payment_status
-  }
-  MAINTENANCE_REQUEST {
-    uuid id PK
-    uuid tenant_id FK
-    uuid room_id FK
-    string original_description
-    string_array ai_missing_information
-    string status
-    datetime created_at
-  }
-  AI_CLASSIFICATION {
-    uuid maintenance_request_id PK, FK
-    string category
-    string priority
-    string summary
-    decimal confidence
-    string validation_state
-  }
-  NOTIFICATION {
-    uuid id PK
-    uuid recipient_user_id FK
-    string type
-    string message
-    datetime created_at
-    datetime read_at
-  }
-
-  USER ||--o{ ROOM : manages
-  USER ||--o{ CONTRACT : is_tenant_on
-  ROOM ||--o{ CONTRACT : has
-  CONTRACT ||--o{ PAYMENT : has
-  USER ||--o{ MAINTENANCE_REQUEST : creates
-  ROOM ||--o{ MAINTENANCE_REQUEST : concerns
-  MAINTENANCE_REQUEST ||--o| AI_CLASSIFICATION : has_validated_metadata
-  USER ||--o{ NOTIFICATION : receives
-```
-
-## Data constraints that support the requirements
-
-| Data rule | Reason |
+| Relationship | Mapping / authorization |
 |---|---|
-| `MAINTENANCE_REQUEST.tenant_id` and `.room_id` are checked against an active `CONTRACT` in the backend use case. | Enforces tenant/room eligibility before creation; client ID alone is not trusted. |
-| New `MAINTENANCE_REQUEST.status` is `PENDING`. | Chapter 3/4 maintenance workflow. |
-| `AI_CLASSIFICATION` is zero-or-one per request in this overview and has `validation_state`. | AI metadata is optional and must be validated before it is trusted. |
-| Category and priority use allowed sets; confidence is constrained to a valid range. | Supports Feature F-01 structured output. |
-| `original_description` remains on the request independently of classification. | Ensures user input remains traceable and visible in request detail. |
-| Notification records have an authorized recipient and are created after a committed domain event. | Supports FR-08/US-09 without allowing notification to change state. |
+| User -> Property -> Room | properties.owner_user_id -> users.id; rooms.property_id -> properties.id. Room has no direct landlord FK. |
+| User -> Tenant Profile | tenant_profiles.user_id unique; WB manager_landlord_id and trusted account provisioning establish pre-contract manager scope. |
+| Tenant Profile -> Contract -> Room | contracts.tenant_profile_id and room_id; effective tenancy checks status plus inclusive dates, not client IDs. |
+| Contract -> Payment | payments.contract_id; one billing period per contract; manual VND amount and due date under WB D07. |
+| Tenant Profile / Room -> Maintenance | tenant_profile_id, room_id; explicit confirmation creates request; submission key/digest protects retries. |
+| Maintenance -> AI metadata | Embedded category/priority/summary/confidence/missing-info/state. No independent AI_CLASSIFICATION table. |
+| User -> Notification -> event source | Recipient-owned; exactly one Maintenance/Payment/Contract source FK. Best-effort post-commit event delivery until durability is separately accepted. |
 
-## Boundary note
-
-Only the backend Repository/Transaction layer accesses these entities. The external AI Provider receives minimal permitted input through AI Integration and returns a suggestion to the validator; it cannot query, insert, update or delete PostgreSQL data directly.
+Working-baseline additions and gates are in [decisions](../../docs/sprint-0-decisions.md). These are logical models, not executed DDL. AI Provider has no database principal, credentials, FK or direct persistence access. Original description and backend-owned state remain authoritative; historical reads retain caller scope.

@@ -2,7 +2,7 @@
 
 ## Start here
 
-Current state: documentation and repository-local agent setup; no runnable application or runtime gate has passed. Foundation task C6-01 is the first implementation task after its scope/dependency-download permission is authorized. Do not interpret this roadmap as permission to install, call providers, commit, push, merge or deploy.
+Current state: Sprint 0 baseline merged; C6-01 backend foundation implemented locally and IN_REVIEW, with passing Maven build/tests and a backend CI definition. See [C6-01 evidence](ai-evidence/c6-01-backend-foundation.md). Remote CI and human review are pending; the full G1 gate has not passed. C6-02–16 remain TODO. Do not interpret this roadmap as permission to install, call providers, commit, push, merge or deploy.
 
 Read [AGENTS.md](../AGENTS.md), [agent workflow](agent-workflow.md), [decision baseline](sprint-0-decisions.md), [readiness report](implementation-readiness.md), then the task in [Chapter 6 backlog](chapter-06-ai-programming/implementation-backlog.md). The stack and Modular Monolith architecture remain approved; new business defaults are working baseline until their named review gates pass.
 
@@ -53,7 +53,7 @@ C6-02 frontend foundation depends only on G0 and approved tooling; C6-05 consume
 
 ## Readiness and task states
 
-Use TODO, READY, IN_PROGRESS, BLOCKED, IN_REVIEW, VERIFIED and MERGED. READY requires accepted dependencies/decisions and authorized execution scope. VERIFIED requires fresh relevant checks and review evidence; it is not MERGED. Only actual runs change runtime status. Current implementation tasks are TODO; C6-01 is the next candidate, not a completed task.
+Use TODO, READY, IN_PROGRESS, BLOCKED, IN_REVIEW, VERIFIED and MERGED. READY requires accepted dependencies/decisions and authorized execution scope. VERIFIED requires fresh relevant checks and review evidence; it is not MERGED. Only actual runs change runtime status. C6-01 is IN_REVIEW with local implementation/checks; C6-02–16 are TODO. No task is MERGED merely because files exist locally.
 
 Each PR/task includes problem/outcome, canonical FR/US, WB decisions accepted for this task, files, normal/denied/failure AC, migration/API compatibility, exact checks, evidence links and residual risks. Before tool handoff include branch/base SHA, dirty-file ownership, pending decisions and permission scope.
 
@@ -63,4 +63,4 @@ Use [Chapter 7 review plan](chapter-07-code-review-refactoring/review-plan.md), 
 
 ## Next authorized step
 
-This revision delivers documents only. To begin coding, authorize C6-01 (backend foundation and its declared development dependencies); C6-02 can follow under its own scope. Product review for G2/G3/G4 can proceed while foundation is built. Preserve current uncommitted configuration; branch creation must not discard or silently include unrelated work.
+Review the local C6-01 implementation and its evidence. Local commits are authorized; push/merge/deploy and starting C6-02/C6-03 require separate approval. Product review for G2/G3/G4 can proceed independently; those policies were not silently accepted by foundation work. Preserve the implementation and existing local work during handoff.

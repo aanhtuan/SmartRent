@@ -2,7 +2,7 @@
 
 ## Contract
 
-All tasks are TODO; no application code, migrations, CI runs or live AI calls are completed by this document. Read [roadmap](../project-roadmap.md), [decisions](../sprint-0-decisions.md) and [workflow](../agent-workflow.md). Paths below are planned repository paths, not existing application artifacts. Use approved source-qualified FR IDs and the relevant Chapter 3 stories.
+C6-01 is IN_REVIEW: backend foundation implemented locally with passing build/tests; remote CI and human review remain pending. C6-02–16 are TODO. No database migrations or live AI calls are implemented. Read [roadmap](../project-roadmap.md), [decisions](../sprint-0-decisions.md) and [workflow](../agent-workflow.md). Paths below are task contracts; only C6-01 paths exist as implementation artifacts. Use approved source-qualified FR IDs and the relevant Chapter 3 stories.
 
 Every task: specify AC -> select skill/contracts -> write meaningful tests for business behavior -> implement -> run checks -> review -> record real evidence. Setup checks may be smoke/build checks rather than tests mirroring configuration. DoD: AC demonstrated, appropriate commands/results recorded, security/architecture reviewed, docs/evidence updated, limitations stated. Commit/push/merge/deploy are separate authorization. No unavailable command is reported passing.
 
@@ -10,6 +10,7 @@ Every task: specify AC -> select skill/contracts -> write meaningful tests for b
 
 ### C6-01 — Backend foundation and backend CI
 
+- Status: IN_REVIEW (2026-10-09); user authorized scaffold, development downloads, local verification and subsequently local commits; push/merge/deploy remain unauthorized. Implementation: [backend README](../../backend/README.md); exact checks, review and limitations: [C6-01 evidence](../ai-evidence/c6-01-backend-foundation.md). This does not advance the full G1 gate or approve D02–D10.
 - Sources: FR-01 and NFR; Chapter 5 module/layer boundaries. Skill: smartrent-backend.
 - Depends: G0; authorization for scaffold/dependency downloads. Choose compatible pinned Spring Boot 3.x/Java 21 dependencies from official sources during execution; propose Maven Wrapper and record selected versions.
 - Files: `backend/pom.xml`, `backend/mvnw`, wrapper files, application bootstrap/config, module packages, smoke test, `.github/workflows/backend-ci.yml`.

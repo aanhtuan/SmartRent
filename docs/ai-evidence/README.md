@@ -11,3 +11,4 @@ Store each authorized task record here, or link to its issue/PR/chat evidence. U
 ## Records
 
 - [Sprint 0 documentation normalization](sprint-0-normalization.md): current task, verification section completed only after checks run.
+- [C6-01 backend foundation](c6-01-backend-foundation.md): actual local implementation/build/test evidence; human review and remote CI pending.

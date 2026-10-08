@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: smartrent-backend
+  main:
+    allow-bean-definition-overriding: false
+    allow-circular-references: false
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  address: ${SERVER_ADDRESS:127.0.0.1}
+  port: ${SERVER_PORT:8080}
+  forward-headers-strategy: none
+  shutdown: graceful
+  error:
+    include-message: never
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
+
+management:
+  endpoints:
+    access:
+      default: none
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      access: read-only
+      show-details: never
+      show-components: never

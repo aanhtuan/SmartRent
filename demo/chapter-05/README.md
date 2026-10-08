@@ -26,14 +26,16 @@ flowchart LR
 
 ## Prompt reference policy
 
-`prompts/chapter-05/` chưa tồn tại tại thời điểm hoàn thành bài thực hành. Vì không tự tạo prompt artifact ngoài yêu cầu, mỗi demo bên dưới sử dụng **prompt template inline** làm prompt reference. Khi thư mục prompt được bổ sung sau này, lưu bản prompt đã dùng ở đó và thay reference inline bằng link file/phiên bản cụ thể.
+The earlier demo recorded inline templates when a prompt directory was unavailable. Versioned templates now exist: [architecture](../../prompts/chapter-05/architecture-prompts.md), [patterns](../../prompts/chapter-05/architecture-pattern-prompts.md), [UML](../../prompts/chapter-05/uml-prompts.md), [database](../../prompts/chapter-05/database-prompts.md), [API](../../prompts/chapter-05/api-prompts.md), [design patterns](../../prompts/chapter-05/design-pattern-prompts.md).
+
+The scenarios below are design/demo specifications. “Human Review” describes checks, not independently verified past run logs. “Final result” links an artifact, not proof of feature execution. Preserve historical inline examples as context; new runs must record actual prompts/output/reviewer/refinement using [AI evidence policy](../../docs/ai-evidence/README.md). Preview/persistence and ownership examples are superseded by the [working baseline](../../docs/sprint-0-decisions.md) pending its named domain review gates.
 
 ## Guardrails áp dụng cho mọi demo
 
 - Giữ SmartRent là **Modular Monolith + Layered Architecture + REST API + PostgreSQL + AI Integration Boundary**; không tự chuyển sang microservices.
 - Backend, không phải frontend hay AI, kiểm soát authentication, authorization và business workflow.
 - AI không truy cập database trực tiếp, không tự quyết định authorization, không thay đổi critical business state và không hoàn tất Maintenance Request.
-- AI output phải được validate trước business logic/persistence; khi AI unavailable, request vẫn được xử lý thủ công với `PENDING`.
+- AI output phải được validate trước business logic/persistence; khi AI unavailable, user confirms manual submit before request is created `PENDING`.
 - Không thêm actor, entity, API hoặc design pattern nếu requirements không chứng minh là cần thiết.
 
 ## Demo 1 – Architecture Design
@@ -110,7 +112,7 @@ flowchart LR
 
 **Expected AI output:** Resource map, endpoint tables, standard error response/status matrix, pagination/identifier convention, AI Assistant dùng backend-filtered context, authorized Maintenance classification endpoint và AI failure semantics.
 
-**Human Review:** Xác minh Tenant chỉ tạo/xem request hợp lệ; Manager/Landlord chỉ manage owned properties; POST request vẫn `201 PENDING` khi initial AI failure; classify chỉ cập nhật validated metadata, không status; `PATCH status` không cho AI/Tenant thực hiện.
+**Human Review:** Xác minh Tenant chỉ tạo/xem request hợp lệ; Manager/Landlord chỉ manage owned properties; preview failure offers explicit manual confirmation; confirmed create returns `201 PENDING`; classify chỉ cập nhật validated metadata, không status; `PATCH status` không cho AI/Tenant thực hiện.
 
 **Final result:** [5.5 API Design](../../docs/chapter-05-software-architecture/05-api-design.md) và [API artifact index](../../design/api/README.md).
 
@@ -136,12 +138,12 @@ flowchart LR
 
 | Requirement | Status | Evidence |
 |---|---|---|
-| 5.1 Architecture Design | Complete | [01-architecture-design.md](../../docs/chapter-05-software-architecture/01-architecture-design.md) |
-| 5.2 Architecture Patterns | Complete | [02-architecture-patterns.md](../../docs/chapter-05-software-architecture/02-architecture-patterns.md) |
-| 5.3 System Modeling & UML | Complete | [03-system-modeling-uml.md](../../docs/chapter-05-software-architecture/03-system-modeling-uml.md) |
-| 5.4 Database Design | Complete | [04-database-design.md](../../docs/chapter-05-software-architecture/04-database-design.md) |
-| 5.5 API Design | Complete | [05-api-design.md](../../docs/chapter-05-software-architecture/05-api-design.md) |
-| 5.6 Design Patterns | Complete | [06-design-patterns.md](../../docs/chapter-05-software-architecture/06-design-patterns.md) |
-| Bài thực hành 5 | Complete | This README and six demos above. |
+| 5.1 Architecture Design | Artifact exists; review gates apply | [01-architecture-design.md](../../docs/chapter-05-software-architecture/01-architecture-design.md) |
+| 5.2 Architecture Patterns | Artifact exists; review gates apply | [02-architecture-patterns.md](../../docs/chapter-05-software-architecture/02-architecture-patterns.md) |
+| 5.3 System Modeling & UML | Artifact exists; review gates apply | [03-system-modeling-uml.md](../../docs/chapter-05-software-architecture/03-system-modeling-uml.md) |
+| 5.4 Database Design | Artifact exists; review gates apply | [04-database-design.md](../../docs/chapter-05-software-architecture/04-database-design.md) |
+| 5.5 API Design | Artifact exists; review gates apply | [05-api-design.md](../../docs/chapter-05-software-architecture/05-api-design.md) |
+| 5.6 Design Patterns | Artifact exists; review gates apply | [06-design-patterns.md](../../docs/chapter-05-software-architecture/06-design-patterns.md) |
+| Bài thực hành 5 | Artifact exists; review gates apply | This README and six demos above. |
 
-**Kết quả kiểm tra:** Chapter 5 có đủ 6 phần và Bài thực hành 5. Không có application code hoặc Git commit được tạo trong bài thực hành này.
+**Current status:** six design sections/demo specifications exist; review and runtime readiness follow the roadmap gates. No application code or historical model execution is proven by this checklist.

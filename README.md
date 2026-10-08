@@ -34,59 +34,39 @@ SmartRent is a system that helps landlords and property managers operate rental 
 
 ```text
 SmartRent/
-├── backend/
-├── database/
-├── demo/
-│   ├── chapter-03/
-│   │   └── README.md
-│   └── chapter-04/
-│       └── README.md
-├── design/
-│   ├── user-flows/
-│   │   └── smartrent-maintenance-flow.md
-│   ├── wireframes/
-│   │   └── maintenance-request-wireframe.md
-│   ├── prototypes/
-│   │   └── maintenance-request-prototype.md
-│   └── design-reviews/
-│       └── maintenance-request-ai-review.md
+├── AGENTS.md                         # shared agent rules (local working tree)
+├── .agents/skills/                   # installed and repository-local skills
+├── .gemini/settings.json             # workspace agent context
 ├── docs/
+│   ├── project-roadmap.md            # start here
+│   ├── sprint-0-decisions.md          # working baseline and review gates
+│   ├── implementation-readiness.md
 │   ├── chapter-03-requirement-analysis/
-│   │   ├── 01-product-discovery.md
-│   │   ├── 02-PRD.md
-│   │   ├── 03-requirement-analysis.md
-│   │   ├── 04-user-stories.md
-│   │   └── 05-feature-specification.md
-│   └── chapter-04-product-design/
-│       ├── 01-user-flow.md
-│       ├── 02-wireframe.md
-│       ├── 03-prototype.md
-│       └── 04-ai-design-review.md
-├── frontend/
-├── prompts/
-│   ├── chapter-03/
-│   │   ├── product-discovery-prompts.md
-│   │   ├── prd-prompts.md
-│   │   ├── requirement-prompts.md
-│   │   └── feature-prompts.md
-│   └── chapter-04/
-│       ├── user-flow-prompts.md
-│       ├── wireframe-prompts.md
-│       ├── prototype-prompts.md
-│       └── design-review-prompts.md
-└── README.md
+│   ├── chapter-04-product-design/
+│   ├── chapter-05-software-architecture/
+│   ├── chapter-06-ai-programming/     # implementation backlog, no code yet
+│   ├── chapter-07-code-review-refactoring/
+│   ├── chapter-08-software-testing/
+│   ├── chapter-09-technical-documentation/
+│   └── ai-evidence/
+├── design/                           # API, architecture, UML, schema and UX
+├── prompts/chapter-03..05/            # versioned prompt templates
+└── demo/chapter-03..05/               # design/demo evidence specifications
 ```
+
+Backend/frontend/database implementations are planned; no runnable application manifests or migrations exist yet. Empty placeholder directories are not completed features.
 
 ## 6. Project Roadmap
 
-- [x] Chapter 3 – Requirement & Product Analysis
-- [x] Chapter 4 – Product Design
-- [ ] Chapter 5 – Software Architecture
-- [ ] Chapter 6 – AI Programming
-- [ ] Chapter 7 – Code Review & Refactoring
-- [ ] Chapter 8 – Testing
-- [ ] Chapter 9 – Technical Documentation
-- [ ] Final Demo
+| Stage | Current status |
+|---|---|
+| Chapters 3–5 | Documents exist and normalized; new policy defaults await named review gates. |
+| Agent environment | Local rules/skills exist; runtime CLI activation and application execution are separate checks. |
+| Chapter 6 | Dependency-ordered backlog; implementation not started. |
+| Chapters 7–9 | Review/test/documentation plans; execution evidence accumulates per task. |
+| Final demo/deployment | Not implemented or verified. |
+
+Start with [end-to-end roadmap](docs/project-roadmap.md), [decisions](docs/sprint-0-decisions.md), [readiness](docs/implementation-readiness.md) and [first coding tasks](docs/chapter-06-ai-programming/implementation-backlog.md). Follow [agent workflow](docs/agent-workflow.md). No task is complete merely because a document exists.
 
 ## 7. AI Development Approach
 

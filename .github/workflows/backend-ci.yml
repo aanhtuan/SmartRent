@@ -4,10 +4,16 @@ on:
   push:
     paths:
       - 'backend/**'
+      - 'infra/postgres/**'
+      - 'compose.yaml'
+      - '.env.example'
       - '.github/workflows/backend-ci.yml'
   pull_request:
     paths:
       - 'backend/**'
+      - 'infra/postgres/**'
+      - 'compose.yaml'
+      - '.env.example'
       - '.github/workflows/backend-ci.yml'
   workflow_dispatch:
 
@@ -39,6 +45,7 @@ jobs:
           cache-dependency-path: backend/pom.xml
       - name: Verify toolchain
         run: |
+          docker version
           java -version
           ./mvnw --version
       - name: Build and test

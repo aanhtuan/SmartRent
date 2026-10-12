@@ -12,3 +12,5 @@ Store each authorized task record here, or link to its issue/PR/chat evidence. U
 
 - [Sprint 0 documentation normalization](sprint-0-normalization.md): current task, verification section completed only after checks run.
 - [C6-01 backend foundation](c6-01-backend-foundation.md): actual local implementation/build/test evidence; human review and remote CI pending.
+
+- [C6-03 database foundation](c6-03-database-foundation.md): approved local PostgreSQL/identity increment; local verification and agent self-review complete; human merge review and hosted CI pending.

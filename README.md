@@ -4,7 +4,7 @@
 
 SmartRent brings rental records, maintenance workflows, and tenant communication into one system. Its approved design combines a modular Spring Boot backend, a React frontend, PostgreSQL, and Gemini assistance behind a backend-controlled AI boundary.
 
-> **Development status:** Sprint 0 documentation and agent configuration are merged. C6-01 backend foundation is implemented and verified locally, with human review pending. This increment is maintained on `codex/c6-01-backend-foundation` and has not yet been merged into `main`; a clean clone of `main` does not yet include it. Business features remain planned. No deployment is documented or configured.
+> **Development status:** Sprint 0 and C6-01 are merged into `main`; C6-01 hosted CI passed in PR #9. C6-03 PostgreSQL/identity persistence is implemented and verified locally on `codex/c6-03-database-foundation`, with agent self-review complete; human merge review and hosted CI pending. A clean clone of `main` does not yet include C6-03. Business features remain planned; no deployment is configured.
 
 [Roadmap](docs/project-roadmap.md) · [Backend guide](backend/README.md) · [Implementation backlog](docs/chapter-06-ai-programming/implementation-backlog.md) · [API contracts](design/api/README.md)
 
@@ -34,7 +34,7 @@ Rental operations involve linked information: properties and rooms, tenant profi
 
 Landlords and property managers are the management users; tenants access their own rental information and requests. AI supports classification and information retrieval. It is an integration component, not an actor with independent permission to access data or change business state.
 
-The current runnable increment is the backend foundation. It validates startup, a minimal health endpoint, default-deny HTTP security, and the build/test toolchain. It does not yet provide a usable rental management application.
+The current runnable increment adds PostgreSQL identity persistence to the backend foundation. It validates startup, Flyway migrations, JPA mappings, a minimal health endpoint and default-deny HTTP security. It does not yet provide a usable rental management application.
 
 ## Implementation status
 
@@ -43,11 +43,11 @@ The following distinguishes executable behavior from configuration and design in
 | Area | Status | Evidence / next step |
 |---|---|---|
 | Requirements, UX, architecture and API designs | Documented; new product-policy details await named review gates | [Sprint 0 decisions](docs/sprint-0-decisions.md) |
-| Backend foundation — C6-01 | Implemented locally; IN_REVIEW | [Source](backend/src/main/java/com/smartrent/), [task evidence](docs/ai-evidence/c6-01-backend-foundation.md) |
-| Backend build, context and HTTP checks | Verified locally: 11 tests, zero failures/errors/skipped | [Tests](backend/src/test/java/com/smartrent/), [verification instructions](#testing) |
-| Backend GitHub Actions | Configured locally and linted; remote execution pending | [Workflow](.github/workflows/backend-ci.yml) |
+| Backend foundation — C6-01 | Merged through [PR #9](https://github.com/aanhtuan/SmartRent/pull/9) | [Source](backend/src/main/java/com/smartrent/), [task evidence](docs/ai-evidence/c6-01-backend-foundation.md) |
+| Backend build, context and HTTP checks | Verified locally: 22 tests, zero failures/errors/skipped | [Tests](backend/src/test/java/com/smartrent/), [verification instructions](#testing) |
+| Backend GitHub Actions | C6-01 hosted CI passed; C6-03 workflow update pending publication | [Workflow](.github/workflows/backend-ci.yml) |
 | Frontend — C6-02 | Planned; no frontend application or package manifest | [Backlog](docs/chapter-06-ai-programming/implementation-backlog.md) |
-| Database infrastructure — C6-03 | Planned; no Compose setup, datasource, tables or migrations | [Logical schema](design/database/schema.md) |
+| Database infrastructure — C6-03 | VERIFIED locally; hosted CI/human merge review pending — PostgreSQL, role separation and V1 users only | [Logical schema](design/database/schema.md) |
 | Accounts, JWT and rental business features | Planned; no authentication or business endpoints implemented | [API contracts](design/api/README.md) |
 | Gemini classification and Assistant | Planned; no provider calls or integration implemented | [AI boundary](design/architecture/smartrent-architecture.md) |
 | Deployment / continuous delivery | Not configured or deployed | Current work targets local development |
@@ -71,19 +71,19 @@ See [requirements](docs/chapter-03-requirement-analysis/03-requirement-analysis.
 
 ## Technology stack
 
-Versions are shown only where they are pinned or resolved in the current backend. Planned components have no selected version yet.
+Versions are shown only where pinned or resolved in the current increment. Planned components have no selected version yet.
 
 | Layer | Approved technology | Current adoption |
 |---|---|---|
 | Frontend | React, TypeScript, Vite, Tailwind CSS | Planned |
 | Backend | Java 21, Spring Boot **3.5.16**, Spring MVC | Implemented foundation; [Maven configuration](backend/pom.xml) |
 | Security | Spring Security **6.5.11**, JWT | Security dependency/default-deny boundary present; JWT planned |
-| Persistence | PostgreSQL, Spring Data JPA, Hibernate, Flyway | Planned for database implementation; absent from C6-01 dependencies |
+| Persistence | PostgreSQL, Spring Data JPA, Hibernate, Flyway | PostgreSQL 17.11, Hibernate 6.6.53.Final, JDBC 42.7.11, Flyway 11.7.2; local identity persistence |
 | Application AI | Gemini API through a backend AI Adapter | Planned; model/API version not selected |
-| Backend testing | JUnit Jupiter **5.12.2**, Mockito **5.17.0**, Testcontainers | JUnit/Mockito supplied by Boot; Testcontainers planned |
+| Backend testing | JUnit Jupiter **5.12.2**, Mockito **5.17.0**, Testcontainers | JUnit/Mockito supplied by Boot; Testcontainers 1.21.4 PostgreSQL tests implemented |
 | Frontend/E2E testing | Vitest, Playwright | Planned |
 | Build | Maven **3.9.16**, Maven Wrapper **3.3.4** | Pinned wrapper; global Maven not required |
-| Infrastructure | Docker Compose, GitHub Actions | Compose planned; backend Actions workflow configured locally |
+| Infrastructure | Docker Compose, GitHub Actions | Local PostgreSQL Compose implemented; backend Actions configured |
 
 The pinned Spring Boot parent manages compatible transitive dependencies. See the [backend toolchain guide](backend/README.md#toolchain-and-dependencies) for version selection and upstream sources.
 
@@ -91,19 +91,19 @@ The pinned Spring Boot parent manages compatible transitive dependencies. See th
 
 SmartRent uses **Modular Monolith + Layered Architecture + REST API + PostgreSQL + AI Integration Boundary**. The backend is one deployable application with feature modules. Spring MVC handles HTTP requests; it does not turn those modules into separate services.
 
-The diagram shows the approved target architecture. Dashed paths identify integrations that are **planned**, not running in C6-01.
+The diagram shows the approved target architecture. Dashed paths identify integrations that are **planned**, not running locally.
 
 ```mermaid
 flowchart LR
     frontend["React frontend - planned"]
-    database[("PostgreSQL - planned")]
+    database[("PostgreSQL 17.11 - local")]
     gemini["Gemini API - planned"]
 
     subgraph backend["Spring Boot backend - one deployable"]
         api["REST boundary / Spring MVC"]
         application["Application use cases - planned"]
         domain["Domain rules - planned"]
-        persistence["Persistence adapters - planned"]
+        persistence["Identity persistence - local"]
         ai["AI Integration Boundary - planned"]
         api --> application
         application --> domain
@@ -112,11 +112,11 @@ flowchart LR
     end
 
     frontend -. "JSON REST" .-> api
-    persistence -. "module-owned data access" .-> database
+    persistence -->|"module-owned data access"| database
     ai -. "authorized minimal context" .-> gemini
 ```
 
-Features are grouped under `identity`, `property`, `room`, `tenant`, `contract`, `payment`, `maintenance`, `notification`, `assistant` and `aiintegration`. Each reserves `api`, `application`, `domain` and `persistence` packages. Most packages currently contain documentation only; bootstrap and foundation HTTP security are executable.
+Features are grouped under `identity`, `property`, `room`, `tenant`, `contract`, `payment`, `maintenance`, `notification`, `assistant` and `aiintegration`. Each reserves `api`, `application`, `domain` and `persistence` packages. Most packages currently contain documentation only; bootstrap, foundation HTTP security and identity persistence are executable.
 
 Controllers delegate to application use cases. Domain rules remain independent of HTTP and provider SDKs; persistence adapters stay module-owned. Cross-module work uses public application interfaces or in-process events. Only the backend AI Adapter may call Gemini. Detailed models are in [Chapter 5](docs/chapter-05-software-architecture/01-architecture-design.md) and [architecture artifacts](design/architecture/README.md).
 
@@ -129,6 +129,9 @@ SmartRent/
 ├── .agents/skills/                    # repository and upstream skills
 ├── .gemini/settings.json              # Gemini workspace context
 ├── .github/workflows/backend-ci.yml   # local backend CI definition
+├── compose.yaml                       # localhost PostgreSQL / named volume
+├── .env.example                       # placeholders; local .env is ignored
+├── infra/postgres/                    # empty-volume role bootstrap
 ├── backend/
 │   ├── pom.xml
 │   ├── mvnw, mvnw.cmd
@@ -155,24 +158,36 @@ SmartRent/
 └── skills-lock.json                   # upstream skill source metadata
 ```
 
-`backend/target/` contains ignored, regenerable build output. There is no frontend project, Compose configuration or database migration directory yet.
+`backend/target/` contains ignored, regenerable build output. Local `.env` and `.local/` toolchain/cache files are ignored. Frontend implementation remains planned.
 
 ## Getting started
 
 ### Prerequisites
 
-- A checkout containing the local C6-01 implementation described above. Until it is published, cloning `main` retrieves the Sprint 0 baseline rather than a runnable backend.
+- A checkout containing this C6-03 increment. `main` currently contains the C6-01 backend; its database-free startup instructions are in that revision.
 - **JDK 21**, active on `PATH`, with `JAVA_HOME` pointing to the same JDK when set. Java 25 is not the project's build runtime; Maven Enforcer rejects incompatible major versions.
 - A POSIX shell for the commands below and `curl` for health checks. The wrapper needs Java and download/extraction tools on first use; see [wrapper requirements](backend/README.md).
-- Network access to Maven Central for the initial Maven/dependency downloads. No global Maven, Node.js, Docker, PostgreSQL or Gemini credentials are needed for C6-01.
+- Docker with an accessible daemon and Docker Compose; network access to Maven Central and Docker Hub for initial downloads. No global Maven, frontend tooling or Gemini key is required.
 
 Use your installed JDK/toolchain manager to activate Java 21 before continuing. JDK paths are machine-specific; temporary paths from development sessions are not project configuration.
 
 ### Build and start the backend
 
-Run from the repository root:
+From the repository root, copy the template **only if `.env` does not exist**, then set three distinct local passwords. Never overwrite existing credentials or volume data:
 
 ```sh
+cp .env.example .env
+chmod 600 .env
+```
+
+Edit `.env` before continuing. With the passwords set:
+
+```sh
+docker compose config --quiet
+docker compose up -d --wait
+docker compose ps
+. ./.env
+export DB_URL DB_USERNAME DB_PASSWORD DB_MIGRATION_USERNAME DB_MIGRATION_PASSWORD
 cd backend
 java -version
 ./mvnw --version
@@ -210,7 +225,7 @@ A health response describes this foundation process, not readiness of unimplemen
 
 ### Frontend and database
 
-Frontend setup belongs to C6-02; PostgreSQL, Docker Compose, datasource configuration and Flyway migrations belong to C6-03. Neither setup exists yet, so no frontend install, container startup or database initialization commands are provided. Their planned contracts are in the [implementation backlog](docs/chapter-06-ai-programming/implementation-backlog.md).
+Frontend setup remains planned under C6-02. The local database setup above belongs to C6-03 and creates only identity persistence, not rental tables. See the [backend guide](backend/README.md) for role permissions, repeat startup, volume safety and verification.
 
 ## Environment configuration
 
@@ -219,8 +234,10 @@ Frontend setup belongs to C6-02; PostgreSQL, Docker Compose, datasource configur
 | `JAVA_HOME` | Java discovery through `PATH` if unset | Select a JDK 21 installation for the wrapper; keep `PATH` consistent for `java -jar`. |
 | `SERVER_ADDRESS` | `127.0.0.1` | Local listener address. |
 | `SERVER_PORT` | `8080` | HTTP port; malformed values fail startup binding. |
+| `DB_URL`, `DB_USERNAME`, `DB_PASSWORD` | Required | Runtime PostgreSQL connection. |
+| `DB_MIGRATION_USERNAME`, `DB_MIGRATION_PASSWORD` | Required | Flyway connection with separate schema-owner privileges. |
 
-[Application settings](backend/src/main/resources/application.yml) contain no database, JWT or provider credentials. C6-01 requires none of those secrets, and no `.env.example` or automatic `.env` loader is supplied. Set supported values through the shell environment; keep secrets out of source, prompts, logs and evidence. Future tasks must document and validate their own required configuration.
+[Application settings](backend/src/main/resources/application.yml) reference required environment values without embedded credentials. Compose reads `.env`; Java does not automatically load it. Export only the backend variables as shown above. Missing/blank DB settings fail startup. `.env.example` contains placeholders; local `.env` is ignored. Changing a Compose password does not rotate credentials in an existing named volume.
 
 ## API overview
 
@@ -246,7 +263,7 @@ From `backend/`, with JDK 21 active:
 ./mvnw --batch-mode --no-transfer-progress verify
 ```
 
-The maintained suite currently contains **11 tests** across `SmartRentApplicationTests` and `ServerConfigurationTests`. It exercises a real embedded HTTP server, minimal health output, denial of non-health requests, absence of default accounts/datasource, write/logout rejection and invalid port binding. Reports are generated in `backend/target/surefire-reports/`.
+The maintained suite currently contains **22 tests**. Eleven retained C6-01 checks cover the database-free HTTP foundation using a test-only profile; six PostgreSQL integration tests cover real migrations, JPA, constraints, privileges and repeat migration; five parameterized checks cover missing/blank configuration. Production startup uses the datasource and Hibernate validation. Reports are generated in `backend/target/surefire-reports/`.
 
 To resolve dependencies/plugins ahead of a build:
 
@@ -254,13 +271,13 @@ To resolve dependencies/plugins ahead of a build:
 ./mvnw --batch-mode --no-transfer-progress dependency:go-offline
 ```
 
-Database/Testcontainers, frontend/Vitest, Playwright E2E and Gemini evaluation suites are planned, not passing test suites in this increment. See the [testing strategy](docs/chapter-08-software-testing/test-strategy.md) for their future gates.
+Database/Testcontainers checks now run in `verify` and require Docker; they fail rather than silently skip if Docker is unavailable. Frontend/Vitest, Playwright E2E and Gemini evaluation suites remain planned. See the [testing strategy](docs/chapter-08-software-testing/test-strategy.md) for their future gates.
 
 ## CI and deployment
 
 The local [Backend CI workflow](.github/workflows/backend-ci.yml) selects Temurin Java 21 and runs the same wrapper `verify` command on backend/workflow push or pull-request changes, or manual dispatch. It uses SHA-pinned official actions, read-only repository contents permission, no persisted checkout credentials, concurrency cancellation and a 15-minute timeout.
 
-The workflow has been linted locally. It has not been pushed or executed on GitHub for C6-01; no remote CI success is claimed. There is no deployment job, live environment or continuous-delivery pipeline. Current development and verification are local.
+C6-01 hosted CI passed in [PR #9](https://github.com/aanhtuan/SmartRent/pull/9). The C6-03 workflow changes are local and have not run on GitHub; no hosted result is claimed for this increment. There is no deployment job, live environment or continuous-delivery pipeline. Current development and verification are local.
 
 ## Security principles
 
@@ -277,7 +294,7 @@ See [AGENTS.md](AGENTS.md), the [security boundary design](docs/chapter-05-softw
 | Milestone | Scope | Current state |
 |---|---|---|
 | Sprint 0 | Normalize requirements/design contracts; establish agent rules and delivery gates | Baseline merged; named product-policy gates remain applicable |
-| Sprint 1 — C6-01–05 | Backend/frontend foundation, CI, database, provisioning and authentication | C6-01 locally IN_REVIEW; C6-02–05 TODO |
+| Sprint 1 — C6-01–05 | Backend/frontend foundation, CI, database, provisioning and authentication | C6-01 merged; C6-03 locally VERIFIED; C6-02/04/05 TODO |
 | Sprint 2 — C6-06–07 | Property/Room and Tenant Profile | Planned; ownership/model/lifecycle review required |
 | Sprint 3 — C6-08–09 | Contract and Payment | Planned; overlap and billing gates required |
 | Sprint 4 — C6-10–13 | Maintenance, notifications and Gemini preview/confirmation | Planned; UX, AI and delivery-policy gates required |
@@ -299,7 +316,7 @@ Follow the [dependency-ordered roadmap](docs/project-roadmap.md) and [task accep
 | Verification strategy | [Chapter 8 plan](docs/chapter-08-software-testing/test-strategy.md) |
 | Technical documentation | [Chapter 9 plan](docs/chapter-09-technical-documentation/documentation-plan.md) |
 | Agent instructions and handoff | [Root rules](AGENTS.md), [agent workflow](docs/agent-workflow.md) |
-| AI provenance | [Evidence index](docs/ai-evidence/README.md), [C6-01 record](docs/ai-evidence/c6-01-backend-foundation.md), [prompt templates](prompts/) |
+| AI provenance | [Evidence index](docs/ai-evidence/README.md), [C6-01 record](docs/ai-evidence/c6-01-backend-foundation.md), [C6-03 record](docs/ai-evidence/c6-03-database-foundation.md), [prompt templates](prompts/) |
 | Design/demo specifications | [Chapter 3](demo/chapter-03/README.md), [Chapter 4](demo/chapter-04/README.md), [Chapter 5](demo/chapter-05/README.md) |
 | Historical Sprint 0 audit | [Readiness report](docs/implementation-readiness.md) — a dated baseline report, not current backend runtime status |
 

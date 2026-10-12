@@ -66,3 +66,15 @@ G1: compatible pinned dependency versions, Maven Wrapper, JWT configuration and 
 ## Change and evidence policy
 
 Record reviewer, date, accepted/rejected/modified decision and linked task when a gate is reviewed. No reviewer/date is fabricated here. Keep the original artifact history in Git; do not describe working-baseline changes as historically approved. See [readiness](implementation-readiness.md), [backlog](chapter-06-ai-programming/implementation-backlog.md) and [AI evidence](ai-evidence/README.md).
+
+## C6-03 foundation choices approved for execution — 2026-10-09
+
+The user approved the C6-03 plan in the current chat with “duyệt”, including:
+
+- PostgreSQL 17.11 official Bookworm image pinned by digest; Boot 3.5.16-managed JPA/Hibernate/JDBC/Flyway/Testcontainers versions.
+- Login identity email treated as case-insensitive, stored trimmed/lowercase, with a canonical CHECK and UNIQUE constraint. No provider-specific dot/plus alias rules.
+- Backend-generated UUID; role stored as text with LANDLORD/TENANT CHECK and string enum mapping; UTC timestamp mapping and application-managed updated_at.
+- Separate bootstrap, migration and runtime DB roles; localhost-only port, named volume, required distinct local secrets; no runtime DDL or hard deletion of users.
+- Separate checksum-verified local JDK 21 toolchain; keep system Java unchanged.
+
+These choices are limited to C6-03 and do not accept D03 or other G2–G4 working-baseline policies. V1 contains identity only; provisioning fields require a later approved forward migration. C6-03 approval does not authorize Git publication or deployment.

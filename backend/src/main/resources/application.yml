@@ -4,6 +4,28 @@ spring:
   main:
     allow-bean-definition-overriding: false
     allow-circular-references: false
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 5
+      connection-timeout: 5000
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.jdbc.time_zone: UTC
+  flyway:
+    url: ${DB_URL}
+    user: ${DB_MIGRATION_USERNAME}
+    password: ${DB_MIGRATION_PASSWORD}
+    clean-disabled: true
+    baseline-on-migrate: false
+    validate-on-migrate: true
+    placeholders:
+      applicationRole: ${DB_USERNAME}
   jackson:
     property-naming-strategy: SNAKE_CASE
     serialization:

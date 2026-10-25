@@ -18,9 +18,16 @@
         <java.version>21</java.version>
         <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
         <bouncycastle.version>1.86</bouncycastle.version>
+        <!-- Compatible patch overrides after the 2026-10-25 dependency review. -->
+        <tomcat.version>10.1.61</tomcat.version>
+        <jackson-bom.version>2.21.8</jackson-bom.version>
+        <postgresql.version>42.7.14</postgresql.version>
+        <log4j2.version>2.25.5</log4j2.version>
     </properties>
     <!-- The pinned Boot parent manages compatible starter, transitive and test versions. -->
     <dependencies>
+        <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-oauth2-resource-server</artifactId></dependency>
+        <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-validation</artifactId></dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

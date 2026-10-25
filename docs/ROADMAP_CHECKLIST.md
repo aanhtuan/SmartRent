@@ -1,11 +1,11 @@
 # SmartRent - Danh sách Nhiệm vụ Mở rộng (Roadmap Checklist)
 
-> **Tiến độ tổng thể: 2/9 tasks (22.2%)**
+> **Tiến độ tổng thể: 3/9 tasks (33.3%)**
 
 ### Giai đoạn 1: Nghiệp vụ cốt lõi thực tế
 - [x] Task 1: Quản lý Chỉ số Điện, Nước & Dịch vụ tiện ích (Utility & Meter Reading)
 - [x] Task 2: Thanh toán VietQR Động & Tự động đối soát (Dynamic VietQR & Auto-Reconcile)
-- [ ] Task 3: Tải & Lưu trữ Tệp đính kèm cho Bảo trì & Phòng trọ (Media & File Storage)
+- [x] Task 3: Tải & Lưu trữ Tệp đính kèm cho Bảo trì & Phòng trọ (Media & File Storage)
 
 ### Giai đoạn 2: Pháp lý, Tài sản & Tài khoản
 - [ ] Task 4: Quản lý Tiền đặt cọc & Kiểm kê tài sản phòng (Deposit & Inventory)

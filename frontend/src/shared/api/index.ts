@@ -9,3 +9,4 @@ export * from './maintenanceApi';
 export * from './notificationApi';
 export * from './assistantApi';
 export * from './utilityApi';
+export * from './mediaApi';

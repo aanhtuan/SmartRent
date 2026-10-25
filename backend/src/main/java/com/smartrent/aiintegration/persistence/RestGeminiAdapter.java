@@ -43,7 +43,7 @@ public class RestGeminiAdapter implements AiProvider {
             .build();
   }
 
-  RestGeminiAdapter(ObjectMapper j, URI endpoint) {
+  public RestGeminiAdapter(ObjectMapper j, URI endpoint) {
     this(j, true, "synthetic-test-key", "gemini-3.8-flash");
     this.endpoint = endpoint;
   }

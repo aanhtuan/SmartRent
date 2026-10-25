@@ -16,12 +16,14 @@ import {
   Pagination,
 } from '../../shared/components/ui';
 import { formatVND, formatDate, paymentStatusMap } from '../../shared/utils/format';
-import { CreditCard, Plus, CheckCircle2, Clock } from 'lucide-react';
+import { CreditCard, Plus, CheckCircle2, Clock, Zap } from 'lucide-react';
+import { MeterReadingModal } from './MeterReadingModal';
 
 export const PaymentList: React.FC = () => {
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isMeterReadingOpen, setIsMeterReadingOpen] = useState(false);
   const [markingPaidPayment, setMarkingPaidPayment] = useState<Payment | null>(null);
 
   // Form states
@@ -102,20 +104,35 @@ export const PaymentList: React.FC = () => {
 
   const handleCreateSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!contractId || !billingPeriod || !dueDate || !amount) {
-      setFormError('Vui lòng điền đầy đủ các thông tin hóa đơn.');
-      return;
-    }
-    const numAmount = parseInt(amount.replace(/\D/g, ''), 10);
-    if (isNaN(numAmount) || numAmount <= 0) {
-      setFormError('Số tiền phải là số nguyên dương VND.');
+    setFormError(null);
+
+    if (!contractId) {
+      setFormError('Vui lòng chọn hợp đồng thuê.');
       return;
     }
 
-    // Backend requires billingPeriod to be first of month
-    let periodFormatted = billingPeriod;
-    if (periodFormatted.length === 7) {
-      periodFormatted += '-01';
+    if (!billingPeriod) {
+      setFormError('Vui lòng chọn kỳ hóa đơn.');
+      return;
+    }
+
+    if (!dueDate) {
+      setFormError('Vui lòng chọn hạn thanh toán.');
+      return;
+    }
+
+    const numAmount = Number(amount);
+    if (isNaN(numAmount) || numAmount <= 0 || !Number.isInteger(numAmount)) {
+      setFormError('Số tiền thanh toán phải là số nguyên VND lớn hơn 0.');
+      return;
+    }
+
+    // Ensure billing_period is formatted as YYYY-MM-01
+    const periodFormatted = billingPeriod.length === 7 ? `${billingPeriod}-01` : billingPeriod;
+
+    if (new Date(dueDate) < new Date(periodFormatted)) {
+      setFormError('Hạn thanh toán không được trước ngày bắt đầu kỳ hóa đơn.');
+      return;
     }
 
     createMutation.mutate({
@@ -149,13 +166,22 @@ export const PaymentList: React.FC = () => {
             Lập phiếu thu tiền phòng theo kỳ, theo dõi trạng thái đã thanh toán hoặc quá hạn.
           </p>
         </div>
-        <Button
-          variant="primary"
-          leftIcon={<Plus className="w-4 h-4" />}
-          onClick={handleOpenCreate}
-        >
-          Lập hóa đơn mới
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="secondary"
+            leftIcon={<Zap className="w-4 h-4 text-amber-500" />}
+            onClick={() => setIsMeterReadingOpen(true)}
+          >
+            Chốt số điện nước
+          </Button>
+          <Button
+            variant="primary"
+            leftIcon={<Plus className="w-4 h-4" />}
+            onClick={handleOpenCreate}
+          >
+            Lập hóa đơn mới
+          </Button>
+        </div>
       </div>
 
       {/* Filter Tabs */}
@@ -184,69 +210,81 @@ export const PaymentList: React.FC = () => {
         ))}
       </div>
 
-      {/* Payments List */}
+      {/* Table / List */}
       {isLoading ? (
         <div className="space-y-3">
-          {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-24 w-full" />
+          {[1, 2, 3, 4].map((i) => (
+            <Skeleton key={i} className="h-16 w-full" />
           ))}
         </div>
       ) : payments.length === 0 ? (
         <EmptyState
           icon={<CreditCard className="w-7 h-7 text-primary/60" />}
-          title="Chưa có hóa đơn nào"
-          description="Không tìm thấy hóa đơn nào phù hợp với bộ lọc hiện tại. Bấm nút dưới để lập hóa đơn kỳ mới."
-          actionLabel="Lập hóa đơn"
-          onAction={handleOpenCreate}
+          title={statusFilter ? 'Không có hóa đơn phù hợp bộ lọc' : 'Chưa có hóa đơn thanh toán'}
+          description={
+            statusFilter
+              ? 'Thử chọn tab lọc khác để xem thêm hóa đơn.'
+              : 'Tạo hóa đơn đầu tiên để bắt đầu theo dõi tiến độ nộp tiền phòng của khách thuê.'
+          }
+          actionLabel={statusFilter ? undefined : 'Lập hóa đơn đầu tiên'}
+          onAction={statusFilter ? undefined : handleOpenCreate}
         />
       ) : (
-        <div className="space-y-3">
-          {payments.map((p) => {
-            const statusInfo = paymentStatusMap[p.status];
-            return (
-              <Card key={p.id} hoverable className="p-4 sm:p-5">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                  <div className="space-y-1.5">
-                    <div className="flex items-center gap-2.5 flex-wrap">
-                      <span className="text-lg font-bold text-ink">
+        <Card className="p-0 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr className="border-b border-border bg-surface-subtle/70 text-ink-secondary font-medium">
+                  <th className="py-3 px-4">Kỳ thanh toán</th>
+                  <th className="py-3 px-4">Số tiền</th>
+                  <th className="py-3 px-4">Hạn thanh toán</th>
+                  <th className="py-3 px-4">Trạng thái</th>
+                  <th className="py-3 px-4 text-right">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {payments.map((p) => {
+                  const statusInfo = paymentStatusMap[p.status];
+                  return (
+                    <tr key={p.id} className="hover:bg-surface-subtle/40 transition-colors">
+                      <td className="py-3.5 px-4 font-semibold text-ink">
+                        Tháng {p.billing_period.substring(5, 7)}/{p.billing_period.substring(0, 4)}
+                      </td>
+                      <td className="py-3.5 px-4 font-bold text-ink text-sm">
                         {formatVND(p.amount)}
-                      </span>
-                      <Badge variant={statusInfo.variant} size="sm" dot>
-                        {statusInfo.label}
-                      </Badge>
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-ink-secondary">
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5 text-ink-muted" />
-                        Kỳ thanh toán: <strong>{formatDate(p.billing_period)}</strong>
-                      </span>
-                      <span>•</span>
-                      <span>
-                        Hạn chót: <strong>{formatDate(p.due_date)}</strong>
-                      </span>
-                      <span>•</span>
-                      <span className="font-mono text-ink-muted">
-                        HĐ: {p.contract_id.substring(0, 8)}...
-                      </span>
-                    </div>
-                  </div>
-
-                  {p.status !== 'PAID' && (
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      leftIcon={<CheckCircle2 className="w-4 h-4" />}
-                      onClick={() => setMarkingPaidPayment(p)}
-                    >
-                      Xác nhận đã thu
-                    </Button>
-                  )}
-                </div>
-              </Card>
-            );
-          })}
-        </div>
+                      </td>
+                      <td className="py-3.5 px-4 text-ink-secondary">
+                        <div className="flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5 text-ink-muted" />
+                          <span>{formatDate(p.due_date)}</span>
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <Badge variant={statusInfo.variant} size="sm" dot>
+                          {statusInfo.label}
+                        </Badge>
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        {p.status !== 'PAID' ? (
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            leftIcon={<CheckCircle2 className="w-3.5 h-3.5 text-status-success" />}
+                            onClick={() => setMarkingPaidPayment(p)}
+                          >
+                            Xác nhận đã thu
+                          </Button>
+                        ) : (
+                          <span className="text-xs text-ink-muted italic">Đã hoàn thành</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </Card>
       )}
 
       {/* Pagination */}
@@ -254,15 +292,15 @@ export const PaymentList: React.FC = () => {
         currentPage={page}
         pageSize={10}
         totalItems={payments.length}
-        onPageChange={(p) => setPage(p)}
+        onPageChange={(newPage) => setPage(newPage)}
       />
 
       {/* Create Payment Dialog */}
       <Dialog
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
-        title="Lập hóa đơn thu phí"
-        description="Chọn hợp đồng thuê và nhập kỳ tính phí cùng số tiền nguyên VND."
+        title="Lập hóa đơn tiền phòng mới"
+        description="Chọn hợp đồng, kỳ thanh toán và số tiền cần thu."
       >
         <form onSubmit={handleCreateSubmit} className="space-y-4">
           {formError && (
@@ -271,46 +309,69 @@ export const PaymentList: React.FC = () => {
             </div>
           )}
 
-          <Select
-            label="Chọn hợp đồng thuê (Đang hiệu lực)"
-            value={contractId}
-            onChange={(e) => setContractId(e.target.value)}
-            options={contracts.map((c) => ({
-              value: c.id,
-              label: `HĐ #${c.id.substring(0, 8)} (Từ ${formatDate(c.start_date)} đến ${formatDate(c.end_date)})`,
-            }))}
-            placeholder="Chọn một hợp đồng"
-            required
-          />
-
-          <div className="grid grid-cols-2 gap-3">
-            <Input
-              label="Kỳ tính phí (Ngày đầu tháng)"
-              type="date"
-              value={billingPeriod}
-              onChange={(e) => setBillingPeriod(e.target.value)}
-              required
-            />
-            <Input
-              label="Hạn thanh toán"
-              type="date"
-              value={dueDate}
-              onChange={(e) => setDueDate(e.target.value)}
+          <div>
+            <label className="block text-xs font-medium text-ink-secondary mb-1">
+              Hợp đồng thuê
+            </label>
+            <Select
+              value={contractId}
+              onChange={(e) => setContractId(e.target.value)}
+              options={contracts.map((c) => ({
+                value: c.id,
+                label: `Phòng ID ${c.room_id.slice(0, 8)}... (${c.start_date} đến ${c.end_date})`,
+              }))}
+              placeholder="-- Chọn hợp đồng cần lập hóa đơn --"
               required
             />
           </div>
 
-          <Input
-            label="Số tiền cần thu (VND)"
-            type="number"
-            step="1"
-            min="1000"
-            placeholder="Ví dụ: 3500000"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            required
-            helperText="Nhập số nguyên không có số thập phân"
-          />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-ink-secondary mb-1">
+                Kỳ hóa đơn (tháng)
+              </label>
+              <Input
+                type="date"
+                value={billingPeriod}
+                onChange={(e) => setBillingPeriod(e.target.value)}
+                required
+              />
+              <span className="text-[11px] text-ink-muted mt-0.5 block">
+                Mặc định ngày đầu tháng (ví dụ: 2026-10-01)
+              </span>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-ink-secondary mb-1">
+                Hạn thanh toán
+              </label>
+              <Input
+                type="date"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-ink-secondary mb-1">
+              Số tiền cần thu (VNĐ)
+            </label>
+            <Input
+              type="number"
+              placeholder="Ví dụ: 3500000"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              min="1"
+              step="1"
+              required
+            />
+            {amount && !isNaN(Number(amount)) && Number(amount) > 0 && (
+              <span className="text-[11px] text-primary font-medium mt-1 block">
+                Thành tiền: {formatVND(Number(amount))}
+              </span>
+            )}
+          </div>
 
           <div className="flex justify-end gap-2.5 pt-3">
             <Button
@@ -327,6 +388,12 @@ export const PaymentList: React.FC = () => {
           </div>
         </form>
       </Dialog>
+
+      {/* Meter Reading Modal */}
+      <MeterReadingModal
+        isOpen={isMeterReadingOpen}
+        onClose={() => setIsMeterReadingOpen(false)}
+      />
 
       {/* Mark As Paid Confirm Dialog */}
       {markingPaidPayment && (

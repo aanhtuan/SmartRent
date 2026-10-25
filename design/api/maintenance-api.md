@@ -14,7 +14,7 @@ All endpoints require Bearer. Tenant creates only with effective own tenancy; Te
 | POST `/api/maintenance-requests/preview` | Read-only authorized Gemini preview | `{room_id,original_description}` -> 200 `{room_id,original_description,ai_classification_status,classification,preview_token,expires_at}` | Empty/invalid 400; role 403; ineligible tenancy 422; rate limit 429. Provider failure returns preview state UNAVAILABLE/INVALID with `classification:null`, no business row/event. |
 | POST `/api/maintenance-requests` | Explicit confirmation/manual create | `{room_id,original_description,submission_key,preview_token?}` -> 201 request; identical retry -> 200 existing request | Token tamper/input mismatch 400; expired preview 409; missing-info token 422; stale tenancy 422; same submission key with changed business input 409. No provider call here. |
 | GET `/api/maintenance-requests/{id}` | Scoped detail | UUID -> 200 request | Malformed 400; absent/out-of-scope 404. |
-| PATCH `/api/maintenance-requests/{id}/status` | Manager-only transition | `{status}` -> 200 request | Invalid transition 422; Tenant 403; out-of-scope 404. PENDING -> PROCESSING -> COMPLETED; PROCESSING -> CANCELLED per G4 cancellation contract. After-commit event only. |
+| PATCH `/api/maintenance-requests/{id}/status` | Manager-only transition | `{status,cancellation_reason?}` -> 200 request | Invalid transition 422; Tenant 403; out-of-scope 404. PENDING -> PROCESSING -> COMPLETED; PROCESSING -> CANCELLED per G4 cancellation contract. After-commit event only. |
 | POST `/api/maintenance-requests/{id}/classify` | Authorized reclassification | `{additional_information?}` -> 200 request | Invalid field 400; out-of-scope 404; provider invalid/unavailable 502; failure leaves previous metadata/status intact. |
 
 ## Preview and validation
@@ -26,3 +26,13 @@ Token is server-signed and binds actor/room/input digest/validated state/result/
 `submission_key` is a client-generated UUID; backend stores a canonical business-input digest and enforces uniqueness per tenant profile. Same business input/key returns same request without a second event; different input/key reuse returns 409. Define digest semantics at G4 so token renewal does not cause false conflict. Do not expose internal digest/signing secrets in response.
 
 Initial status is PENDING. Do not hold DB transactions during preview/provider calls. Only successful confirmation commit emits the creation event. An unavailable AI never removes the manual submission path. No automatic retry of business creation as a provider retry side effect.
+
+## Backend-first implementation clarification — 2026-10-25
+
+The PO's continuous implementation instruction uses the plan's working baseline.
+CANCELLED requires a nonblank cancellation_reason of at most 500 characters;
+other transitions reject that field. No timeline entity is introduced.
+After authentication, an existing own submission key is compared before current
+tenancy/preview checks: identical business digest returns the original 200 even
+if tenancy or the old preview expired; changed business input returns 409.
+New submissions always recheck current tenancy and supplied token integrity/expiry.

@@ -11,3 +11,4 @@ export * from './assistant';
 export * from './utility';
 export * from './media';
 export * from './inventory';
+export * from './analytics';

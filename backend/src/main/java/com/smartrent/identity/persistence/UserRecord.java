@@ -17,7 +17,7 @@ import java.util.UUID;
 /** Persistence mapping only; not an API response or authentication implementation. */
 @Entity
 @Table(name = "users")
-class UserRecord {
+public class UserRecord {
   @Id private UUID id;
 
   @Column(nullable = false, length = 320)
@@ -33,6 +33,12 @@ class UserRecord {
   @Column(name = "provisioned_by_user_id")
   private UUID provisionedByUserId;
 
+  @Column(name = "full_name", length = 200)
+  public String fullName;
+
+  @Column(name = "phone_number", length = 30)
+  public String phoneNumber;
+
   @Column(name = "is_active", nullable = false)
   private boolean active;
 
@@ -44,11 +50,11 @@ class UserRecord {
 
   protected UserRecord() {}
 
-  UserRecord(String email, String passwordHash, UserRole role) {
+  public UserRecord(String email, String passwordHash, UserRole role) {
     this(UUID.randomUUID(), email, passwordHash, role);
   }
 
-  UserRecord(Account account) {
+  public UserRecord(Account account) {
     this(
         account.id(),
         account.email(),
@@ -57,7 +63,7 @@ class UserRecord {
     this.active = account.active();
   }
 
-  private UserRecord(UUID id, String email, String passwordHash, UserRole role) {
+  public UserRecord(UUID id, String email, String passwordHash, UserRole role) {
     this.id = id;
     this.email = email.strip().toLowerCase(Locale.ROOT);
     this.passwordHash = passwordHash;
@@ -65,19 +71,39 @@ class UserRecord {
     this.active = true;
   }
 
-  Account toAccount() {
+  public Account toAccount() {
     return new Account(id, email, passwordHash, AccountRole.valueOf(role.name()), active);
   }
 
-  UUID id() {
+  public UUID id() {
     return id;
   }
 
-  Instant updatedAt() {
+  public String email() {
+    return email;
+  }
+
+  public String passwordHash() {
+    return passwordHash;
+  }
+
+  public void setPasswordHash(String passwordHash) {
+    this.passwordHash = passwordHash;
+  }
+
+  public UserRole role() {
+    return role;
+  }
+
+  public boolean active() {
+    return active;
+  }
+
+  public Instant updatedAt() {
     return updatedAt;
   }
 
-  void deactivate() {
+  public void deactivate() {
     active = false;
   }
 

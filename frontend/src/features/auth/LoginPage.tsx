@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { ForgotPasswordModal } from './ForgotPasswordModal';
 import { useAuth } from '../../shared/context/AuthContext';
 import { Button, Input } from '../../shared/components/ui';
 import { Building2, Sparkles, AlertCircle, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { ApiError } from '../../shared/types';
 
 export const LoginPage: React.FC = () => {
+  const [isForgotOpen, setIsForgotOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -129,6 +131,13 @@ export const LoginPage: React.FC = () => {
             </Button>
           </form>
 
+          <div className="mt-4 pt-4 border-t border-border text-center text-xs text-ink-secondary">
+            <span>Chưa có tài khoản? </span>
+            <Link to="/register" className="font-semibold text-primary hover:underline">
+              Đăng ký ngay
+            </Link>
+          </div>
+
           {/* Synthetic Demo Account Helper */}
           <div className="mt-8 pt-6 border-t border-border">
             <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ink-muted mb-3">
@@ -164,6 +173,11 @@ export const LoginPage: React.FC = () => {
           Bảo mật RS256 JWT • Không lưu trữ mã phiên trên bộ nhớ trình duyệt
         </p>
       </div>
+
+      <ForgotPasswordModal
+        isOpen={isForgotOpen}
+        onClose={() => setIsForgotOpen(false)}
+      />
     </div>
   );
 };

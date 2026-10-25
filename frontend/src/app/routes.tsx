@@ -7,6 +7,7 @@ import { AppLayout } from '../shared/components/layout/AppLayout';
 
 // Features
 import { LoginPage } from '../features/auth/LoginPage';
+import { RegisterPage } from '../features/auth/RegisterPage';
 import { LandlordDashboard } from '../features/dashboard/LandlordDashboard';
 import { TenantDashboard } from '../features/dashboard/TenantDashboard';
 import { PropertyList } from '../features/properties/PropertyList';
@@ -53,6 +54,7 @@ export const AppRoutes: React.FC = () => {
     <Routes>
       {/* Public routes */}
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
       <Route path="/" element={<RootRedirect />} />
 
       {/* Authenticated routes */}

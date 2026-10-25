@@ -36,7 +36,7 @@ public class ApiSecurityConfiguration {
     if (allowed.stream().anyMatch(s -> s.contains("*")))
       throw new IllegalStateException("CORS requires explicit origins.");
     cors.setAllowedOrigins(allowed);
-    cors.setAllowedMethods(List.of("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
+    cors.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
     cors.setAllowedHeaders(List.of("Authorization", "Content-Type"));
     cors.setAllowCredentials(false);
     var source = new UrlBasedCorsConfigurationSource();
@@ -69,6 +69,12 @@ public class ApiSecurityConfiguration {
             c.requestMatchers(org.springframework.http.HttpMethod.GET, "/actuator/health")
                 .permitAll()
                 .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/auth/login")
+                .permitAll()
+                .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/auth/register")
+                .permitAll()
+                .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/auth/forgot-password")
+                .permitAll()
+                .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/auth/reset-password")
                 .permitAll()
                 .requestMatchers("/api/**")
                 .authenticated()

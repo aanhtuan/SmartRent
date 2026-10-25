@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { notificationApi } from '../../api';
 import { Link } from 'react-router-dom';
 import { ProfileModal } from '../../../features/auth/ProfileModal';
+import { useNotificationsStream, StreamNotification } from '../../hooks/useNotificationsStream';
 
 interface HeaderProps {
   onMenuToggle: () => void;
@@ -15,6 +16,15 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ onMenuToggle, title, subtitle }) => {
   const { user } = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [liveAlert, setLiveAlert] = useState<string | null>(null);
+
+  // Real-time SSE listener
+  useNotificationsStream((notification: StreamNotification) => {
+    setLiveAlert(notification.message || 'Bạn vừa nhận được một thông báo mới từ hệ thống.');
+    setTimeout(() => {
+      setLiveAlert(null);
+    }, 5000);
+  });
 
   // Query unread notifications
   const { data: notificationsData } = useQuery({
@@ -76,6 +86,14 @@ export const Header: React.FC<HeaderProps> = ({ onMenuToggle, title, subtitle })
           </button>
         </div>
       </header>
+
+      {/* Real-time SSE alert banner */}
+      {liveAlert && (
+        <div className="fixed top-20 right-6 z-50 bg-primary text-white text-xs px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 border border-primary/20 animate-in slide-in-from-top-2 duration-200">
+          <Bell className="w-3.5 h-3.5 text-accent" />
+          <span>{liveAlert}</span>
+        </div>
+      )}
 
       <ProfileModal
         isOpen={isProfileOpen}

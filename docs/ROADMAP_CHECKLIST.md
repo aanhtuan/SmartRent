@@ -1,6 +1,6 @@
 # SmartRent - Danh sách Nhiệm vụ Mở rộng (Roadmap Checklist)
 
-> **Tiến độ tổng thể: 6/9 tasks (66.7%)**
+> **Tiến độ tổng thể: 7/9 tasks (77.8%)**
 
 ### Giai đoạn 1: Nghiệp vụ cốt lõi thực tế
 - [x] Task 1: Quản lý Chỉ số Điện, Nước & Dịch vụ tiện ích (Utility & Meter Reading)
@@ -13,6 +13,6 @@
 - [x] Task 6: Tự phục vụ tài khoản (Đăng ký, Quên mật khẩu & Hồ sơ cá nhân)
 
 ### Giai đoạn 3: Mở rộng, Tự động hóa & Trực quan
-- [ ] Task 7: Thông báo thời gian thực (SSE) & Email cảnh báo
+- [x] Task 7: Thông báo thời gian thực (SSE) & Email cảnh báo
 - [ ] Task 8: Kích hoạt Gemini Live API & Đánh giá chất lượng thực tế (Benchmark)
 - [ ] Task 9: Báo cáo Thống kê Tài chính, Tỷ lệ lấp đầy & Xuất Excel

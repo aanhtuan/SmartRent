@@ -4,9 +4,11 @@ import { assistantApi } from '../../shared/api';
 import { ChatMessage } from '../../shared/types';
 import { Button, Input, Card } from '../../shared/components/ui';
 import { Bot, Send, User, Sparkles, Info, ShieldCheck } from 'lucide-react';
+import { AiBenchmarkModal } from './AiBenchmarkModal';
 
 export const AssistantPage: React.FC = () => {
   const [question, setQuestion] = useState('');
+  const [isBenchmarkOpen, setIsBenchmarkOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'welcome',
@@ -214,6 +216,8 @@ export const AssistantPage: React.FC = () => {
           Gửi
         </Button>
       </form>
+
+      <AiBenchmarkModal isOpen={isBenchmarkOpen} onClose={() => setIsBenchmarkOpen(false)} />
 
       {/* Safety notice */}
       <p className="text-[11px] text-center text-ink-muted">

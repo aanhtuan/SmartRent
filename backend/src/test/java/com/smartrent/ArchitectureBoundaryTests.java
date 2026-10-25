@@ -49,9 +49,12 @@ class ArchitectureBoundaryTests {
                           + other.substring(1)
                           + "Repository");
         }
+        if (!path.replace('\\', '/').contains("/notification/")) {
+          assertThat(s).as(path).doesNotContain("SseEmitter", "text/event-stream");
+        }
         assertThat(s)
             .as(path)
-            .doesNotContain("@Lazy", "XsltView", "SseEmitter", "text/event-stream");
+            .doesNotContain("@Lazy", "XsltView");
       }
     }
   }

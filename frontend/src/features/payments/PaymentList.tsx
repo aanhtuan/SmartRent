@@ -16,14 +16,16 @@ import {
   Pagination,
 } from '../../shared/components/ui';
 import { formatVND, formatDate, paymentStatusMap } from '../../shared/utils/format';
-import { CreditCard, Plus, CheckCircle2, Clock, Zap } from 'lucide-react';
+import { CreditCard, Plus, CheckCircle2, Clock, Zap, Landmark } from 'lucide-react';
 import { MeterReadingModal } from './MeterReadingModal';
+import { LandlordBankModal } from './LandlordBankModal';
 
 export const PaymentList: React.FC = () => {
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isMeterReadingOpen, setIsMeterReadingOpen] = useState(false);
+  const [isBankModalOpen, setIsBankModalOpen] = useState(false);
   const [markingPaidPayment, setMarkingPaidPayment] = useState<Payment | null>(null);
 
   // Form states
@@ -166,7 +168,14 @@ export const PaymentList: React.FC = () => {
             Lập phiếu thu tiền phòng theo kỳ, theo dõi trạng thái đã thanh toán hoặc quá hạn.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            variant="ghost"
+            leftIcon={<Landmark className="w-4 h-4 text-ink-secondary" />}
+            onClick={() => setIsBankModalOpen(true)}
+          >
+            Tài khoản ngân hàng
+          </Button>
           <Button
             variant="secondary"
             leftIcon={<Zap className="w-4 h-4 text-amber-500" />}
@@ -236,6 +245,7 @@ export const PaymentList: React.FC = () => {
               <thead>
                 <tr className="border-b border-border bg-surface-subtle/70 text-ink-secondary font-medium">
                   <th className="py-3 px-4">Kỳ thanh toán</th>
+                  <th className="py-3 px-4">Mã tham chiếu</th>
                   <th className="py-3 px-4">Số tiền</th>
                   <th className="py-3 px-4">Hạn thanh toán</th>
                   <th className="py-3 px-4">Trạng thái</th>
@@ -249,6 +259,9 @@ export const PaymentList: React.FC = () => {
                     <tr key={p.id} className="hover:bg-surface-subtle/40 transition-colors">
                       <td className="py-3.5 px-4 font-semibold text-ink">
                         Tháng {p.billing_period.substring(5, 7)}/{p.billing_period.substring(0, 4)}
+                      </td>
+                      <td className="py-3.5 px-4 font-mono font-medium text-primary">
+                        {p.payment_reference || `SR${p.id.slice(0, 8).toUpperCase()}`}
                       </td>
                       <td className="py-3.5 px-4 font-bold text-ink text-sm">
                         {formatVND(p.amount)}
@@ -393,6 +406,12 @@ export const PaymentList: React.FC = () => {
       <MeterReadingModal
         isOpen={isMeterReadingOpen}
         onClose={() => setIsMeterReadingOpen(false)}
+      />
+
+      {/* Landlord Bank Modal */}
+      <LandlordBankModal
+        isOpen={isBankModalOpen}
+        onClose={() => setIsBankModalOpen(false)}
       />
 
       {/* Mark As Paid Confirm Dialog */}

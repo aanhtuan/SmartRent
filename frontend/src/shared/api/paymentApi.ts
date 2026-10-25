@@ -1,5 +1,13 @@
 import { apiClient } from './client';
-import { PageResponse, Payment, PaymentCreateRequest, PaymentFilterParams, PaymentPatchRequest } from '../types';
+import {
+  PageResponse,
+  Payment,
+  PaymentCreateRequest,
+  PaymentFilterParams,
+  PaymentPatchRequest,
+  LandlordBankAccount,
+  LandlordBankAccountUpdateRequest,
+} from '../types';
 
 export const paymentApi = {
   list: async (params?: PaymentFilterParams): Promise<PageResponse<Payment>> => {
@@ -31,6 +39,31 @@ export const paymentApi = {
     return apiClient<Payment>(`/api/payments/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
+    });
+  },
+
+  getBankAccount: async (): Promise<LandlordBankAccount | null> => {
+    return apiClient<LandlordBankAccount | null>('/api/landlords/bank-account', {
+      method: 'GET',
+    });
+  },
+
+  updateBankAccount: async (
+    data: LandlordBankAccountUpdateRequest
+  ): Promise<LandlordBankAccount> => {
+    return apiClient<LandlordBankAccount>('/api/landlords/bank-account', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+
+  simulateWebhook: async (
+    reference: string,
+    amount: number
+  ): Promise<{ success: boolean; status: string }> => {
+    return apiClient<{ success: boolean; status: string }>('/api/webhooks/payment', {
+      method: 'POST',
+      body: JSON.stringify({ reference, amount }),
     });
   },
 };

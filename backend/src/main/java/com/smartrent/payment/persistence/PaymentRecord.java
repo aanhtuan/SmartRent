@@ -23,4 +23,7 @@ class PaymentRecord extends StoredRecord {
 
   @Column(name = "status", columnDefinition = "text")
   public String status;
+
+  @Column(name = "payment_reference")
+  public String paymentReference;
 }

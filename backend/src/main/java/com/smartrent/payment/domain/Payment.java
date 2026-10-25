@@ -12,6 +12,7 @@ public class Payment {
   public LocalDate dueDate;
   public BigDecimal amount;
   public String status;
+  public String paymentReference;
   public Instant createdAt;
   public Instant updatedAt;
 }

@@ -19,6 +19,17 @@ class JpaPaymentAdapter implements PaymentRepository {
     return model(e);
   }
 
+  public Payment findByReference(String reference) {
+    if (reference == null || reference.isBlank()) return null;
+    var q =
+        em.createQuery(
+            "SELECT p FROM PaymentRecord p WHERE upper(p.paymentReference) = :ref",
+            PaymentRecord.class);
+    q.setParameter("ref", reference.trim().toUpperCase());
+    var list = q.getResultList();
+    return list.isEmpty() ? null : model(list.get(0));
+  }
+
   public Payment save(Payment v) {
     var e = v.id == null ? null : em.find(PaymentRecord.class, v.id);
     boolean fresh = e == null;
@@ -31,6 +42,11 @@ class JpaPaymentAdapter implements PaymentRepository {
     e.dueDate = v.dueDate;
     e.amount = v.amount;
     e.status = v.status;
+    if (v.paymentReference == null || v.paymentReference.isBlank()) {
+      e.paymentReference = "SR" + e.id.toString().replace("-", "").substring(0, 8).toUpperCase();
+    } else {
+      e.paymentReference = v.paymentReference;
+    }
     if (fresh) em.persist(e);
     em.flush();
     return model(e);
@@ -59,6 +75,33 @@ class JpaPaymentAdapter implements PaymentRepository {
         .stream().map(this::model).toList();
   }
 
+  public LandlordBankAccount findBankAccountByLandlord(UUID landlordUserId) {
+    var q =
+        em.createQuery(
+            "SELECT b FROM LandlordBankAccountRecord b WHERE b.landlordUserId = :landlordUserId",
+            LandlordBankAccountRecord.class);
+    q.setParameter("landlordUserId", landlordUserId);
+    var list = q.getResultList();
+    return list.isEmpty() ? null : bankModel(list.get(0));
+  }
+
+  public LandlordBankAccount saveBankAccount(LandlordBankAccount v) {
+    var e = v.id == null ? null : em.find(LandlordBankAccountRecord.class, v.id);
+    boolean fresh = e == null;
+    if (fresh) {
+      e = new LandlordBankAccountRecord();
+      e.id = v.id == null ? UUID.randomUUID() : v.id;
+    }
+    e.landlordUserId = v.landlordUserId;
+    e.bankBin = v.bankBin;
+    e.bankName = v.bankName;
+    e.accountNumber = v.accountNumber;
+    e.accountHolderName = v.accountHolderName;
+    if (fresh) em.persist(e);
+    em.flush();
+    return bankModel(e);
+  }
+
   private Payment model(PaymentRecord e) {
     var v = new Payment();
     v.id = e.id;
@@ -67,6 +110,20 @@ class JpaPaymentAdapter implements PaymentRepository {
     v.dueDate = e.dueDate;
     v.amount = e.amount;
     v.status = e.status;
+    v.paymentReference = e.paymentReference;
+    v.createdAt = e.createdAt;
+    v.updatedAt = e.updatedAt;
+    return v;
+  }
+
+  private LandlordBankAccount bankModel(LandlordBankAccountRecord e) {
+    var v = new LandlordBankAccount();
+    v.id = e.id;
+    v.landlordUserId = e.landlordUserId;
+    v.bankBin = e.bankBin;
+    v.bankName = e.bankName;
+    v.accountNumber = e.accountNumber;
+    v.accountHolderName = e.accountHolderName;
     v.createdAt = e.createdAt;
     v.updatedAt = e.updatedAt;
     return v;

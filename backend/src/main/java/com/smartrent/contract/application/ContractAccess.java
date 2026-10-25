@@ -39,4 +39,11 @@ public class ContractAccess {
     rooms.lock(c.roomId, a);
     return repo.find(id, true);
   }
+
+  @Transactional(readOnly = true)
+  public Contract internal(UUID id) {
+    var c = repo.find(id, false);
+    if (c == null) throw ApiFailure.missing();
+    return c;
+  }
 }

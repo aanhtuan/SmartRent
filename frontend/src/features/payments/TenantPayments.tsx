@@ -1,17 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { paymentApi } from '../../shared/api';
+import { Payment } from '../../shared/types';
 import {
   Card,
+  Button,
   Badge,
   Skeleton,
   EmptyState,
   ErrorState,
 } from '../../shared/components/ui';
 import { formatVND, formatDate, paymentStatusMap } from '../../shared/utils/format';
-import { CreditCard, Clock, CheckCircle2 } from 'lucide-react';
+import { CreditCard, Clock, CheckCircle2, QrCode } from 'lucide-react';
+import { VietQrModal } from './VietQrModal';
 
 export const TenantPayments: React.FC = () => {
+  const [selectedPaymentForQr, setSelectedPaymentForQr] = useState<Payment | null>(null);
+
   const {
     data: paymentsData,
     isLoading,
@@ -116,8 +121,15 @@ export const TenantPayments: React.FC = () => {
                           </div>
                         </div>
 
-                        <div className="text-xs text-ink-muted bg-surface p-3 rounded-control border border-border sm:max-w-xs">
-                          💡 Vui lòng liên hệ chủ nhà hoặc nộp trực tiếp theo thỏa thuận hợp đồng.
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            leftIcon={<QrCode className="w-4 h-4" />}
+                            onClick={() => setSelectedPaymentForQr(p)}
+                          >
+                            Quét mã VietQR
+                          </Button>
                         </div>
                       </div>
                     </Card>
@@ -157,6 +169,13 @@ export const TenantPayments: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* VietQR Modal */}
+      <VietQrModal
+        payment={selectedPaymentForQr}
+        isOpen={!!selectedPaymentForQr}
+        onClose={() => setSelectedPaymentForQr(null)}
+      />
     </div>
   );
 };

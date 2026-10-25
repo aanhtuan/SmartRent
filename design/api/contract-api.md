@@ -18,3 +18,12 @@ Changing contract status does not by itself authorize any prior client request. 
 Creator must own room property AND manage the tenant profile. ACTIVE contract is currently effective only when start_date <= business today <= end_date and property/room is active. Tenant can still read own historical contracts. Dates are inclusive; ACTIVE reservations for one room cannot overlap even when future-dated. Adjacent contracts require next start_date > prior end_date. MVP single-tenant room; no shared-room assumption.
 
 ACTIVE -> EXPIRED after end date; ACTIVE -> TERMINATED via accepted termination policy. Terminal contracts cannot reactivate or have dates edited. At G2 review future cancellation/termination semantics before implementing them. To prevent concurrent overlap, serialize create/date/status changes using the same room-level transaction lock and recheck overlaps inside the transaction; select any additional database exclusion constraint at migration design. Test both create and PATCH races on PostgreSQL. API 409 is an invariant outcome, not evidence a database mechanism already exists.
+
+## Backend-first implementation clarification — 2026-10-25
+
+Under the continuous-implementation working baseline, terminating a currently
+effective contract sets end_date to the selected date within [start_date,today]
+and no later than its previous end_date; omission selects today. Cancelling a
+future contract sets TERMINATED while retaining its original dates. Terminal or
+effectively expired contracts cannot reactivate or edit dates. Existing bills are
+preserved; non-termination date edits may not exclude existing billing months.

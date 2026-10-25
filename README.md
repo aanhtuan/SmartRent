@@ -4,7 +4,7 @@
 
 SmartRent brings rental records, maintenance workflows, and tenant communication into one system. Its approved design combines a modular Spring Boot backend, a React frontend, PostgreSQL, and Gemini assistance behind a backend-controlled AI boundary.
 
-> **Development status:** Sprint 0 and C6-01 are merged into `main`; C6-01 hosted CI passed in PR #9. C6-03 PostgreSQL/identity persistence is implemented and verified locally on `codex/c6-03-database-foundation`, with agent self-review complete; human merge review and hosted CI pending. A clean clone of `main` does not yet include C6-03. Business features remain planned; no deployment is configured.
+> **Development status:** Sprint 0, C6-01 and C6-03 are merged into `main` (PR #9 and PR #10); C6-03 push and pull-request Backend CI passed before merge `5ee6e8f`. Business endpoints remain planned; no deployment is configured. The current [backend-first plan](docs/chapter-06-ai-programming/backend-implementation-plan.md) defers frontend work and awaits the applicable product-policy approvals.
 
 [Roadmap](docs/project-roadmap.md) · [Backend guide](backend/README.md) · [Implementation backlog](docs/chapter-06-ai-programming/implementation-backlog.md) · [API contracts](design/api/README.md)
 
@@ -45,9 +45,9 @@ The following distinguishes executable behavior from configuration and design in
 | Requirements, UX, architecture and API designs | Documented; new product-policy details await named review gates | [Sprint 0 decisions](docs/sprint-0-decisions.md) |
 | Backend foundation — C6-01 | Merged through [PR #9](https://github.com/aanhtuan/SmartRent/pull/9) | [Source](backend/src/main/java/com/smartrent/), [task evidence](docs/ai-evidence/c6-01-backend-foundation.md) |
 | Backend build, context and HTTP checks | Verified locally: 22 tests, zero failures/errors/skipped | [Tests](backend/src/test/java/com/smartrent/), [verification instructions](#testing) |
-| Backend GitHub Actions | C6-01 hosted CI passed; C6-03 workflow update pending publication | [Workflow](.github/workflows/backend-ci.yml) |
-| Frontend — C6-02 | Planned; no frontend application or package manifest | [Backlog](docs/chapter-06-ai-programming/implementation-backlog.md) |
-| Database infrastructure — C6-03 | VERIFIED locally; hosted CI/human merge review pending — PostgreSQL, role separation and V1 users only | [Logical schema](design/database/schema.md) |
+| Backend GitHub Actions | C6-01 and C6-03 hosted CI passed at their merged revisions | [Workflow](.github/workflows/backend-ci.yml) |
+| Frontend — C6-02 | Deferred in the backend-first track; no frontend application or package manifest | [Backlog](docs/chapter-06-ai-programming/implementation-backlog.md) |
+| Database infrastructure — C6-03 | Merged through [PR #10](https://github.com/aanhtuan/SmartRent/pull/10) — PostgreSQL, role separation and V1 users only | [Logical schema](design/database/schema.md) |
 | Accounts, JWT and rental business features | Planned; no authentication or business endpoints implemented | [API contracts](design/api/README.md) |
 | Gemini classification and Assistant | Planned; no provider calls or integration implemented | [AI boundary](design/architecture/smartrent-architecture.md) |
 | Deployment / continuous delivery | Not configured or deployed | Current work targets local development |
@@ -164,7 +164,7 @@ SmartRent/
 
 ### Prerequisites
 
-- A checkout containing this C6-03 increment. `main` currently contains the C6-01 backend; its database-free startup instructions are in that revision.
+- A checkout of `main` containing merged C6-01 and C6-03. Database-free C6-01 startup instructions belong to its earlier revision.
 - **JDK 21**, active on `PATH`, with `JAVA_HOME` pointing to the same JDK when set. Java 25 is not the project's build runtime; Maven Enforcer rejects incompatible major versions.
 - A POSIX shell for the commands below and `curl` for health checks. The wrapper needs Java and download/extraction tools on first use; see [wrapper requirements](backend/README.md).
 - Docker with an accessible daemon and Docker Compose; network access to Maven Central and Docker Hub for initial downloads. No global Maven, frontend tooling or Gemini key is required.
@@ -277,7 +277,7 @@ Database/Testcontainers checks now run in `verify` and require Docker; they fail
 
 The local [Backend CI workflow](.github/workflows/backend-ci.yml) selects Temurin Java 21 and runs the same wrapper `verify` command on backend/workflow push or pull-request changes, or manual dispatch. It uses SHA-pinned official actions, read-only repository contents permission, no persisted checkout credentials, concurrency cancellation and a 15-minute timeout.
 
-C6-01 hosted CI passed in [PR #9](https://github.com/aanhtuan/SmartRent/pull/9). The C6-03 workflow changes are local and have not run on GitHub; no hosted result is claimed for this increment. There is no deployment job, live environment or continuous-delivery pipeline. Current development and verification are local.
+C6-01 hosted CI passed in [PR #9](https://github.com/aanhtuan/SmartRent/pull/9). C6-03 hosted push and pull-request runs passed before merge in [PR #10](https://github.com/aanhtuan/SmartRent/pull/10). These are historical results for that revision, not proof that future increments pass. There is no deployment job, live environment or continuous-delivery pipeline. Current development and verification are local.
 
 ## Security principles
 
@@ -294,11 +294,13 @@ See [AGENTS.md](AGENTS.md), the [security boundary design](docs/chapter-05-softw
 | Milestone | Scope | Current state |
 |---|---|---|
 | Sprint 0 | Normalize requirements/design contracts; establish agent rules and delivery gates | Baseline merged; named product-policy gates remain applicable |
-| Sprint 1 — C6-01–05 | Backend/frontend foundation, CI, database, provisioning and authentication | C6-01 merged; C6-03 locally VERIFIED; C6-02/04/05 TODO |
+| Sprint 1 — C6-01–05 | Backend/frontend foundation, CI, database, provisioning and authentication | C6-01/C6-03 merged; C6-02 deferred in current track; C6-04/05 backend planned |
 | Sprint 2 — C6-06–07 | Property/Room and Tenant Profile | Planned; ownership/model/lifecycle review required |
 | Sprint 3 — C6-08–09 | Contract and Payment | Planned; overlap and billing gates required |
 | Sprint 4 — C6-10–13 | Maintenance, notifications and Gemini preview/confirmation | Planned; UX, AI and delivery-policy gates required |
 | Sprint 5 — C6-14–16 | Assistant, regression/refactoring, documentation and demo readiness | Planned |
+
+The current execution scope is backend-only; see the [backend implementation plan](docs/chapter-06-ai-programming/backend-implementation-plan.md). Backend acceptance is tracked separately from UI/full-stack completion.
 
 Follow the [dependency-ordered roadmap](docs/project-roadmap.md) and [task acceptance criteria](docs/chapter-06-ai-programming/implementation-backlog.md). Review, testing and documentation happen within every sprint. Sprint numbers express dependencies, not release dates or permission to start additional work.
 

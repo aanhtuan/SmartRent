@@ -1,5 +1,11 @@
 # SmartRent — Implementation readiness and Sprint 0 closure
 
+## Current implementation snapshot — 2026-10-25
+
+C6-01 and C6-03 are merged through PR #9/#10. Current backend contains Java 21/Spring Boot foundation, PostgreSQL/Compose, identity-only Flyway V1 and Testcontainers. The Phase 0 baseline verify passed 22 tests on this date. Authentication and domain APIs remain unimplemented. Local Compose database is stopped; its data/volume was not changed. See the [backend-first implementation plan](chapter-06-ai-programming/backend-implementation-plan.md) and [audit evidence](ai-evidence/backend-phase-0-audit.md). G1–G4 policy approvals remain pending; no UI or deployment is authorized.
+
+## Historical Sprint 0 snapshot (preserved)
+
 Date: 2026-10-09. Baseline SHA: `35ce3aa1a7a13a03a255ef9a41311f1eaae48d64`; working branch `codex/agent-environment`. No application implementation exists. Existing skills-lock.json changes and external skills are preserved.
 
 ## Readiness

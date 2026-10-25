@@ -2,9 +2,13 @@
 
 ## Contract
 
-C6-01 is MERGED through PR #9 with hosted CI passed. C6-03 is locally VERIFIED with PostgreSQL, V1 identity migration and passing verification; hosted CI/human merge review are pending. C6-02 and C6-04–16 are TODO. No live AI calls or other domain tables are implemented. Read [roadmap](../project-roadmap.md), [decisions](../sprint-0-decisions.md) and [workflow](../agent-workflow.md). Paths below are task contracts, not proof of completed features.
+C6-01 is MERGED through PR #9 with hosted CI passed. C6-03 is MERGED through PR #10, commit `5ee6e8f`, after successful push and PR Backend CI. C6-02 and UI portions are deferred in the current backend-first mission; C6-04–16 backend slices are planned, not implemented. No live AI calls or other domain tables are implemented. Read [roadmap](../project-roadmap.md), [decisions](../sprint-0-decisions.md) and [workflow](../agent-workflow.md). Paths below are task contracts, not proof of completed features.
 
 Every task: specify AC -> select skill/contracts -> write meaningful tests for business behavior -> implement -> run checks -> review -> record real evidence. Setup checks may be smoke/build checks rather than tests mirroring configuration. DoD: AC demonstrated, appropriate commands/results recorded, security/architecture reviewed, docs/evidence updated, limitations stated. Commit/push/merge/deploy are separate authorization. No unavailable command is reported passing.
+
+## Backend-first execution scope — 2026-10-25
+
+The user authorized completing the backend incrementally. The [backend implementation plan](backend-implementation-plan.md) extracts B01–B17 from the existing tasks below; it does not renumber requirements or approve WB policies. C6-05 backend depends on C6-01/C6-03/C6-04 and accepted G1 security policy, while its login UI/Playwright acceptance remains deferred with C6-02. Apply the same backend-versus-UI distinction to C6-06–16. Keep the original full-stack task contracts for later frontend work; backend-only verification cannot close their UI criteria or the full G1–G5 course gates.
 
 ## First five tasks
 
@@ -29,7 +33,7 @@ Every task: specify AC -> select skill/contracts -> write meaningful tests for b
 
 ### C6-03 — PostgreSQL, Compose and identity migration
 
-- Status: VERIFIED locally (2026-10-12), fresh local verification and agent self-review; hosted CI/human merge review pending; [evidence](../ai-evidence/c6-03-database-foundation.md). User approved the presented version, email, role/mapping, privilege and JDK plan. No commit/push/merge/deploy authorization. D03 fields excluded.
+- Status: MERGED (2026-10-12) through [PR #10](https://github.com/aanhtuan/SmartRent/pull/10), commit `5ee6e8f`; local checks, push and PR Backend CI passed; [evidence](../ai-evidence/c6-03-database-foundation.md). User approved the presented version, email, role/mapping, privilege and JDK plan. C6-03 delivery was separately authorized and completed; this does not authorize publication of later increments. D03 fields excluded.
 
 - Sources: schema users, Flyway/JPA conventions. Skills: smartrent-backend + PostgreSQL.
 - Depends: C6-01; accepted database version/config at G1.

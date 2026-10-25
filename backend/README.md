@@ -149,7 +149,9 @@ Reports are under ignored `target/surefire-reports/`.
 [Backend CI](../.github/workflows/backend-ci.yml) uses Java 21 and wrapper verify,
 with path triggers including database bootstrap/Compose changes. GitHub runners
 provide Docker; no Compose credentials or live database is used by CI tests.
-C6-01 hosted CI passed in PR #9; C6-03 changes have not been pushed or run remotely.
+C6-01 hosted CI passed in PR #9. C6-03 merged through [PR #10](https://github.com/aanhtuan/SmartRent/pull/10), commit `5ee6e8f`, after successful push and pull-request Backend CI runs. These results apply to that revision.
+
+The [backend-first completion plan](../docs/chapter-06-ai-programming/backend-implementation-plan.md) tracks future backend increments and pending product-policy decisions; frontend work is deferred.
 
 ## Architecture and security
 

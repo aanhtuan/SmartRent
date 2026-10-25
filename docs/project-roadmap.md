@@ -2,7 +2,7 @@
 
 ## Start here
 
-Current state: Sprint 0 and C6-01 merged (PR #9, hosted CI passed). C6-03 database/identity foundation is locally VERIFIED (2026-10-12, agent self-review); see [C6-03 evidence](ai-evidence/c6-03-database-foundation.md). Its hosted CI and human merge review remain pending. The full G1 gate is incomplete; C6-02 and C6-04–16 are TODO. No additional task or publication is authorized by this roadmap.
+Current state: Sprint 0, C6-01 (PR #9) and C6-03 (PR #10, merge `5ee6e8f`) are MERGED. C6-03 push and PR Backend CI passed; see [C6-03 evidence](ai-evidence/c6-03-database-foundation.md). The full G1 gate remains incomplete. The current user-authorized mission is backend-first: audit/plan, then implement approved backend increments. Frontend C6-02 and UI portions are deferred. G1 backend policy is approved as of 2026-10-25 (JWT TTL 30 minutes); G2/G3/G4 remain pending. Current execution is B01 only; no commit/push/merge/deploy is authorized.
 
 Read [AGENTS.md](../AGENTS.md), [agent workflow](agent-workflow.md), [decision baseline](sprint-0-decisions.md), [readiness report](implementation-readiness.md), then the task in [Chapter 6 backlog](chapter-06-ai-programming/implementation-backlog.md). The stack and Modular Monolith architecture remain approved; new business defaults are working baseline until their named review gates pass.
 
@@ -53,7 +53,7 @@ C6-02 frontend foundation depends only on G0 and approved tooling; C6-05 consume
 
 ## Readiness and task states
 
-Use TODO, READY, IN_PROGRESS, BLOCKED, IN_REVIEW, VERIFIED and MERGED. READY requires accepted dependencies/decisions and authorized execution scope. VERIFIED requires fresh relevant checks and review evidence; it is not MERGED. Only actual runs change runtime status. C6-01 is MERGED; C6-03 is locally VERIFIED; hosted CI/human merge review pending; C6-02 and C6-04–16 are TODO. No task is MERGED merely because files exist locally.
+Use TODO, READY, IN_PROGRESS, BLOCKED, IN_REVIEW, VERIFIED and MERGED. READY requires accepted dependencies/decisions and authorized execution scope. VERIFIED requires fresh relevant checks and review evidence; it is not MERGED. Only actual runs change runtime status. C6-01 is MERGED; C6-03 is MERGED through PR #10. C6-02 is deferred for the backend-first mission; C6-04–16 backend slices are planned, with policy approvals pending. Completing backend slices does not mark UI tasks complete. No task is MERGED merely because files exist locally.
 
 Each PR/task includes problem/outcome, canonical FR/US, WB decisions accepted for this task, files, normal/denied/failure AC, migration/API compatibility, exact checks, evidence links and residual risks. Before tool handoff include branch/base SHA, dirty-file ownership, pending decisions and permission scope.
 
@@ -63,4 +63,4 @@ Use [Chapter 7 review plan](chapter-07-code-review-refactoring/review-plan.md), 
 
 ## Next authorized step
 
-C6-03 local verification and agent self-review are complete. Next: human review of C6-03 and its evidence before Git publication. Commit/push/merge/deploy and starting subsequent tasks require separate approval. G2–G4 policy reviews remain independent; D03 provisioning fields were excluded. Preserve implementation and existing local data during handoff.
+Complete the [backend-first audit and implementation plan](chapter-06-ai-programming/backend-implementation-plan.md). The user authorized local incremental backend development after audit and approval of dependent G1–G4 policies. G1 was approved on 2026-10-25. Begin B01/C6-04 as a focused increment; B02 follows separately, and later modules still require their own policy gates. Do not implement frontend or infer full course-gate completion. No push/merge/deploy, data deletion or repository-protection changes are authorized. Preserve existing migrations/data; D03 fields require the accepted G2 forward migration.

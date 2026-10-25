@@ -34,7 +34,7 @@ Use Specify/Plan below for ordinary planning. The installed [writing-plans](../.
 | AI | Relevant F-01/F-02, architecture AI boundary, Maintenance/Assistant API, UX timing and task-specific [prompts](../prompts/). |
 | Review/testing | Task AC, actual diff/manifests, affected contracts and prior findings; do not treat prior review conclusions as proof. |
 
-Reference requirement IDs together with their names and source paths because PRD and Analysis currently use different numbering. Link to the exact revision in evidence where possible. A design document describes intent, not an implemented feature.
+Reference requirement IDs together with their names and source paths. Sprint 0 normalized PRD and Analysis to FR-01–FR-10; the decision register retains legacy mappings. Link to the exact revision in evidence where possible. A design document describes intent, not an implemented feature.
 
 ## Baseline and implementation readiness
 
@@ -78,7 +78,7 @@ Implement backend authorization and invariants in the owning use case; frontend 
 
 ## Test
 
-Discover actual commands from Maven/Gradle/package manifests and existing CI configuration. The repository initially has no application manifests: report application gates as not applicable/not run rather than creating code to satisfy this workflow.
+Discover actual commands from Maven/Gradle/package manifests and existing CI configuration. The initial Sprint 0 snapshot had no application manifests; C6-01/C6-03 now provide backend Maven/tests. Discover the actual manifests and report unavailable checks honestly rather than treating that historical snapshot as current state.
 
 | Change | Relevant gates once implemented |
 |---|---|

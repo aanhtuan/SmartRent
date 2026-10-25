@@ -9,9 +9,12 @@ import {
   ErrorState,
 } from '../../shared/components/ui';
 import { contractStatusMap, formatDate } from '../../shared/utils/format';
+import { ContractPrintModal } from './ContractPrintModal';
+import { Contract } from '../../shared/types';
 import { FileText, Calendar, ShieldCheck } from 'lucide-react';
 
 export const TenantContracts: React.FC = () => {
+  const [selectedPrintContract, setSelectedPrintContract] = React.useState<Contract | null>(null);
   const {
     data: contractsData,
     isLoading,
@@ -99,6 +102,15 @@ export const TenantContracts: React.FC = () => {
             );
           })}
         </div>
+      )}
+
+      {selectedPrintContract && (
+        <ContractPrintModal
+          contract={selectedPrintContract}
+          isOpen={!!selectedPrintContract}
+          onClose={() => setSelectedPrintContract(null)}
+          isLandlord={false}
+        />
       )}
     </div>
   );

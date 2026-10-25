@@ -72,4 +72,10 @@ public class ContractController {
   Object patch(@PathVariable UUID id, @RequestBody Patch b) {
     return view(service.update(Actor.current(), id, b.startDate(), b.endDate(), b.status()));
   }
+  public record SignBody(String signature) {}
+
+  @PostMapping("/{id}/sign")
+  Object sign(@PathVariable UUID id, @RequestBody SignBody b) {
+    return view(service.sign(Actor.current(), id, b.signature()));
+  }
 }

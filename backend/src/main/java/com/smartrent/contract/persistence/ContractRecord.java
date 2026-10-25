@@ -22,4 +22,16 @@ class ContractRecord extends StoredRecord {
 
   @Column(name = "status", columnDefinition = "text")
   public String status;
+
+  @Column(name = "tenant_signature", columnDefinition = "text")
+  public String tenantSignature;
+
+  @Column(name = "tenant_signed_at")
+  public Instant tenantSignedAt;
+
+  @Column(name = "landlord_signature", columnDefinition = "text")
+  public String landlordSignature;
+
+  @Column(name = "landlord_signed_at")
+  public Instant landlordSignedAt;
 }

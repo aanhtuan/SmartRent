@@ -113,4 +113,28 @@ public class ContractService {
         new BusinessNotice(tenants.user(c.tenantProfileId), "CONTRACT_EVENT", "contract", c.id));
     return c;
   }
+
+  @Transactional
+  public Contract sign(Actor a, UUID id, String signatureData) {
+    if (id == null || signatureData == null || signatureData.isBlank()) throw ApiFailure.invalid();
+    var c = repo.find(id, true);
+    if (c == null) throw ApiFailure.missing();
+
+    if (a.landlord()) {
+      rooms.owned(c.roomId, a);
+      c.landlordSignature = signatureData;
+      c.landlordSignedAt = Instant.now(clock);
+    } else {
+      var profileUserId = tenants.user(c.tenantProfileId);
+      if (!a.id().equals(profileUserId)) {
+        throw new ApiFailure(403, "FORBIDDEN", "Only the tenant or landlord can sign this contract.");
+      }
+      c.tenantSignature = signatureData;
+      c.tenantSignedAt = Instant.now(clock);
+    }
+    c = repo.save(c);
+    events.publishEvent(
+        new BusinessNotice(tenants.user(c.tenantProfileId), "CONTRACT_EVENT", "contract", c.id));
+    return c;
+  }
 }

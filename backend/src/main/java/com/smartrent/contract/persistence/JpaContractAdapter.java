@@ -31,6 +31,10 @@ class JpaContractAdapter implements ContractRepository {
     e.startDate = v.startDate;
     e.endDate = v.endDate;
     e.status = v.status;
+    e.tenantSignature = v.tenantSignature;
+    e.tenantSignedAt = v.tenantSignedAt;
+    e.landlordSignature = v.landlordSignature;
+    e.landlordSignedAt = v.landlordSignedAt;
     if (fresh) em.persist(e);
     em.flush();
     return model(e);
@@ -66,6 +70,10 @@ class JpaContractAdapter implements ContractRepository {
     v.startDate = e.startDate;
     v.endDate = e.endDate;
     v.status = e.status;
+    v.tenantSignature = e.tenantSignature;
+    v.tenantSignedAt = e.tenantSignedAt;
+    v.landlordSignature = e.landlordSignature;
+    v.landlordSignedAt = e.landlordSignedAt;
     v.createdAt = e.createdAt;
     v.updatedAt = e.updatedAt;
     return v;

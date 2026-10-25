@@ -7,6 +7,10 @@ export interface Contract {
   start_date: string;
   end_date: string;
   status: ContractStatus;
+  tenant_signature?: string | null;
+  tenant_signed_at?: string | null;
+  landlord_signature?: string | null;
+  landlord_signed_at?: string | null;
 }
 
 export interface ContractCreateRequest {

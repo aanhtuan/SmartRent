@@ -11,6 +11,10 @@ public class Contract {
   public LocalDate startDate;
   public LocalDate endDate;
   public String status;
+  public String tenantSignature;
+  public Instant tenantSignedAt;
+  public String landlordSignature;
+  public Instant landlordSignedAt;
   public Instant createdAt;
   public Instant updatedAt;
 }

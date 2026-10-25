@@ -16,10 +16,11 @@ import {
   Pagination,
 } from '../../shared/components/ui';
 import { formatVND, formatDate, paymentStatusMap } from '../../shared/utils/format';
-import { CreditCard, Plus, CheckCircle2, Clock, Zap, Landmark, ShieldCheck } from 'lucide-react';
+import { CreditCard, Plus, CheckCircle2, Clock, Zap, Landmark, ShieldCheck, Printer } from 'lucide-react';
 import { MeterReadingModal } from './MeterReadingModal';
 import { LandlordBankModal } from './LandlordBankModal';
 import { DepositModal } from './DepositModal';
+import { ReceiptPrintModal } from './ReceiptPrintModal';
 
 export const PaymentList: React.FC = () => {
   const [page, setPage] = useState(1);
@@ -29,6 +30,7 @@ export const PaymentList: React.FC = () => {
   const [isBankModalOpen, setIsBankModalOpen] = useState(false);
   const [markingPaidPayment, setMarkingPaidPayment] = useState<Payment | null>(null);
   const [depositContractId, setDepositContractId] = useState<string | null>(null);
+  const [receiptPayment, setReceiptPayment] = useState<Payment | null>(null);
 
   // Form states
   const [contractId, setContractId] = useState('');
@@ -290,6 +292,15 @@ export const PaymentList: React.FC = () => {
                           >
                             <ShieldCheck className="w-3.5 h-3.5 text-primary" />
                           </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setReceiptPayment(p)}
+                            title="In phiếu thu / Biên lai"
+                            aria-label="In phiếu thu / Biên lai"
+                          >
+                            <Printer className="w-3.5 h-3.5 text-ink-secondary" />
+                          </Button>
                         {p.status !== 'PAID' ? (
                           <Button
                             variant="secondary"
@@ -447,6 +458,14 @@ export const PaymentList: React.FC = () => {
           isOpen={!!depositContractId}
           onClose={() => setDepositContractId(null)}
           isLandlord={true}
+        />
+      )}
+
+      {receiptPayment && (
+        <ReceiptPrintModal
+          payment={receiptPayment}
+          isOpen={!!receiptPayment}
+          onClose={() => setReceiptPayment(null)}
         />
       )}
     </div>

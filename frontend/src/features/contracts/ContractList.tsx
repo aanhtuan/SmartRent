@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { contractApi, tenantApi, propertyApi, roomApi } from '../../shared/api';
 import { Contract, ContractCreateRequest, ContractStatus } from '../../shared/types';
+import { ContractPrintModal } from './ContractPrintModal';
 import {
   Card,
   Button,
@@ -16,9 +17,10 @@ import {
   Pagination,
 } from '../../shared/components/ui';
 import { contractStatusMap, formatDate } from '../../shared/utils/format';
-import { FileText, Plus, Calendar, Ban, UserCheck } from 'lucide-react';
+import { FileText, Plus, Calendar, Ban, UserCheck, Printer } from 'lucide-react';
 
 export const ContractList: React.FC = () => {
+  const [selectedPrintContract, setSelectedPrintContract] = useState<Contract | null>(null);
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -246,7 +248,16 @@ export const ContractList: React.FC = () => {
                     </div>
                   </div>
 
-                  {c.status === 'ACTIVE' && (
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      leftIcon={<Printer className="w-3.5 h-3.5" />}
+                      onClick={() => setSelectedPrintContract(c)}
+                    >
+                      Văn bản / Ký HĐ
+                    </Button>
+                    {c.status === 'ACTIVE' && (
                     <Button
                       variant="outline"
                       size="sm"
@@ -257,6 +268,7 @@ export const ContractList: React.FC = () => {
                       Chấm dứt hợp đồng
                     </Button>
                   )}
+                  </div>
                 </div>
               </Card>
             );
@@ -372,6 +384,15 @@ export const ContractList: React.FC = () => {
           variant="danger"
           confirmLabel="Chấm dứt hợp đồng"
           isLoading={terminateMutation.isPending}
+        />
+      )}
+
+      {selectedPrintContract && (
+        <ContractPrintModal
+          contract={selectedPrintContract}
+          isOpen={!!selectedPrintContract}
+          onClose={() => setSelectedPrintContract(null)}
+          isLandlord={true}
         />
       )}
     </div>

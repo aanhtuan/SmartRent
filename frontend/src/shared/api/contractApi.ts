@@ -33,4 +33,11 @@ export const contractApi = {
       body: JSON.stringify(data),
     });
   },
+
+  sign: async (id: string, signature: string): Promise<Contract> => {
+    return apiClient<Contract>(`/api/contracts/${id}/sign`, {
+      method: 'POST',
+      body: JSON.stringify({ signature }),
+    });
+  },
 };

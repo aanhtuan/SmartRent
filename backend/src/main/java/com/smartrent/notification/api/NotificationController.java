@@ -2,21 +2,26 @@ package com.smartrent.notification.api;
 
 import com.smartrent.identity.application.Actor;
 import com.smartrent.notification.application.NotificationService;
+import com.smartrent.notification.application.NotificationStreamService;
 import com.smartrent.notification.domain.Notification;
 import com.smartrent.shared.api.*;
 import java.time.Instant;
 import java.util.*;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
 @Profile("!foundation-test")
 @RequestMapping("/api/notifications")
 public class NotificationController {
   private final NotificationService service;
+  private final NotificationStreamService streamService;
 
-  public NotificationController(NotificationService s) {
+  public NotificationController(NotificationService s, NotificationStreamService streamService) {
     service = s;
+    this.streamService = streamService;
   }
 
   public record Patch(Boolean read) {}
@@ -37,6 +42,11 @@ public class NotificationController {
         n.readAt(),
         n.createdAt(),
         Map.of("type", n.sourceType(), "id", n.sourceId()));
+  }
+
+  @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+  public SseEmitter stream() {
+    return streamService.createEmitter(Actor.current().id());
   }
 
   @GetMapping

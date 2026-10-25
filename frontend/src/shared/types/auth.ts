@@ -23,3 +23,38 @@ export interface MeResponse {
   role: AccountRole;
   is_active: boolean;
 }
+
+export interface RegisterRequest {
+  email: string;
+  password: string;
+  role?: AccountRole;
+  full_name?: string;
+  phone_number?: string;
+}
+
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ResetPasswordRequest {
+  token: string;
+  new_password: string;
+}
+
+export interface ChangePasswordRequest {
+  current_password: string;
+  new_password: string;
+}
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  role: AccountRole;
+  full_name?: string | null;
+  phone_number?: string | null;
+}
+
+export interface UpdateProfileRequest {
+  full_name?: string;
+  phone_number?: string;
+}

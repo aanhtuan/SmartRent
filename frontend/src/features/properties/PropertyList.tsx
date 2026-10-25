@@ -15,14 +15,16 @@ import {
   Pagination,
 } from '../../shared/components/ui';
 import { propertyStatusMap, formatDate } from '../../shared/utils/format';
-import { Building2, Plus, Edit2, ArrowRight, MapPin, Calendar, Power } from 'lucide-react';
+import { Building2, Plus, Edit2, ArrowRight, MapPin, Calendar, Power, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { TariffSettingsModal } from './TariffSettingsModal';
 
 export const PropertyList: React.FC = () => {
   const [page, setPage] = useState(1);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [deactivatingProperty, setDeactivatingProperty] = useState<Property | null>(null);
+  const [tariffProperty, setTariffProperty] = useState<Property | null>(null);
 
   // Form states
   const [name, setName] = useState('');
@@ -208,6 +210,16 @@ export const PropertyList: React.FC = () => {
                     <Button
                       variant="ghost"
                       size="sm"
+                      onClick={() => setTariffProperty(p)}
+                      title="Cấu hình biểu phí điện nước"
+                      className="hover:text-amber-600"
+                      aria-label="Cấu hình biểu phí điện nước"
+                    >
+                      <Zap className="w-3.5 h-3.5 text-amber-500" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       onClick={() => setDeactivatingProperty(p)}
                       title={p.status === 'ACTIVE' ? 'Tạm ngừng hoạt động' : 'Kích hoạt lại'}
                       className={p.status === 'ACTIVE' ? 'hover:text-status-warning' : 'hover:text-status-success'}
@@ -324,6 +336,14 @@ export const PropertyList: React.FC = () => {
           </div>
         </form>
       </Dialog>
+
+      {/* Tariff Settings Dialog */}
+      <TariffSettingsModal
+        isOpen={!!tariffProperty}
+        propertyId={tariffProperty?.id ?? null}
+        propertyName={tariffProperty?.name}
+        onClose={() => setTariffProperty(null)}
+      />
 
       {/* Deactivate/Activate Confirmation */}
       {deactivatingProperty && (

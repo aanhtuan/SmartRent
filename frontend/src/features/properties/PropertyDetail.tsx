@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { propertyApi, roomApi } from '../../shared/api';
+import { RoomAssetModal } from './RoomAssetModal';
 import { Room, RoomCreateRequest, RoomUpdateRequest } from '../../shared/types';
 import {
   Card,
@@ -24,6 +25,7 @@ import {
   MapPin,
   Edit2,
   Trash2,
+  PackageCheck,
 } from 'lucide-react';
 
 export const PropertyDetail: React.FC = () => {
@@ -32,6 +34,7 @@ export const PropertyDetail: React.FC = () => {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingRoom, setEditingRoom] = useState<Room | null>(null);
   const [deletingRoom, setDeletingRoom] = useState<Room | null>(null);
+  const [inventoryRoom, setInventoryRoom] = useState<Room | null>(null);
 
   // Form states
   const [roomCode, setRoomCode] = useState('');
@@ -262,6 +265,16 @@ export const PropertyDetail: React.FC = () => {
                     <Button
                       variant="ghost"
                       size="sm"
+                      onClick={() => setInventoryRoom(room)}
+                      title="Kiểm kê tài sản phòng"
+                      className="hover:text-primary"
+                      aria-label="Kiểm kê tài sản phòng"
+                    >
+                      <PackageCheck className="w-3.5 h-3.5 text-primary" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       onClick={() => handleOpenEdit(room)}
                       title="Sửa tên phòng"
                       aria-label="Sửa tên phòng"
@@ -376,6 +389,15 @@ export const PropertyDetail: React.FC = () => {
           variant="danger"
           confirmLabel="Khóa phòng"
           isLoading={deleteRoomMutation.isPending}
+        />
+      )}
+
+      {inventoryRoom && (
+        <RoomAssetModal
+          roomId={inventoryRoom.id}
+          roomNumber={inventoryRoom.room_code}
+          isOpen={!!inventoryRoom}
+          onClose={() => setInventoryRoom(null)}
         />
       )}
     </div>

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { maintenanceApi, contractApi } from '../../shared/api';
+import { maintenanceApi, contractApi, mediaApi } from '../../shared/api';
 import {
   Maintenance,
   MaintenanceCreateRequest,
   MaintenancePreviewRequest,
   MaintenancePreviewResponse,
+  MediaFile,
 } from '../../shared/types';
 import {
   Card,
@@ -18,6 +19,7 @@ import {
   EmptyState,
   ErrorState,
   Pagination,
+  ImageUploader,
 } from '../../shared/components/ui';
 import {
   formatDate,
@@ -44,6 +46,7 @@ export const TenantMaintenance: React.FC = () => {
   const [step, setStep] = useState<'INPUT' | 'PREVIEW'>('INPUT');
   const [selectedRoomId, setSelectedRoomId] = useState('');
   const [description, setDescription] = useState('');
+  const [uploadedFiles, setUploadedFiles] = useState<MediaFile[]>([]);
   const [formError, setFormError] = useState<string | null>(null);
 
   // AI preview result
@@ -73,6 +76,12 @@ export const TenantMaintenance: React.FC = () => {
   } = useQuery({
     queryKey: ['maintenance', 'tenant-view', page],
     queryFn: () => maintenanceApi.list({ page, page_size: 10 }),
+  });
+
+  const { data: detailMedia } = useQuery({
+    queryKey: ['media', 'MAINTENANCE', selectedDetail?.id],
+    queryFn: () => mediaApi.list('MAINTENANCE', selectedDetail!.id),
+    enabled: !!selectedDetail?.id,
   });
 
   // AI Preview mutation
@@ -112,6 +121,7 @@ export const TenantMaintenance: React.FC = () => {
     setStep('INPUT');
     setSelectedRoomId('');
     setDescription('');
+    setUploadedFiles([]);
     setPreviewResult(null);
     setFormError(null);
   };
@@ -322,6 +332,16 @@ export const TenantMaintenance: React.FC = () => {
               helperText="Mô tả càng chi tiết sẽ giúp AI phân loại chính xác mức độ ưu tiên và vật tư cần chuẩn bị."
             />
 
+            <ImageUploader
+              targetType="MAINTENANCE"
+              files={uploadedFiles}
+              onFileUploaded={(newFile) => setUploadedFiles((prev) => [...prev, newFile])}
+              onFileDeleted={(deletedId) =>
+                setUploadedFiles((prev) => prev.filter((f) => f.id !== deletedId))
+              }
+              maxFiles={4}
+            />
+
             <div className="p-3 bg-surface-subtle border border-border rounded-control flex items-start gap-2.5 text-xs text-ink-secondary">
               <Sparkles className="w-4 h-4 text-accent shrink-0 mt-0.5" />
               <span>
@@ -507,6 +527,31 @@ export const TenantMaintenance: React.FC = () => {
                 {selectedDetail.original_description}
               </p>
             </div>
+
+            {detailMedia && detailMedia.length > 0 && (
+              <div className="space-y-1.5">
+                <span className="text-xs text-ink-muted block uppercase font-semibold">
+                  Hình ảnh minh chứng ({detailMedia.length})
+                </span>
+                <div className="grid grid-cols-3 gap-2">
+                  {detailMedia.map((m) => (
+                    <a
+                      key={m.id}
+                      href={m.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="block rounded-lg overflow-hidden border border-border aspect-square group bg-surface-subtle"
+                    >
+                      <img
+                        src={m.url}
+                        alt={m.file_name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                      />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {selectedDetail.ai_summary && (
               <div className="space-y-1">

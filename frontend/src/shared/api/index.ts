@@ -11,3 +11,4 @@ export * from './assistantApi';
 export * from './utilityApi';
 export * from './mediaApi';
 export * from './inventoryApi';
+export * from './analyticsApi';

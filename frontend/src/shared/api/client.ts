@@ -74,7 +74,10 @@ export async function apiClient<T>(path: string, options: RequestOptions = {}): 
 
   if (!response.ok) {
     let errorCode = 'UNKNOWN_ERROR';
-    let errorMessage = `Yêu cầu thất bại với mã trạng thái ${response.status}`;
+    let errorMessage =
+      response.status === 500 && !isJson
+        ? 'Không thể kết nối đến máy chủ Backend (Cổng 8080 chưa khởi động). Vui lòng kiểm tra lại dịch vụ Backend.'
+        : `Yêu cầu thất bại với mã trạng thái ${response.status}`;
 
     if (isJson) {
       try {

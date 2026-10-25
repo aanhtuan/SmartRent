@@ -1,5 +1,7 @@
 package com.smartrent.identity.persistence;
 
+import com.smartrent.identity.domain.Account;
+import com.smartrent.identity.domain.AccountRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -43,11 +45,24 @@ class UserRecord {
     }
 
     UserRecord(String email, String passwordHash, UserRole role) {
-        this.id = UUID.randomUUID();
+        this(UUID.randomUUID(), email, passwordHash, role);
+    }
+
+    UserRecord(Account account) {
+        this(account.id(), account.email(), account.passwordHash(), UserRole.valueOf(account.role().name()));
+        this.active = account.active();
+    }
+
+    private UserRecord(UUID id, String email, String passwordHash, UserRole role) {
+        this.id = id;
         this.email = email.strip().toLowerCase(Locale.ROOT);
         this.passwordHash = passwordHash;
         this.role = role;
         this.active = true;
+    }
+
+    Account toAccount() {
+        return new Account(id, email, passwordHash, AccountRole.valueOf(role.name()), active);
     }
 
     UUID id() { return id; }

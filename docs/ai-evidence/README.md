@@ -14,4 +14,6 @@ Store each authorized task record here, or link to its issue/PR/chat evidence. U
 - [C6-01 backend foundation](c6-01-backend-foundation.md): actual local implementation/build/test evidence; human review and remote CI pending.
 
 - [C6-03 database foundation](c6-03-database-foundation.md): PostgreSQL/identity increment merged through PR #10; local verification and push/PR hosted CI passed. Historical pre-merge evidence is retained.
-- [Backend-first Phase 0](backend-phase-0-audit.md): repository audit, fresh baseline verification, C6-03 status reconciliation and proposed implementation/approval gates; business implementation has not started.
+- [B01/C6-04 final security review](c6-04-security-review.md): source review, reproduced configuration defects, fixes, 54-test verification and logical Git publication groups; no Git publication performed.
+- [B01/C6-04 development account provisioning](c6-04-dev-account-provisioning.md): G1 approval, local implementation, PostgreSQL rollback/concurrency tests and Argon2id benchmark; hosted CI and delivery pending.
+- [Backend-first Phase 0](backend-phase-0-audit.md): repository audit, fresh baseline verification, C6-03 status reconciliation and proposed implementation/approval gates; Phase 0 itself did not implement business behavior.

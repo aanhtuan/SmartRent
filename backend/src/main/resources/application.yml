@@ -42,6 +42,10 @@ server:
     include-stacktrace: never
     include-exception: false
 
+smartrent:
+  dev-accounts:
+    enabled: ${SMARTRENT_DEV_ACCOUNTS_ENABLED:false}
+
 management:
   endpoints:
     access:

@@ -270,7 +270,7 @@ tục query trong một PostgreSQL transaction đã bị abort.
 - [ ] PO duyệt G2/G3/G4 trước increment phụ thuộc.
 - [ ] Specify: FR/US/API/schema + normal/denied/failure AC; cập nhật contract nếu gói
       đã duyệt thay payload/policy. Không tự coi toàn bộ bảng đề xuất là approved.
-- [ ] Plan: branch `codex/<task-slug>` và file/interface/test scope nhỏ; giữ dirty work.
+- [ ] Plan: branch `feat/<task-slug>` hoặc `fix/<task-slug>` và file/interface/test scope nhỏ; giữ dirty work.
       Chưa commit Phase 0 thì tiếp tục giữ diff ở branch hiện tại hoặc tách worktree
       an toàn; không switch/drop/stash mù để bắt đầu increment khác.
 - [ ] Viết focused failing tests cho hành vi mới; chứng minh fail đúng lý do.
@@ -314,3 +314,15 @@ DEFERRED, full-stack/G1–G5 course completion không được suy ra từ backe
 - [Gemini data terms](https://ai.google.dev/gemini-api/terms): cần chốt data tier/egress trước live; không suy diễn privacy từ việc có API key.
 
 Không có provider request, secret generation hoặc thay Cloud settings trong Phase 0.
+
+## 9. B01 local implementation checkpoint — 2026-10-25
+
+B01/C6-04 đang IN_REVIEW trên `feat/c6-04-dev-account-provisioning`, base giữ
+`5ee6e8f`. Phase 0/G1 đã được review local và lưu snapshot trước khi sửa backend;
+chưa commit vì người dùng không cho phép. Provisioning opt-in, Argon2id versioned,
+transaction/idempotency và PostgreSQL concurrency đã triển khai. `verify` thực chạy
+54 tests, 0 failures/errors/skipped; 22 tests cũ còn pass. Xem [bằng chứng B01](../ai-evidence/c6-04-dev-account-provisioning.md).
+
+Đây không phải completion của B02, full G1 hoặc toàn backend. JWT TTL 30 phút mới
+là policy được duyệt, chưa có code JWT. G2/G3/G4 vẫn chờ PO; không đổi V1 hay volume.
+Hosted CI, human review và delivery chưa chạy. Không commit/push/merge/deploy.

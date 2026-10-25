@@ -4,7 +4,7 @@
 
 SmartRent brings rental records, maintenance workflows, and tenant communication into one system. Its approved design combines a modular Spring Boot backend, a React frontend, PostgreSQL, and Gemini assistance behind a backend-controlled AI boundary.
 
-> **Development status:** Sprint 0, C6-01 and C6-03 are merged into `main` (PR #9 and PR #10); C6-03 push and pull-request Backend CI passed before merge `5ee6e8f`. Business endpoints remain planned; no deployment is configured. The current [backend-first plan](docs/chapter-06-ai-programming/backend-implementation-plan.md) defers frontend work and awaits the applicable product-policy approvals.
+> **Development status:** Sprint 0, C6-01 and C6-03 are merged into `main` (PR #9 and PR #10); C6-03 push and pull-request Backend CI passed before merge `5ee6e8f`. B01/C6-04 provisioning is implemented and verified locally, with commit/hosted CI pending. Business endpoints remain planned; no deployment is configured. The current [backend-first plan](docs/chapter-06-ai-programming/backend-implementation-plan.md) defers frontend work and awaits the applicable product-policy approvals.
 
 [Roadmap](docs/project-roadmap.md) · [Backend guide](backend/README.md) · [Implementation backlog](docs/chapter-06-ai-programming/implementation-backlog.md) · [API contracts](design/api/README.md)
 
@@ -34,7 +34,7 @@ Rental operations involve linked information: properties and rooms, tenant profi
 
 Landlords and property managers are the management users; tenants access their own rental information and requests. AI supports classification and information retrieval. It is an integration component, not an actor with independent permission to access data or change business state.
 
-The current runnable increment adds PostgreSQL identity persistence to the backend foundation. It validates startup, Flyway migrations, JPA mappings, a minimal health endpoint and default-deny HTTP security. It does not yet provide a usable rental management application.
+The current runnable increment adds PostgreSQL identity persistence and explicitly enabled dev/test account provisioning to the backend foundation. It validates startup, Flyway migrations, JPA mappings, a minimal health endpoint and default-deny HTTP security. It does not yet provide a usable rental management application.
 
 ## Implementation status
 
@@ -44,11 +44,12 @@ The following distinguishes executable behavior from configuration and design in
 |---|---|---|
 | Requirements, UX, architecture and API designs | Documented; new product-policy details await named review gates | [Sprint 0 decisions](docs/sprint-0-decisions.md) |
 | Backend foundation — C6-01 | Merged through [PR #9](https://github.com/aanhtuan/SmartRent/pull/9) | [Source](backend/src/main/java/com/smartrent/), [task evidence](docs/ai-evidence/c6-01-backend-foundation.md) |
-| Backend build, context and HTTP checks | Verified locally: 22 tests, zero failures/errors/skipped | [Tests](backend/src/test/java/com/smartrent/), [verification instructions](#testing) |
+| Backend build, context and HTTP checks | Verified locally: 54 tests, zero failures/errors/skipped (2026-10-25) | [Tests](backend/src/test/java/com/smartrent/), [verification instructions](#testing) |
 | Backend GitHub Actions | C6-01 and C6-03 hosted CI passed at their merged revisions | [Workflow](.github/workflows/backend-ci.yml) |
 | Frontend — C6-02 | Deferred in the backend-first track; no frontend application or package manifest | [Backlog](docs/chapter-06-ai-programming/implementation-backlog.md) |
 | Database infrastructure — C6-03 | Merged through [PR #10](https://github.com/aanhtuan/SmartRent/pull/10) — PostgreSQL, role separation and V1 users only | [Logical schema](design/database/schema.md) |
-| Accounts, JWT and rental business features | Planned; no authentication or business endpoints implemented | [API contracts](design/api/README.md) |
+| Synthetic account provisioning — B01/C6-04 | Implemented and verified locally; disabled by default; commit/hosted CI pending | [B01 evidence](docs/ai-evidence/c6-04-dev-account-provisioning.md), [opt-in guide](backend/README.md#explicit-devtest-account-provisioning--b01c6-04) |
+| JWT and rental business features | Planned; no authentication or business endpoints implemented | [API contracts](design/api/README.md) |
 | Gemini classification and Assistant | Planned; no provider calls or integration implemented | [AI boundary](design/architecture/smartrent-architecture.md) |
 | Deployment / continuous delivery | Not configured or deployed | Current work targets local development |
 
@@ -263,7 +264,7 @@ From `backend/`, with JDK 21 active:
 ./mvnw --batch-mode --no-transfer-progress verify
 ```
 
-The maintained suite currently contains **22 tests**. Eleven retained C6-01 checks cover the database-free HTTP foundation using a test-only profile; six PostgreSQL integration tests cover real migrations, JPA, constraints, privileges and repeat migration; five parameterized checks cover missing/blank configuration. Production startup uses the datasource and Hibernate validation. Reports are generated in `backend/target/surefire-reports/`.
+The maintained suite currently contains **54 tests**. The 22 retained C6-01/C6-03 checks cover the database-free HTTP foundation, real PostgreSQL migrations/JPA/privileges, and database configuration. B01 adds ten PostgreSQL provisioning tests, eighteen environment/credential configuration cases, and four hashing/diagnostic tests. Production startup uses the datasource and Hibernate validation. Reports are generated in `backend/target/surefire-reports/`.
 
 To resolve dependencies/plugins ahead of a build:
 
@@ -294,7 +295,7 @@ See [AGENTS.md](AGENTS.md), the [security boundary design](docs/chapter-05-softw
 | Milestone | Scope | Current state |
 |---|---|---|
 | Sprint 0 | Normalize requirements/design contracts; establish agent rules and delivery gates | Baseline merged; named product-policy gates remain applicable |
-| Sprint 1 — C6-01–05 | Backend/frontend foundation, CI, database, provisioning and authentication | C6-01/C6-03 merged; C6-02 deferred in current track; C6-04/05 backend planned |
+| Sprint 1 — C6-01–05 | Backend/frontend foundation, CI, database, provisioning and authentication | C6-01/C6-03 merged; C6-02 deferred in current track; C6-04 locally verified, review/delivery pending; C6-05 planned |
 | Sprint 2 — C6-06–07 | Property/Room and Tenant Profile | Planned; ownership/model/lifecycle review required |
 | Sprint 3 — C6-08–09 | Contract and Payment | Planned; overlap and billing gates required |
 | Sprint 4 — C6-10–13 | Maintenance, notifications and Gemini preview/confirmation | Planned; UX, AI and delivery-policy gates required |
@@ -335,7 +336,7 @@ Repository-local Codex/Gemini rules and task-specific skills are described in th
 ## Contributing
 
 1. Read [AGENTS.md](AGENTS.md), the relevant task/AC and its requirement, UX, API and schema sources.
-2. Confirm scope and pending decisions; preserve existing local changes. Use a focused task branch, normally `codex/<task-slug>`.
+2. Confirm scope and pending decisions; preserve existing local changes. Use a focused task branch, using a task-type prefix such as `feat/<task-slug>` or `fix/<task-slug>`.
 3. Implement one reviewable change within the approved stack and module boundaries. Do not expand requirements or start another task implicitly.
 4. Run the applicable checks and report passed, failed and not-run results. Update relevant documentation/evidence within the authorized scope.
 5. Review the actual diff for correctness, isolation, secrets, migrations and AI safety; resolve findings before requesting review.

@@ -17,6 +17,7 @@
     <properties>
         <java.version>21</java.version>
         <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
+        <bouncycastle.version>1.86</bouncycastle.version>
     </properties>
     <!-- The pinned Boot parent manages compatible starter, transitive and test versions. -->
     <dependencies>
@@ -40,6 +41,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>${bouncycastle.version}</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>

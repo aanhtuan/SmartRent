@@ -70,7 +70,7 @@ For agent configuration, plan only approved configuration files. For application
 
 ## Implement
 
-Use a small task branch from the agreed main revision, normally `codex/<task-slug>`. Check main freshness before branching; do not merge unrelated work or reset a user's checkout. Preserve dirty work before switching or use an explicitly authorized isolated checkout.
+Use a small task branch from the agreed main revision, using a task-type prefix such as `feat/<task-slug>` or `fix/<task-slug>`. Check main freshness before branching; do not merge unrelated work or reset a user's checkout. Preserve dirty work before switching or use an explicitly authorized isolated checkout.
 
 Keep one writer per checkout. Codex and Gemini may exchange implementation/review roles, but do not edit concurrently. Keep changes within the task; do not install remote skills, add endpoints or resolve product conflicts as incidental fixes.
 

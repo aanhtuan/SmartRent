@@ -2,7 +2,7 @@
 
 ## Contract
 
-C6-01 is MERGED through PR #9 with hosted CI passed. C6-03 is MERGED through PR #10, commit `5ee6e8f`, after successful push and PR Backend CI. C6-02 and UI portions are deferred in the current backend-first mission; C6-04–16 backend slices are planned, not implemented. No live AI calls or other domain tables are implemented. Read [roadmap](../project-roadmap.md), [decisions](../sprint-0-decisions.md) and [workflow](../agent-workflow.md). Paths below are task contracts, not proof of completed features.
+C6-01 is MERGED through PR #9 with hosted CI passed. C6-03 is MERGED through PR #10, commit `5ee6e8f`, after successful push and PR Backend CI. C6-02 and UI portions are deferred in the current backend-first mission; B01/C6-04 is implemented and locally verified (54 backend tests); review/delivery and hosted CI are pending. C6-05–16 backend slices are planned, not implemented. No live AI calls or other domain tables are implemented. Read [roadmap](../project-roadmap.md), [decisions](../sprint-0-decisions.md) and [workflow](../agent-workflow.md). Paths below are task contracts, not proof of completed features.
 
 Every task: specify AC -> select skill/contracts -> write meaningful tests for business behavior -> implement -> run checks -> review -> record real evidence. Setup checks may be smoke/build checks rather than tests mirroring configuration. DoD: AC demonstrated, appropriate commands/results recorded, security/architecture reviewed, docs/evidence updated, limitations stated. Commit/push/merge/deploy are separate authorization. No unavailable command is reported passing.
 
@@ -43,6 +43,8 @@ The user authorized completing the backend incrementally. The [backend implement
 - Verification: `docker compose config`, local startup/health check, `./mvnw verify` with real PostgreSQL Testcontainers; record Docker prerequisites. DoD: common DoD plus migration checksums/history preserved.
 
 ### C6-04 — Synthetic dev/test account provisioning
+
+- Status: IN_REVIEW — B01 implemented locally on 2026-10-25; `verify` passed 54 tests, including 32 new cases. G1 PO approval recorded on that date. No commit/push/hosted CI yet; see [B01 evidence](../ai-evidence/c6-04-dev-account-provisioning.md).
 
 - Sources: FR-01 valid-account assumption; D08. Skill: smartrent-backend.
 - Depends: C6-03; accepted seed/security policy at G1. Tenant-to-landlord assignment is deferred to C6-07 if D03 is not accepted yet.

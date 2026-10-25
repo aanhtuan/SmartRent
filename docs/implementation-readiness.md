@@ -2,7 +2,7 @@
 
 ## Current implementation snapshot — 2026-10-25
 
-C6-01 and C6-03 are merged through PR #9/#10. Current backend contains Java 21/Spring Boot foundation, PostgreSQL/Compose, identity-only Flyway V1 and Testcontainers. The Phase 0 baseline verify passed 22 tests on this date. Authentication and domain APIs remain unimplemented. Local Compose database is stopped; its data/volume was not changed. See the [backend-first implementation plan](chapter-06-ai-programming/backend-implementation-plan.md) and [audit evidence](ai-evidence/backend-phase-0-audit.md). G1–G4 policy approvals remain pending; no UI or deployment is authorized.
+C6-01 and C6-03 are merged through PR #9/#10. Current backend contains Java 21/Spring Boot foundation, PostgreSQL/Compose, identity-only Flyway V1 and Testcontainers. The Phase 0 baseline verify passed 22 tests on this date. Authentication and domain APIs remain unimplemented. Local Compose database is stopped; its data/volume was not changed. See the [backend-first implementation plan](chapter-06-ai-programming/backend-implementation-plan.md) and [audit evidence](ai-evidence/backend-phase-0-audit.md). G1 backend policy was PO-approved on 2026-10-25 (JWT TTL 30 minutes); G2/G3/G4 remain pending. B01/C6-04 is implemented locally with 54 passing backend tests; review/delivery and hosted CI are pending. See [B01 evidence](ai-evidence/c6-04-dev-account-provisioning.md). No UI or deployment is authorized.
 
 ## Historical Sprint 0 snapshot (preserved)
 

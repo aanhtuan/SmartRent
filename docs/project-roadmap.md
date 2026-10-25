@@ -1,8 +1,24 @@
 # SmartRent — AI-assisted end-to-end development roadmap
 
+## Continuous backend checkpoint — 2026-10-25
+
+PO authorized B02–B15 continuous implementation using documented working baselines,
+followed by B16/B17 stabilization. These backend slices now have local source and
+verification; frontend remains deferred. Read [current completion evidence](ai-evidence/backend-completion.md)
+for actual results, dependencies, assumptions and remaining hosted CI/live AI gates.
+At that implementation checkpoint, no commit, push, merge, deployment or retained-volume migration had been performed. Local commits were later explicitly authorized; remote publication remains pending.
+Earlier snapshots below are historical, not the current feature inventory.
+
+
 ## Start here
 
-Current state: Sprint 0, C6-01 (PR #9) and C6-03 (PR #10, merge `5ee6e8f`) are MERGED. C6-03 push and PR Backend CI passed; see [C6-03 evidence](ai-evidence/c6-03-database-foundation.md). The full G1 gate remains incomplete. The current user-authorized mission is backend-first: audit/plan, then implement approved backend increments. Frontend C6-02 and UI portions are deferred. G1 backend policy is approved as of 2026-10-25 (JWT TTL 30 minutes); G2/G3/G4 remain pending. B01 is IN_REVIEW: implemented and locally verified (54 tests), with delivery/hosted CI pending; no commit/push/merge/deploy is authorized.
+Current state: C6-01 and C6-03 are merged through PR #9/#10 (base `5ee6e8f`).
+B01–B15 backend functionality and B16/B17 local stabilization exist in the current
+working tree; the latest complete local verification passed 99 tests. Git delivery,
+hosted CI for this revision, independent review, live Gemini evaluation and deployment
+validation remain pending. Frontend/UI is deferred. G1 was approved on 2026-10-25;
+G2–G4 working baselines were used under the later continuous-implementation instruction,
+without fabricating individual sign-offs. See [completion evidence](ai-evidence/backend-completion.md).
 
 Read [AGENTS.md](../AGENTS.md), [agent workflow](agent-workflow.md), [decision baseline](sprint-0-decisions.md), [readiness report](implementation-readiness.md), then the task in [Chapter 6 backlog](chapter-06-ai-programming/implementation-backlog.md). The stack and Modular Monolith architecture remain approved; new business defaults are working baseline until their named review gates pass.
 
@@ -37,7 +53,7 @@ Sprint numbers express dependency order, not calendar deadlines. Estimate after 
 
 C6-01 -> C6-03 -> C6-04 -> C6-05 -> C6-06 -> C6-07 -> C6-08 -> C6-09 -> C6-10 -> C6-11 -> C6-12 -> C6-13 -> C6-14 -> C6-15 -> C6-16.
 
-C6-02 frontend foundation depends only on G0 and approved tooling; C6-05 consumes it. Sequence is for task dependencies, not authorization for parallel agents. Integrate UI with each owning feature; do not defer all integration to the final sprint.
+C6-02 frontend foundation depends only on G0 and approved tooling; the login UI consumes it. The original full-stack dependency order remains a reference. The current PO instruction deliberately defers frontend and UI integration until backend delivery; backend completion does not satisfy UI acceptance criteria.
 
 ## Skills by task
 
@@ -53,7 +69,7 @@ C6-02 frontend foundation depends only on G0 and approved tooling; C6-05 consume
 
 ## Readiness and task states
 
-Use TODO, READY, IN_PROGRESS, BLOCKED, IN_REVIEW, VERIFIED and MERGED. READY requires accepted dependencies/decisions and authorized execution scope. VERIFIED requires fresh relevant checks and review evidence; it is not MERGED. Only actual runs change runtime status. C6-01 is MERGED; C6-03 is MERGED through PR #10. C6-02 is deferred for the backend-first mission; B01/C6-04 is IN_REVIEW after local implementation/verification; C6-05–16 backend slices are planned, with applicable policy approvals pending. Completing backend slices does not mark UI tasks complete. No task is MERGED merely because files exist locally.
+Use TODO, READY, IN_PROGRESS, BLOCKED, IN_REVIEW, VERIFIED and MERGED. READY requires accepted dependencies/decisions and authorized execution scope. VERIFIED requires fresh relevant checks and review evidence; it is not MERGED. Only actual runs change runtime status. C6-01 is MERGED; C6-03 is MERGED through PR #10. C6-02 is deferred for the backend-first mission; B01/C6-04 is IN_REVIEW after local implementation/verification; C6-05–16 backend slices now have local implementation/verification evidence; hosted delivery and full-stack criteria remain open. Completing backend slices does not mark UI tasks complete. No task is MERGED merely because files exist locally.
 
 Each PR/task includes problem/outcome, canonical FR/US, WB decisions accepted for this task, files, normal/denied/failure AC, migration/API compatibility, exact checks, evidence links and residual risks. Before tool handoff include branch/base SHA, dirty-file ownership, pending decisions and permission scope.
 
@@ -63,4 +79,8 @@ Use [Chapter 7 review plan](chapter-07-code-review-refactoring/review-plan.md), 
 
 ## Next authorized step
 
-Complete the [backend-first audit and implementation plan](chapter-06-ai-programming/backend-implementation-plan.md). The user authorized local incremental backend development after audit and approval of dependent G1–G4 policies. G1 was approved on 2026-10-25. Review B01/C6-04 using its [local evidence](ai-evidence/c6-04-dev-account-provisioning.md); B02 follows separately, and later modules still require their own policy gates. Do not implement frontend or infer full course-gate completion. No push/merge/deploy, data deletion or repository-protection changes are authorized. Preserve existing migrations/data; D03 fields require the accepted G2 forward migration.
+Prepare logical backend commits and reproducible operation on `feature/backend-completion`.
+Do not add features. Review [completion evidence](ai-evidence/backend-completion.md),
+verify documentation/security/migrations and the [backup procedure](../backend/README.md#back-up-a-retained-database-before-applying-pending-migrations).
+Commit, push, merge and deployment require their separate authorization. Preserve the
+retained volume and applied V1; frontend and live AI evaluation remain deferred.

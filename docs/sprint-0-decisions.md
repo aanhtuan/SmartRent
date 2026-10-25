@@ -103,3 +103,30 @@ Approval is policy authority, not proof that JWT/authentication or any gate has
 been implemented. B01 does not introduce B02 endpoints, JWT configuration, CORS,
 CSRF changes or login rate limiting. The original Phase 0 proposals and the PO's
 TTL amendment are distinguished; no later business policy is implicitly accepted.
+
+## PO workflow amendment — 2026-10-25
+
+The PO explicitly authorizes continuous backend-first B02–B15 implementation using
+existing approved decisions and documented working baselines, then B16/B17 full
+stabilization. Routine increment approvals/review pauses are removed. This supersedes
+earlier per-increment hold instructions for this mission; it does not rewrite the
+historical status of individual G2/G3/G4 sign-offs. Material policy/security conflicts
+still require a decision. No frontend, Git publication, deployment, destructive data
+operation, real PII/provider egress or live evaluation authorization is inferred.
+
+The implementation follows the concrete section-3 working baseline in the backend
+plan: one-manager tenant assignment; inclusive room reservations and business clock;
+manual whole-VND monthly billing; maintenance cancellation reason; five-minute signed
+preview and scoped idempotency retry; best-effort post-commit notifications including
+PAYMENT_UPDATED; bounded input/provider limits and Gemini 3.8 Flash / v1beta route.
+These are documented implementation assumptions under the new PO instruction, not
+claims of historical approval or measured live AI accuracy. See [completion evidence](ai-evidence/backend-completion.md).
+
+## Local Git commit authorization — 2026-10-25
+
+The PO explicitly authorized local commits for the existing backend implementation
+on `feature/backend-completion`, including dependency-driven consolidation of the
+proposed 18 groups. Preserve Phase 0/B01, all 177 candidate paths, immutable V1,
+forward V2–V9 and local PostgreSQL data. Run Java 21 Maven verify on final HEAD.
+This does not authorize new features, push, opening a PR, merge or deployment.
+See the [execution record](ai-evidence/backend-delivery-preparation.md#local-commit-execution--2026-10-25).

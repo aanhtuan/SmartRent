@@ -1,6 +1,16 @@
 # SmartRent — Implementation readiness and Sprint 0 closure
 
-## Current implementation snapshot — 2026-10-25
+## Continuous backend checkpoint — 2026-10-25
+
+PO authorized B02–B15 continuous implementation using documented working baselines,
+followed by B16/B17 stabilization. These backend slices now have local source and
+verification; frontend remains deferred. Read [current completion evidence](ai-evidence/backend-completion.md)
+for actual results, dependencies, assumptions and remaining hosted CI/live AI gates.
+At that implementation checkpoint, no commit, push, merge, deployment or retained-volume migration had been performed. Local commits were later explicitly authorized; remote publication remains pending.
+Earlier snapshots below are historical, not the current feature inventory.
+
+
+## Historical Phase 0 / B01 snapshot — 2026-10-25 (superseded)
 
 C6-01 and C6-03 are merged through PR #9/#10. Current backend contains Java 21/Spring Boot foundation, PostgreSQL/Compose, identity-only Flyway V1 and Testcontainers. The Phase 0 baseline verify passed 22 tests on this date. Authentication and domain APIs remain unimplemented. Local Compose database is stopped; its data/volume was not changed. See the [backend-first implementation plan](chapter-06-ai-programming/backend-implementation-plan.md) and [audit evidence](ai-evidence/backend-phase-0-audit.md). G1 backend policy was PO-approved on 2026-10-25 (JWT TTL 30 minutes); G2/G3/G4 remain pending. B01/C6-04 is implemented locally with 54 passing backend tests; review/delivery and hosted CI are pending. See [B01 evidence](ai-evidence/c6-04-dev-account-provisioning.md). No UI or deployment is authorized.
 

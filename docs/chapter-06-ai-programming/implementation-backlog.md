@@ -1,8 +1,18 @@
 # Chapter 6 — Dependency-ordered implementation backlog
 
+## Continuous backend checkpoint — 2026-10-25
+
+PO authorized B02–B15 continuous implementation using documented working baselines,
+followed by B16/B17 stabilization. These backend slices now have local source and
+verification; frontend remains deferred. Read [current completion evidence](../ai-evidence/backend-completion.md)
+for actual results, dependencies, assumptions and remaining hosted CI/live AI gates.
+At that implementation checkpoint, no commit, push, merge, deployment or retained-volume migration had been performed. Local commits were later explicitly authorized; remote publication remains pending.
+Earlier snapshots below are historical, not the current feature inventory.
+
+
 ## Contract
 
-C6-01 is MERGED through PR #9 with hosted CI passed. C6-03 is MERGED through PR #10, commit `5ee6e8f`, after successful push and PR Backend CI. C6-02 and UI portions are deferred in the current backend-first mission; B01/C6-04 is implemented and locally verified (54 backend tests); review/delivery and hosted CI are pending. C6-05–16 backend slices are planned, not implemented. No live AI calls or other domain tables are implemented. Read [roadmap](../project-roadmap.md), [decisions](../sprint-0-decisions.md) and [workflow](../agent-workflow.md). Paths below are task contracts, not proof of completed features.
+C6-01 and C6-03 are MERGED through PR #9/#10. B01–B15 backend slices are implemented locally; B16/B17 local stabilization passed 99 tests on 2026-10-25. Git publication, hosted CI at this revision, independent review and live Gemini evaluation remain pending. C6-02 and every UI criterion remain deferred. Read [completion evidence](../ai-evidence/backend-completion.md), [roadmap](../project-roadmap.md), [decisions](../sprint-0-decisions.md) and [workflow](../agent-workflow.md). The original full-stack task contracts below remain acceptance references; local backend results do not close frontend or full course gates.
 
 Every task: specify AC -> select skill/contracts -> write meaningful tests for business behavior -> implement -> run checks -> review -> record real evidence. Setup checks may be smoke/build checks rather than tests mirroring configuration. DoD: AC demonstrated, appropriate commands/results recorded, security/architecture reviewed, docs/evidence updated, limitations stated. Commit/push/merge/deploy are separate authorization. No unavailable command is reported passing.
 
@@ -44,7 +54,7 @@ The user authorized completing the backend incrementally. The [backend implement
 
 ### C6-04 — Synthetic dev/test account provisioning
 
-- Status: IN_REVIEW — B01 implemented locally on 2026-10-25; `verify` passed 54 tests, including 32 new cases. G1 PO approval recorded on that date. No commit/push/hosted CI yet; see [B01 evidence](../ai-evidence/c6-04-dev-account-provisioning.md).
+- Historical B01-only checkpoint: IN_REVIEW — B01 implemented locally on 2026-10-25; `verify` passed 54 tests, including 32 new cases. G1 PO approval recorded on that date. No commit/push/hosted CI yet; see [B01 evidence](../ai-evidence/c6-04-dev-account-provisioning.md).
 
 - Sources: FR-01 valid-account assumption; D08. Skill: smartrent-backend.
 - Depends: C6-03; accepted seed/security policy at G1. Tenant-to-landlord assignment is deferred to C6-07 if D03 is not accepted yet.

@@ -10,6 +10,10 @@ Store each authorized task record here, or link to its issue/PR/chat evidence. U
 
 ## Records
 
+- [Backend delivery preparation](backend-delivery-preparation.md): proposed atomic commit manifest, fresh final-code verification and safe retained-volume backup instructions; no publication.
+
+- [Continuous backend implementation and stabilization](backend-completion.md): B02–B17, actual local verification and remaining release/dependency/live-AI gates.
+
 - [Sprint 0 documentation normalization](sprint-0-normalization.md): current task, verification section completed only after checks run.
 - [C6-01 backend foundation](c6-01-backend-foundation.md): actual local implementation/build/test evidence; human review and remote CI pending.
 

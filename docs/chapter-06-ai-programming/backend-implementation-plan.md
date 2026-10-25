@@ -326,3 +326,15 @@ transaction/idempotency và PostgreSQL concurrency đã triển khai. `verify` t
 Đây không phải completion của B02, full G1 hoặc toàn backend. JWT TTL 30 phút mới
 là policy được duyệt, chưa có code JWT. G2/G3/G4 vẫn chờ PO; không đổi V1 hay volume.
 Hosted CI, human review và delivery chưa chạy. Không commit/push/merge/deploy.
+
+## 10. Updated PO execution authorization — 2026-10-25
+
+PO requests continuous backend-first implementation B02–B15, then stabilization
+B16/B17. Routine review pauses are removed. Documented working baselines in section
+3 are implementation guidance under this instruction; this is not retroactive
+individual G2/G3/G4 sign-off or proof of completion. Record assumptions and stop
+only for material unresolved policy/security conflicts. Keep G1 TTL 30 minutes.
+Branch: `feature/backend-completion`; preserved Phase 0/B01 snapshot under
+`/tmp/smartrent-before-backend-continuation`. Latest B01 result is 54 tests (the
+request's 47 count predates the security review). No commit/push/merge/deploy
+permission is inferred. Only ephemeral PostgreSQL is used for verification.

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 test.describe('SmartRent Authentication and Navigation Journey', () => {
   test('redirects root to /login and renders branded login page', async ({ page }) => {
@@ -16,7 +16,7 @@ test.describe('SmartRent Authentication and Navigation Journey', () => {
     await expect(page.getByRole('button', { name: /Khách thuê mẫu/i })).toBeVisible();
   });
 
-  test('fills credentials via demo button and attempts login', async ({ page }) => {
+  test('selects a demo email and submits an explicitly supplied test password', async ({ page }) => {
     // Mock the backend login endpoint for deterministic browser E2E
     await page.route('**/api/auth/login', async (route) => {
       await route.fulfill({
@@ -108,6 +108,7 @@ test.describe('SmartRent Authentication and Navigation Journey', () => {
 
     // Click demo account button
     await page.getByRole('button', { name: /Chủ trọ mẫu/i }).click();
+    await page.getByLabel(/^Mật khẩu/i).fill('synthetic-browser-fixture');
 
     // Verify email input filled
     const emailInput = page.getByLabel(/Email/i);

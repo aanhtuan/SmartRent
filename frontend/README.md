@@ -111,3 +111,22 @@ Tạo tệp `.env` trong thư mục `frontend/` (hoặc cấu hình tại thời
 # URL máy chủ backend API (mặc định proxy qua Vite tới 127.0.0.1:8080)
 VITE_API_BASE_URL=http://localhost:8080
 ```
+
+## Pre-merge verification — 2026-10-25
+
+Synthetic email shortcuts never supply a password. Enter the separately provisioned
+account password manually; no runtime account password belongs in a browser bundle.
+The original branch contained synthetic password literals; they were removed from
+current source during PR #12 preparation. Original commits were retained, so old
+literals remain in published history. Existing local account credentials were not
+changed. Rotate exposed development credentials before sharing that environment;
+this merge does not authorize credential rotation or production use.
+
+Run `npm run build`, `npm run lint`, `npm run test:run`, then
+`npm run test:e2e`. Build includes TypeScript checking. Playwright starts its own
+preview at `http://127.0.0.1:4173` and will not reuse the user's development server.
+Browser tests abort and fail on any API request without an explicit mock. They
+verify UI journeys with synthetic fixtures, not real backend/DB/provider integration.
+Fresh local results: 25 Vitest cases and 7 Chromium Playwright cases passed, with
+build/typecheck and ESLint also passing. Hosted frontend CI runs typecheck, lint,
+Vitest and build; it does not run these browser tests.

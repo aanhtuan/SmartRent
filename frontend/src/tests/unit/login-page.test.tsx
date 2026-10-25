@@ -45,13 +45,19 @@ describe('LoginPage', () => {
     expect(screen.getByRole('button', { name: /Đăng nhập/i })).toBeInTheDocument();
   });
 
-  it('populates credentials when clicking demo account shortcuts', () => {
+  it('prefills only the synthetic email and clears passwords when switching accounts', () => {
     renderComponent();
     const landlordDemoBtn = screen.getByRole('button', { name: /Chủ trọ mẫu/i });
     fireEvent.click(landlordDemoBtn);
 
     const emailInput = screen.getByLabelText(/Email/i) as HTMLInputElement;
     expect(emailInput.value).toBe('landlord.one@smartrent.test');
+    const passwordInput = screen.getByLabelText(/^Mật khẩu/i) as HTMLInputElement;
+    expect(passwordInput.value).toBe('');
+    fireEvent.change(passwordInput, { target: { value: 'synthetic-unit-fixture' } });
+    fireEvent.click(screen.getByRole('button', { name: /Khách thuê mẫu/i }));
+    expect(emailInput.value).toBe('tenant.one@smartrent.test');
+    expect(passwordInput.value).toBe('');
   });
 
   it('submits credentials and redirects to landlord dashboard on success', async () => {
@@ -67,6 +73,9 @@ describe('LoginPage', () => {
 
     renderComponent();
     fireEvent.click(screen.getByRole('button', { name: /Chủ trọ mẫu/i }));
+    fireEvent.change(screen.getByLabelText(/^Mật khẩu/i), {
+      target: { value: 'synthetic-unit-fixture' },
+    });
     fireEvent.click(screen.getByRole('button', { name: /Đăng nhập/i }));
 
     await waitFor(() => {

@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { test } from './fixtures';
 
 test.describe('Visual Inspection and Screenshots Across Viewports', () => {
   test('captures representative screens for visual QA review', async ({ page }) => {
@@ -186,6 +186,7 @@ test.describe('Visual Inspection and Screenshots Across Viewports', () => {
     // 3. Desktop Landlord Dashboard
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.getByRole('button', { name: /Chủ trọ mẫu/i }).click();
+    await page.getByLabel(/^Mật khẩu/i).fill('synthetic-browser-fixture');
     await page.getByRole('button', { name: /Đăng nhập/i }).click();
     await page.waitForURL(/.*\/landlord\/dashboard/);
     await page.waitForSelector('text=2 khu trọ');

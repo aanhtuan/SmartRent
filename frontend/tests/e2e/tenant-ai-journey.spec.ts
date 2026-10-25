@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 test.describe('Tenant Maintenance AI Preview and Assistant Journey', () => {
   test.beforeEach(async ({ page }) => {
@@ -64,7 +64,7 @@ test.describe('Tenant Maintenance AI Preview and Assistant Journey', () => {
     });
 
     // Mock maintenance requests
-    await page.route('**/api/maintenance-requests', async (route) => {
+    await page.route(/\/api\/maintenance-requests(?:\?.*)?$/, async (route) => {
       if (route.request().method() === 'POST') {
         const body = JSON.parse(route.request().postData() || '{}');
         await route.fulfill({
@@ -151,6 +151,7 @@ test.describe('Tenant Maintenance AI Preview and Assistant Journey', () => {
   test('tenant logs in and views tailored dashboard', async ({ page }) => {
     await page.goto('/login');
     await page.getByRole('button', { name: /Khách thuê mẫu/i }).click();
+    await page.getByLabel(/^Mật khẩu/i).fill('synthetic-browser-fixture');
     await page.getByRole('button', { name: /Đăng nhập/i }).click();
 
     await expect(page).toHaveURL(/.*\/tenant\/dashboard/);
@@ -163,6 +164,7 @@ test.describe('Tenant Maintenance AI Preview and Assistant Journey', () => {
   }) => {
     await page.goto('/login');
     await page.getByRole('button', { name: /Khách thuê mẫu/i }).click();
+    await page.getByLabel(/^Mật khẩu/i).fill('synthetic-browser-fixture');
     await page.getByRole('button', { name: /Đăng nhập/i }).click();
 
     // Navigate to maintenance page
@@ -197,6 +199,7 @@ test.describe('Tenant Maintenance AI Preview and Assistant Journey', () => {
   test('tenant asks AI Assistant a question and receives answer', async ({ page }) => {
     await page.goto('/login');
     await page.getByRole('button', { name: /Khách thuê mẫu/i }).click();
+    await page.getByLabel(/^Mật khẩu/i).fill('synthetic-browser-fixture');
     await page.getByRole('button', { name: /Đăng nhập/i }).click();
 
     await page.getByRole('link', { name: /Trợ lý AI/i }).first().click();

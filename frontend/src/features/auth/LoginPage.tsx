@@ -57,11 +57,10 @@ export const LoginPage: React.FC = () => {
   const fillDemoAccount = (role: 'LANDLORD' | 'TENANT') => {
     if (role === 'LANDLORD') {
       setEmail('landlord.one@smartrent.test');
-      setPassword('Landlord@123');
     } else {
       setEmail('tenant.one@smartrent.test');
-      setPassword('Tenant@123');
     }
+    setPassword('');
     setError(null);
   };
 
@@ -136,6 +135,9 @@ export const LoginPage: React.FC = () => {
               <Sparkles className="w-3.5 h-3.5 text-accent" />
               <span>Tài khoản thử nghiệm (Môi trường phát triển)</span>
             </div>
+            <p className="text-xs text-ink-muted mb-3">
+              Chọn email mẫu và nhập mật khẩu do người quản trị cung cấp.
+            </p>
             <div className="grid grid-cols-2 gap-2.5">
               <button
                 type="button"

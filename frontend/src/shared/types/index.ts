@@ -10,3 +10,4 @@ export * from './notification';
 export * from './assistant';
 export * from './utility';
 export * from './media';
+export * from './inventory';

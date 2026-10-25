@@ -16,9 +16,10 @@ import {
   Pagination,
 } from '../../shared/components/ui';
 import { formatVND, formatDate, paymentStatusMap } from '../../shared/utils/format';
-import { CreditCard, Plus, CheckCircle2, Clock, Zap, Landmark } from 'lucide-react';
+import { CreditCard, Plus, CheckCircle2, Clock, Zap, Landmark, ShieldCheck } from 'lucide-react';
 import { MeterReadingModal } from './MeterReadingModal';
 import { LandlordBankModal } from './LandlordBankModal';
+import { DepositModal } from './DepositModal';
 
 export const PaymentList: React.FC = () => {
   const [page, setPage] = useState(1);
@@ -27,6 +28,7 @@ export const PaymentList: React.FC = () => {
   const [isMeterReadingOpen, setIsMeterReadingOpen] = useState(false);
   const [isBankModalOpen, setIsBankModalOpen] = useState(false);
   const [markingPaidPayment, setMarkingPaidPayment] = useState<Payment | null>(null);
+  const [depositContractId, setDepositContractId] = useState<string | null>(null);
 
   // Form states
   const [contractId, setContractId] = useState('');
@@ -278,6 +280,16 @@ export const PaymentList: React.FC = () => {
                         </Badge>
                       </td>
                       <td className="py-3.5 px-4 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setDepositContractId(p.contract_id)}
+                            title="Quản lý tiền cọc hợp đồng"
+                            aria-label="Quản lý tiền cọc hợp đồng"
+                          >
+                            <ShieldCheck className="w-3.5 h-3.5 text-primary" />
+                          </Button>
                         {p.status !== 'PAID' ? (
                           <Button
                             variant="secondary"
@@ -290,6 +302,7 @@ export const PaymentList: React.FC = () => {
                         ) : (
                           <span className="text-xs text-ink-muted italic">Đã hoàn thành</span>
                         )}
+                        </div>
                       </td>
                     </tr>
                   );
@@ -425,6 +438,15 @@ export const PaymentList: React.FC = () => {
           variant="primary"
           confirmLabel="Đã nhận tiền"
           isLoading={markPaidMutation.isPending}
+        />
+      )}
+
+      {depositContractId && (
+        <DepositModal
+          contractId={depositContractId}
+          isOpen={!!depositContractId}
+          onClose={() => setDepositContractId(null)}
+          isLandlord={true}
         />
       )}
     </div>

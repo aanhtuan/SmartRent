@@ -1,8 +1,24 @@
 # SmartRent — AI-assisted end-to-end development roadmap
 
+## Continuous backend checkpoint — 2026-10-25
+
+PO authorized B02–B15 continuous implementation using documented working baselines,
+followed by B16/B17 stabilization. These backend slices now have local source and
+verification; frontend remains deferred. Read [current completion evidence](ai-evidence/backend-completion.md)
+for actual results, dependencies, assumptions and remaining hosted CI/live AI gates.
+At that implementation checkpoint, no commit, push, merge, deployment or retained-volume migration had been performed. Local commits were later explicitly authorized; remote publication remains pending.
+Earlier snapshots below are historical, not the current feature inventory.
+
+
 ## Start here
 
-Current state: Sprint 0 and C6-01 merged (PR #9, hosted CI passed). C6-03 database/identity foundation is locally VERIFIED (2026-10-12, agent self-review); see [C6-03 evidence](ai-evidence/c6-03-database-foundation.md). Its hosted CI and human merge review remain pending. The full G1 gate is incomplete; C6-02 and C6-04–16 are TODO. No additional task or publication is authorized by this roadmap.
+Current state: C6-01 and C6-03 are merged through PR #9/#10 (base `5ee6e8f`).
+B01–B15 backend functionality and B16/B17 local stabilization exist in the current
+working tree; the latest complete local verification passed 99 tests. Git delivery,
+hosted CI for this revision, independent review, live Gemini evaluation and deployment
+validation remain pending. Frontend/UI is deferred. G1 was approved on 2026-10-25;
+G2–G4 working baselines were used under the later continuous-implementation instruction,
+without fabricating individual sign-offs. See [completion evidence](ai-evidence/backend-completion.md).
 
 Read [AGENTS.md](../AGENTS.md), [agent workflow](agent-workflow.md), [decision baseline](sprint-0-decisions.md), [readiness report](implementation-readiness.md), then the task in [Chapter 6 backlog](chapter-06-ai-programming/implementation-backlog.md). The stack and Modular Monolith architecture remain approved; new business defaults are working baseline until their named review gates pass.
 
@@ -12,7 +28,7 @@ Specify -> Plan -> Implement -> Test -> Review -> Merge.
 
 1. Specify observable AC, canonical FR/US, resource contracts, scope, authorization and current base SHA; preserve dirty work.
 2. Plan the smallest independently reviewable increment, exact files/interfaces, tests and applicable skill references. A blocked business decision blocks only dependent tasks.
-3. Implement on an authorized `codex/<task-slug>` branch, one writer per checkout. Domain modules contain API/application/domain/persistence responsibilities; no cross-module internal repositories or provider SDKs in domain.
+3. Implement on an authorized task branch such as `feat/<task-slug>`, one writer per checkout. Domain modules contain API/application/domain/persistence responsibilities; no cross-module internal repositories or provider SDKs in domain.
 4. Test normal, denied and failure behavior against the actual build. Use deterministic AI fakes; live checks are separate.
 5. Review the actual diff for correctness, isolation, migration/transaction safety and unmet AC. Resolve findings and rerun affected checks. Model agreement is not proof; human review approves policy.
 6. Merge only under explicit permission and configured repository protections. Record actual commands/results and remaining limitations.
@@ -37,7 +53,7 @@ Sprint numbers express dependency order, not calendar deadlines. Estimate after 
 
 C6-01 -> C6-03 -> C6-04 -> C6-05 -> C6-06 -> C6-07 -> C6-08 -> C6-09 -> C6-10 -> C6-11 -> C6-12 -> C6-13 -> C6-14 -> C6-15 -> C6-16.
 
-C6-02 frontend foundation depends only on G0 and approved tooling; C6-05 consumes it. Sequence is for task dependencies, not authorization for parallel agents. Integrate UI with each owning feature; do not defer all integration to the final sprint.
+C6-02 frontend foundation depends only on G0 and approved tooling; the login UI consumes it. The original full-stack dependency order remains a reference. The current PO instruction deliberately defers frontend and UI integration until backend delivery; backend completion does not satisfy UI acceptance criteria.
 
 ## Skills by task
 
@@ -53,7 +69,7 @@ C6-02 frontend foundation depends only on G0 and approved tooling; C6-05 consume
 
 ## Readiness and task states
 
-Use TODO, READY, IN_PROGRESS, BLOCKED, IN_REVIEW, VERIFIED and MERGED. READY requires accepted dependencies/decisions and authorized execution scope. VERIFIED requires fresh relevant checks and review evidence; it is not MERGED. Only actual runs change runtime status. C6-01 is MERGED; C6-03 is locally VERIFIED; hosted CI/human merge review pending; C6-02 and C6-04–16 are TODO. No task is MERGED merely because files exist locally.
+Use TODO, READY, IN_PROGRESS, BLOCKED, IN_REVIEW, VERIFIED and MERGED. READY requires accepted dependencies/decisions and authorized execution scope. VERIFIED requires fresh relevant checks and review evidence; it is not MERGED. Only actual runs change runtime status. C6-01 is MERGED; C6-03 is MERGED through PR #10. C6-02 is deferred for the backend-first mission; B01/C6-04 is IN_REVIEW after local implementation/verification; C6-05–16 backend slices now have local implementation/verification evidence; hosted delivery and full-stack criteria remain open. Completing backend slices does not mark UI tasks complete. No task is MERGED merely because files exist locally.
 
 Each PR/task includes problem/outcome, canonical FR/US, WB decisions accepted for this task, files, normal/denied/failure AC, migration/API compatibility, exact checks, evidence links and residual risks. Before tool handoff include branch/base SHA, dirty-file ownership, pending decisions and permission scope.
 
@@ -63,4 +79,8 @@ Use [Chapter 7 review plan](chapter-07-code-review-refactoring/review-plan.md), 
 
 ## Next authorized step
 
-C6-03 local verification and agent self-review are complete. Next: human review of C6-03 and its evidence before Git publication. Commit/push/merge/deploy and starting subsequent tasks require separate approval. G2–G4 policy reviews remain independent; D03 provisioning fields were excluded. Preserve implementation and existing local data during handoff.
+Prepare logical backend commits and reproducible operation on `feature/backend-completion`.
+Do not add features. Review [completion evidence](ai-evidence/backend-completion.md),
+verify documentation/security/migrations and the [backup procedure](../backend/README.md#back-up-a-retained-database-before-applying-pending-migrations).
+Commit, push, merge and deployment require their separate authorization. Preserve the
+retained volume and applied V1; frontend and live AI evaluation remain deferred.

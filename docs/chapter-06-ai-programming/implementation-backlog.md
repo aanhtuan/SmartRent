@@ -1,10 +1,24 @@
 # Chapter 6 — Dependency-ordered implementation backlog
 
+## Continuous backend checkpoint — 2026-10-25
+
+PO authorized B02–B15 continuous implementation using documented working baselines,
+followed by B16/B17 stabilization. These backend slices now have local source and
+verification; frontend remains deferred. Read [current completion evidence](../ai-evidence/backend-completion.md)
+for actual results, dependencies, assumptions and remaining hosted CI/live AI gates.
+At that implementation checkpoint, no commit, push, merge, deployment or retained-volume migration had been performed. Local commits were later explicitly authorized; remote publication remains pending.
+Earlier snapshots below are historical, not the current feature inventory.
+
+
 ## Contract
 
-C6-01 is MERGED through PR #9 with hosted CI passed. C6-03 is locally VERIFIED with PostgreSQL, V1 identity migration and passing verification; hosted CI/human merge review are pending. C6-02 and C6-04–16 are TODO. No live AI calls or other domain tables are implemented. Read [roadmap](../project-roadmap.md), [decisions](../sprint-0-decisions.md) and [workflow](../agent-workflow.md). Paths below are task contracts, not proof of completed features.
+C6-01 and C6-03 are MERGED through PR #9/#10. B01–B15 backend slices are implemented locally; B16/B17 local stabilization passed 99 tests on 2026-10-25. Git publication, hosted CI at this revision, independent review and live Gemini evaluation remain pending. C6-02 and every UI criterion remain deferred. Read [completion evidence](../ai-evidence/backend-completion.md), [roadmap](../project-roadmap.md), [decisions](../sprint-0-decisions.md) and [workflow](../agent-workflow.md). The original full-stack task contracts below remain acceptance references; local backend results do not close frontend or full course gates.
 
 Every task: specify AC -> select skill/contracts -> write meaningful tests for business behavior -> implement -> run checks -> review -> record real evidence. Setup checks may be smoke/build checks rather than tests mirroring configuration. DoD: AC demonstrated, appropriate commands/results recorded, security/architecture reviewed, docs/evidence updated, limitations stated. Commit/push/merge/deploy are separate authorization. No unavailable command is reported passing.
+
+## Backend-first execution scope — 2026-10-25
+
+The user authorized completing the backend incrementally. The [backend implementation plan](backend-implementation-plan.md) extracts B01–B17 from the existing tasks below; it does not renumber requirements or approve WB policies. C6-05 backend depends on C6-01/C6-03/C6-04 and accepted G1 security policy, while its login UI/Playwright acceptance remains deferred with C6-02. Apply the same backend-versus-UI distinction to C6-06–16. Keep the original full-stack task contracts for later frontend work; backend-only verification cannot close their UI criteria or the full G1–G5 course gates.
 
 ## First five tasks
 
@@ -29,7 +43,7 @@ Every task: specify AC -> select skill/contracts -> write meaningful tests for b
 
 ### C6-03 — PostgreSQL, Compose and identity migration
 
-- Status: VERIFIED locally (2026-10-12), fresh local verification and agent self-review; hosted CI/human merge review pending; [evidence](../ai-evidence/c6-03-database-foundation.md). User approved the presented version, email, role/mapping, privilege and JDK plan. No commit/push/merge/deploy authorization. D03 fields excluded.
+- Status: MERGED (2026-10-12) through [PR #10](https://github.com/aanhtuan/SmartRent/pull/10), commit `5ee6e8f`; local checks, push and PR Backend CI passed; [evidence](../ai-evidence/c6-03-database-foundation.md). User approved the presented version, email, role/mapping, privilege and JDK plan. C6-03 delivery was separately authorized and completed; this does not authorize publication of later increments. D03 fields excluded.
 
 - Sources: schema users, Flyway/JPA conventions. Skills: smartrent-backend + PostgreSQL.
 - Depends: C6-01; accepted database version/config at G1.
@@ -39,6 +53,8 @@ Every task: specify AC -> select skill/contracts -> write meaningful tests for b
 - Verification: `docker compose config`, local startup/health check, `./mvnw verify` with real PostgreSQL Testcontainers; record Docker prerequisites. DoD: common DoD plus migration checksums/history preserved.
 
 ### C6-04 — Synthetic dev/test account provisioning
+
+- Historical B01-only checkpoint: IN_REVIEW — B01 implemented locally on 2026-10-25; `verify` passed 54 tests, including 32 new cases. G1 PO approval recorded on that date. No commit/push/hosted CI yet; see [B01 evidence](../ai-evidence/c6-04-dev-account-provisioning.md).
 
 - Sources: FR-01 valid-account assumption; D08. Skill: smartrent-backend.
 - Depends: C6-03; accepted seed/security policy at G1. Tenant-to-landlord assignment is deferred to C6-07 if D03 is not accepted yet.

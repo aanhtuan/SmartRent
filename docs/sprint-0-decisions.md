@@ -25,7 +25,7 @@ Keep Modular Monolith + Layered Architecture + REST API + PostgreSQL + AI Integr
 | D05 | Business dates use Asia/Ho_Chi_Minh; timestamps use UTC. Effective tenancy requires ACTIVE contract, start_date <= today <= end_date, and active property/room. Occupancy derives from effective contracts; INACTIVE is administrative. Clients cannot force OCCUPIED/AVAILABLE contrary to tenancy. Future contracts do not grant present access. | WB; G2 lifecycle review. |
 | D06 | Single-tenant room MVP. Inclusive rental dates; next contract starts after previous end date. ACTIVE contractual reservations cannot overlap for the same room, including future periods. Expiry/termination must release dates only through approved lifecycle rules. | WB; G2 accepts interval/termination policy before migration. |
 | D07 | Manager creates monthly billing manually, amount in VND, no automatic rent calculation/proration. `billing_period` is first of month; `due_date` explicit; amount nonnegative, whole VND. Tenant reads own records. Manager records PAID manually; this is not banking confirmation. PAID is terminal and amount immutable in MVP; corrections require a future approved flow. OVERDUE derives from unpaid + today > due_date. | WB; G3 billing review. |
-| D08 | No public registration/refresh/logout API is added. Dev/test provisioning is idempotent and environment-restricted, with synthetic data and supplied credentials. Inactive users are denied. MVP browser token lives in memory; reload/expiry requires login. No browser persistent token storage; CORS allowlist; CSRF decision follows actual bearer-only flow. JWT signing algorithm, issuer/audience and expiry must be selected at G1. | Existing-account scope preserved; security settings require G1 review. |
+| D08 | No public registration/refresh/logout API is added. Dev/test provisioning is idempotent and environment-restricted, with synthetic data and supplied credentials. Inactive users are denied. MVP browser token lives in memory; reload/expiry requires login. No browser persistent token storage; CORS allowlist; CSRF decision follows actual bearer-only flow. JWT backend settings are approved in the G1 decision below. | Backend G1 approved 2026-10-25; implementation/verification and frontend remain separate. |
 | D09 | Gemini only. Validate category, priority, nonblank bounded summary, string-array missing_information and confidence in [0,1]. Missing-info output includes confidence. No numeric confidence cutoff for MVP; confidence alone grants no authority. Use deterministic fake adapters in CI; pin model/API/SDK and review data egress before live usage. | WB output policy; model/cost/data approval at G4. |
 | D10 | In-app notification after commit; no rollback of business state on delivery failure. In-process event alone is best-effort across crashes, not durable delivery. No full status timeline is promised; show current state/audit timestamps. | WB; G4 explicitly accepts delivery limitation or schedules durability design. |
 | D11 | WF-07 = Missing Information; WF-08 = AI Unavailable. | Documentation normalization. |
@@ -61,7 +61,7 @@ Keep Modular Monolith + Layered Architecture + REST API + PostgreSQL + AI Integr
 
 ## Decisions still needing execution-time selection
 
-G1: compatible pinned dependency versions, Maven Wrapper, JWT configuration and actual CORS origins. G2: accept/replace D02–D06, especially one-landlord profile scope and future termination. G3: accept/replace D07. G4: accept D04/D09/D10, preview/duplicate/cancellation details, model/version, evaluation criteria and live data/cost scope. All are explicit entry gates in the [roadmap](project-roadmap.md), not hidden assumptions.
+G1 backend policy is approved below (2026-10-25); actual implementation/verification and any future CORS origin values remain explicit configuration work. G2: accept/replace D02–D06, especially one-landlord profile scope and future termination. G3: accept/replace D07. G4: accept D04/D09/D10, preview/duplicate/cancellation details, model/version, evaluation criteria and live data/cost scope. All are explicit entry gates in the [roadmap](project-roadmap.md), not hidden assumptions.
 
 ## Change and evidence policy
 
@@ -78,3 +78,55 @@ The user approved the C6-03 plan in the current chat with “duyệt”, includi
 - Separate checksum-verified local JDK 21 toolchain; keep system Java unchanged.
 
 These choices are limited to C6-03 and do not accept D03 or other G2–G4 working-baseline policies. V1 contains identity only; provisioning fields require a later approved forward migration. C6-03 approval does not authorize Git publication or deployment.
+
+
+## G1 backend security and identity — PO APPROVED 2026-10-25
+
+Reviewer: Product Owner (the user, explicit decision in the current conversation).
+Scope: B01/C6-04 and B02/C6-05 backend policy. Execution now starts with B01 only.
+This does not approve G2, G3, G4, frontend or publication/deployment.
+
+| Decision | Approved policy |
+|---|---|
+| Provisioning / environment | Explicit dev/test-only and enable flag, disabled by default. Exactly two synthetic LANDLORD and two synthetic TENANT slots under `.test`; credentials supplied externally, no usable defaults. Profiles outside dev/test cannot run provisioning. |
+| Idempotency / atomicity | One application transaction; preserve existing IDs, credentials, roles and active status. A matching existing account is not updated or rehashed. Credential/role conflict aborts the batch; never reset or claim an existing account. No landlord assignment/D03 fields. |
+| Password hashing | Versioned Argon2id through Spring PasswordEncoder. Retain the reviewed starting parameters: 16-byte salt, 32-byte hash, 19 MiB memory, 2 iterations, parallelism 1. Benchmark and report actual measurements; do not silently retune or log passwords/hashes. |
+| JWT | RS256 with externally configured RSA signing keys >=2048 bits. `iss=urn:smartrent:backend`, `aud=smartrent-api`, UUID subject, iat/nbf/exp/jti validation, 30-second maximum clock skew. **Access-token TTL is 30 minutes**, superseding the draft 15 minutes. No implicit key generation or client-driven issuer discovery. |
+| Verified account | Recheck DB active/role on protected requests; a signed token cannot grant access to an inactive account. |
+| Authentication boundary | Stateless bearer header only; no public registration, refresh or logout endpoints, cookie/basic/form authentication. |
+| CORS / CSRF | Explicit origin allowlists, no wildcard/credentialed CORS. Backend-first default has no cross-origin allowlist until actual origins are configured. Verify bearer-only/no ambient credentials before disabling CSRF for REST in B02. |
+| Login abuse | Retain the reviewed bounded per-process proposal: 5 failures/15 minutes per IP+normalized email; 30 attempts/15 minutes/IP. Injectable clock, bounded entries/TTL, Retry-After; do not trust forwarding headers without a trusted proxy. No distributed-limit claim. |
+| Errors | Same safe 401 UNAUTHENTICATED for unknown email, wrong password and inactive account; malformed 400, rate-limited 429 with Retry-After, approved error envelope. No credentials/hash/token/internal-error disclosure. |
+| Database / delivery | Preserve runtime/migration role separation and V1 history/data. No volume deletion. No commit, push, merge or deploy without separate authorization. |
+
+Approval is policy authority, not proof that JWT/authentication or any gate has
+been implemented. B01 does not introduce B02 endpoints, JWT configuration, CORS,
+CSRF changes or login rate limiting. The original Phase 0 proposals and the PO's
+TTL amendment are distinguished; no later business policy is implicitly accepted.
+
+## PO workflow amendment — 2026-10-25
+
+The PO explicitly authorizes continuous backend-first B02–B15 implementation using
+existing approved decisions and documented working baselines, then B16/B17 full
+stabilization. Routine increment approvals/review pauses are removed. This supersedes
+earlier per-increment hold instructions for this mission; it does not rewrite the
+historical status of individual G2/G3/G4 sign-offs. Material policy/security conflicts
+still require a decision. No frontend, Git publication, deployment, destructive data
+operation, real PII/provider egress or live evaluation authorization is inferred.
+
+The implementation follows the concrete section-3 working baseline in the backend
+plan: one-manager tenant assignment; inclusive room reservations and business clock;
+manual whole-VND monthly billing; maintenance cancellation reason; five-minute signed
+preview and scoped idempotency retry; best-effort post-commit notifications including
+PAYMENT_UPDATED; bounded input/provider limits and Gemini 3.8 Flash / v1beta route.
+These are documented implementation assumptions under the new PO instruction, not
+claims of historical approval or measured live AI accuracy. See [completion evidence](ai-evidence/backend-completion.md).
+
+## Local Git commit authorization — 2026-10-25
+
+The PO explicitly authorized local commits for the existing backend implementation
+on `feature/backend-completion`, including dependency-driven consolidation of the
+proposed 18 groups. Preserve Phase 0/B01, all 177 candidate paths, immutable V1,
+forward V2–V9 and local PostgreSQL data. Run Java 21 Maven verify on final HEAD.
+This does not authorize new features, push, opening a PR, merge or deployment.
+See the [execution record](ai-evidence/backend-delivery-preparation.md#local-commit-execution--2026-10-25).

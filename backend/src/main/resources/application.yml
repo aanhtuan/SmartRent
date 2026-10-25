@@ -27,6 +27,8 @@ spring:
     placeholders:
       applicationRole: ${DB_USERNAME}
   jackson:
+    deserialization:
+      fail-on-unknown-properties: true
     property-naming-strategy: SNAKE_CASE
     serialization:
       write-dates-as-timestamps: false
@@ -42,6 +44,10 @@ server:
     include-stacktrace: never
     include-exception: false
 
+smartrent:
+  dev-accounts:
+    enabled: ${SMARTRENT_DEV_ACCOUNTS_ENABLED:false}
+
 management:
   endpoints:
     access:
@@ -54,3 +60,8 @@ management:
       access: read-only
       show-details: never
       show-components: never
+
+# PostgreSQL error detail may contain a rejected row (PII/hash). Expose only safe API errors.
+logging:
+  level:
+    org.hibernate.engine.jdbc.spi.SqlExceptionHelper: OFF

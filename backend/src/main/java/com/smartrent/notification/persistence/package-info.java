@@ -1,5 +1,6 @@
 /**
- * After-commit notifications. Module-owned persistence adapters: implement domain/application ports; no cross-module table access.
- * C6-01 reserves this boundary; no business behavior is implemented here.
+ * After-commit notifications. Module-owned persistence adapters: implement domain/application
+ * ports; no cross-module table access. This boundary follows the approved architecture; completion
+ * evidence records executable scope.
  */
 package com.smartrent.notification.persistence;

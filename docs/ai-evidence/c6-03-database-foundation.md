@@ -203,3 +203,20 @@ Local env, toolchain/cache and machine-specific IDE settings stay ignored.
 These commits package the already verified final application/test state; the
 earlier Maven and startup results are not presented as new runs at commit time.
 The final commit list and target branch are returned to the user for push approval.
+
+## Delivery confirmation — reconciled 2026-10-25
+
+The user subsequently approved push and then explicitly requested merge into main.
+PR [#10](https://github.com/aanhtuan/SmartRent/pull/10) merged on 2026-10-12 at
+`5ee6e8fa3d747bf2404539e73bbbe8cd9d9a617f`, retaining `be9ff8b`, `448b187` and
+`4d037c4`. Both the [push CI](https://github.com/aanhtuan/SmartRent/actions/runs/38262445259)
+and [pull-request CI](https://github.com/aanhtuan/SmartRent/actions/runs/38262783855)
+completed successfully for head `4d037c40435c7ac3aca13dd39d0b1946efc84354` before merge.
+GitHub PR/run metadata and remote main were checked again during the backend-first
+Phase 0 audit on 2026-10-25. C6-03 is MERGED; the pre-merge pending statements above
+are retained as dated history, not current delivery status.
+
+The [Phase 0 audit](backend-phase-0-audit.md) records a fresh 22-test baseline run.
+Local Compose PostgreSQL is currently stopped; prior healthy startup evidence is
+historical. No local volume/data or migration was reset, and no later backend
+feature or full product gate is completed by this delivery confirmation.

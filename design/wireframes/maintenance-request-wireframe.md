@@ -1,5 +1,7 @@
 # 4.2 Wireframe – Maintenance Request
 
+> Sprint 0 revision: see the [decision baseline](../../docs/sprint-0-decisions.md). New ownership/lifecycle/billing/preview policies are working baseline until the named review gate passes; this document is a design artifact, not implemented behavior. Canonical FR IDs follow Requirement Analysis.
+
 ## Mục tiêu
 
 Wireframe low-fidelity cho luồng tạo và xử lý yêu cầu sửa chữa. Nội dung tập trung vào cấu trúc thông tin, thao tác chính và trạng thái ngoại lệ, không quy định giao diện cuối cùng.
@@ -75,7 +77,7 @@ Kết quả AI chỉ là hỗ trợ; người thuê có thể chỉnh sửa thô
 | Trạng thái: PROCESSING                          |
 | Mô tả gốc: Ống nước trong phòng tắm bị rò rỉ.   |
 | Tóm tắt AI: Có rò rỉ tại ống nước phòng tắm.   |
-| Timeline: PENDING -- PROCESSING -- COMPLETED   |
+| Status overview: PENDING -- PROCESSING -- COMPLETED   |
 +------------------------------------------------+
 ```
 
@@ -112,3 +114,7 @@ Người thuê chỉ theo dõi. Chủ nhà có thêm `Bắt đầu xử lý` và
 - Luôn giữ mô tả gốc cùng kết quả AI.
 - AI không tự thay đổi trạng thái hoặc thực hiện hành động nghiệp vụ quan trọng.
 - Có fallback cho thiếu thông tin và lỗi dịch vụ AI.
+
+## Preview/manual interaction baseline
+
+WF-04 review does not persist a request. Confirm calls the create API after reauthorization. Missing information is WF-07; unavailable AI is WF-08. The unavailable preview first offers explicit manual submission; the “request received/PENDING” panel appears only after successful confirmation. State overview is illustrative progression/current state, not an implemented timestamped history table.

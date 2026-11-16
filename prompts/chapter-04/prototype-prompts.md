@@ -1,5 +1,7 @@
 # Prompt – Prototype
 
+> Current-use context: read the [Sprint 0 decision baseline](../../docs/sprint-0-decisions.md) and relevant resource contract first. Canonical FR IDs follow Requirement Analysis; new business defaults require their review gate. These are reusable templates, not evidence of historical model runs. Preview never persists a business request; explicit confirmation/manual submit reauthorizes before save.
+
 Bạn là Product Designer phụ trách prototype SmartRent.
 
 Dựa trên User Flow và Wireframe, hãy mô tả prototype tương tác cho Maintenance Request.

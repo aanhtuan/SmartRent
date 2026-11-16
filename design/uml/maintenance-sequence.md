@@ -1,110 +1,39 @@
-# SmartRent – Maintenance Request Sequence Diagram
+# SmartRent — Maintenance Request Sequence
 
-## Main flow: valid AI classification
+Working baseline D04/D09/D10; review at G4. See [API contract](../api/maintenance-api.md).
 
 ```mermaid
 sequenceDiagram
   actor T as Tenant
   participant F as Frontend
-  participant API as Maintenance API
-  participant Auth as Authentication & Authorization
-  participant M as Maintenance Service
-  participant A as AI Integration Adapter
-  participant P as AI Provider
-  participant V as AI Result Validator
+  participant M as Authorized Maintenance API/Service
+  participant A as Gemini Adapter + Validator
   participant DB as PostgreSQL
-  participant N as Notification Service
-  participant L as Manager / Landlord
-
-  T->>F: Enter room and original description
-  F->>API: Submit Maintenance Request (HTTPS REST)
-  API->>Auth: Authenticate and authorize tenant-room-contract
-  Auth-->>API: Authorized user context
-  API->>M: Create request use case
-  M->>A: Classify minimal permitted input
-  A->>P: Classification request
-  P-->>A: Category, priority, summary, confidence, missing information
-  A-->>V: Parsed provider result
-  V->>V: Validate schema, enums, confidence and rules
-  V-->>M: Valid AI suggestion
-  M->>DB: Persist request as PENDING + validated AI metadata
-  DB-->>M: Commit succeeded
-  M->>N: Request-created event after commit
-  N->>DB: Persist notification
-  N-->>L: Notify new request
-  M-->>API: Request ID and response
-  API-->>F: Created PENDING request
-  F-->>T: Show request / AI information as assistance
-```
-
-## Alternative: missing information
-
-```mermaid
-sequenceDiagram
-  actor T as Tenant
-  participant F as Frontend
-  participant API as Maintenance API
-  participant Auth as Authentication & Authorization
-  participant M as Maintenance Service
-  participant A as AI Integration Adapter
-  participant P as AI Provider
-  participant V as AI Result Validator
-
-  T->>F: Submit description
-  F->>API: Submit request data
-  API->>Auth: Authenticate and authorize
-  Auth-->>API: Authorized
-  API->>M: Start classification
-  M->>A: Send minimal permitted input
-  A->>P: Classification request
-  P-->>A: missing_information + low confidence
-  A-->>V: Parsed result
-  V-->>M: Valid result: more information required
-  M-->>API: Required fields/questions
-  API-->>F: Request more information
-  F-->>T: Show missing-information state
-```
-
-This branch does not allow an AI provider to infer unavailable facts. After Tenant supplies information, the authorized classification flow repeats.
-
-## Alternative: AI unavailable or invalid output
-
-```mermaid
-sequenceDiagram
-  actor T as Tenant
-  participant F as Frontend
-  participant API as Maintenance API
-  participant Auth as Authentication & Authorization
-  participant M as Maintenance Service
-  participant A as AI Integration Adapter
-  participant P as AI Provider
-  participant V as AI Result Validator
-  participant DB as PostgreSQL
-  participant N as Notification Service
-  participant L as Manager / Landlord
-
-  T->>F: Submit description
-  F->>API: Submit request data
-  API->>Auth: Authenticate and authorize
-  Auth-->>API: Authorized
-  API->>M: Create request use case
-  M->>A: Attempt classification
-  A->>P: Provider request
-  alt timeout/provider unavailable
-    P--x A: No response / error
-    A-->>M: Classification unavailable
-  else output invalid
-    P-->>A: Invalid/unparseable result
-    A-->>V: Parsed attempt
-    V-->>M: Rejected result
+  participant N as Notification
+  T->>F: Enter original description and room
+  F->>M: POST preview
+  M->>M: Authenticate, authorize effective tenancy
+  M->>A: Minimal permitted context (no DB transaction held)
+  A-->>M: Valid suggestion / missing info / unavailable / invalid
+  M-->>F: Bound preview token, state and expiry; no business row/event
+  alt missing information
+    F-->>T: Ask for details or offer manual submit
+    T->>F: Edit and re-preview, or select manual submit
+  else sufficient result or provider failure
+    F-->>T: Review suggestion or manual fallback
   end
-  M->>DB: Persist original description as PENDING, no trusted classification
-  DB-->>M: Commit succeeded
-  M->>N: Request-created event after commit
-  N-->>L: Notify manual handling queue
-  M-->>API: Created request with fallback state
-  API-->>F: AI unavailable; request received
-  F-->>T: Show PENDING / manual handling
+  T->>F: Explicit confirm
+  F->>M: POST create with submission key; optional preview token
+  M->>M: Reauthorize; verify token/input/expiry if supplied
+  M->>DB: Short transaction: key/digest check and create PENDING
+  DB-->>M: Commit, or return existing identical submission
+  opt newly committed request
+    M-->>N: Post-commit event
+    N->>DB: Persist recipient notification
+  end
+  M-->>F: 201 new / 200 identical retry
 ```
 
-The sequence deliberately has no `AI Provider → PostgreSQL`, `AI Provider → Authorization`, or `AI Provider → complete request` message. Status processing/complete is a later, separately authorized Manager/Landlord action through the Maintenance Service.
+No token means manual create without Gemini call (NOT_REQUESTED). Missing-info preview is not persistence; submit manually without token or provide details. Provider-error preview never creates a request automatically. Reclassification on existing requests validates metadata only; failure returns 502 without changing prior state/result. Business status transitions are separate manager-authorized calls. Tenant history remains visible after expiry, while new create requires current eligibility.
+
+Notification event is best-effort in-process across crashes; no durable outbox/recovery guarantee is claimed. There is no AI -> DB/auth/financial confirmation/completion path.

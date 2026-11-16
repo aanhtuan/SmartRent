@@ -1,8 +1,10 @@
 # 5.5 API Design – SmartRent
 
+> Sprint 0 revision: see the [decision baseline](../sprint-0-decisions.md). New ownership/lifecycle/billing/preview policies are working baseline until the named review gate passes; this document is a design artifact, not implemented behavior. Canonical FR IDs follow Requirement Analysis.
+
 ## 1. Scope
 
-SmartRent exposes a versioned JSON REST API under `/api`. This is a design contract only: no controller, migration or implementation code is created in Chapter 5. The API follows the Modular Monolith boundary: Frontend → REST API → authenticated/authorized business module → Repository → PostgreSQL. The AI path is only Backend → AI Integration → Provider → validate output → Maintenance business logic.
+SmartRent exposes a JSON REST API under `/api`; no path version is currently specified. This is a design contract only: no controller, migration or implementation code is created in Chapter 5. The API follows the Modular Monolith boundary: Frontend → REST API → authenticated/authorized business module → Repository → PostgreSQL. The AI path is only Backend → AI Integration → Provider → validate output → Maintenance business logic.
 
 ## 2. Resource map
 
@@ -16,11 +18,7 @@ SmartRent exposes a versioned JSON REST API under `/api`. This is a design contr
 | Maintenance Requests + AI classification | [maintenance-api.md](../../design/api/maintenance-api.md) | Maintenance / AI Integration |
 | Notifications | [notification-api.md](../../design/api/notification-api.md) | Notification |
 
-<<<<<<< HEAD
 `Users` is intentionally limited to `GET /api/users/me`: Chapter 3 assumes users have valid accounts and defines no registration or generic user-administration feature. Tenant management is represented by protected Tenant Profile endpoints, as required by FR-03. The same artifact documents the existing FR-09 AI Assistant endpoint; it uses backend-filtered context and is not a direct provider endpoint.
-=======
-`Users` is intentionally limited to `GET /api/users/me`: Chapter 3 assumes users have valid accounts and defines no registration or generic user-administration feature. Tenant management is represented by protected Tenant Profile endpoints, as required by FR-03.
->>>>>>> origin/main
 
 ## 3. Common API conventions
 
@@ -51,19 +49,19 @@ Every error response uses this envelope; `details` is optional and contains no s
 |---:|---|---|
 | 400 | `VALIDATION_ERROR` | Malformed JSON, invalid UUID/query/field, unsupported enum or invalid range. |
 | 401 | `UNAUTHENTICATED` | Missing, expired or invalid access token. |
-| 403 | `FORBIDDEN` | Authenticated caller lacks role, ownership or active relationship. |
+| 403 | `FORBIDDEN` | Authenticated caller lacks required role or permission on a visible resource; concealed out-of-scope objects return 404. |
 | 404 | `NOT_FOUND` | Resource absent or intentionally not exposed to an unauthorized caller. |
-| 409 | `CONFLICT` | Unique constraint, duplicate billing period, invalid lifecycle conflict or duplicate request policy. |
-| 422 | `INVALID_STATE` | Valid request shape but business rule/state transition is not permitted. |
+| 409 | `CONFLICT` | Unique/overlap constraint, duplicate billing period, stale preview or submission-key input conflict. |
+| 422 | `INVALID_STATE` | Valid request shape but business rule/state transition or present-tenancy eligibility is not permitted. |
 | 429 | `RATE_LIMITED` | Request limit exceeded, particularly login/AI classification. |
 | 502 | `AI_PROVIDER_ERROR` | Provider unavailable/invalid response when classification is explicitly requested. |
 | 500 | `INTERNAL_ERROR` | Unexpected server failure; details are not leaked. |
 
 ## 5. Maintenance and AI policy
 
-`POST /api/maintenance-requests` authorizes Tenant + room + active contract, optionally attempts classification through the backend, then persists a new request with `status = PENDING`. Classification failure never blocks creation: the response indicates `UNAVAILABLE`/`INVALID` and notification/manual handling continues.
+`POST /api/maintenance-requests/preview` authorizes Tenant + room + effective contract, attempts Gemini classification, and returns a validated preview/token without creating a request or notification. `POST /api/maintenance-requests` is the user's explicit confirmation/manual submission; it reauthorizes, validates token/input binding when supplied and creates `PENDING` exactly once per submission key. Provider failure is shown before the user chooses manual confirmation; it never silently creates a request.
 
-`POST /api/maintenance-requests/{id}/classify` is an authorized request to re-run classification on an existing request; it is not an AI credential or direct provider endpoint. The requester must own the request (Tenant) or manage its property (Manager/Landlord). Backend sends minimal permitted context, validates category/priority/summary/confidence/missing information, and only then updates AI metadata. It cannot modify `maintenance_requests.status`.
+`POST /api/maintenance-requests/{id}/classify` re-runs classification on an existing authorized request. It updates validated AI metadata only, never original description or workflow status. On provider error return 502 and leave existing request unchanged. See the resource contract and D04/D09 for missing-info/fallback semantics.
 
 Only authorized Manager/Landlord can call the status PATCH. Allowed status transition is controlled by Maintenance Service (`PENDING → PROCESSING → COMPLETED`, and `PROCESSING → CANCELLED` where policy allows); the AI provider cannot invoke it.
 

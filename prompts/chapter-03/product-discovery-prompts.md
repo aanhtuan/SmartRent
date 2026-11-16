@@ -1,5 +1,7 @@
 # Prompt – Product Discovery
 
+> Current-use context: read the [Sprint 0 decision baseline](../../docs/sprint-0-decisions.md) and relevant resource contract first. Canonical FR IDs follow Requirement Analysis; new business defaults require their review gate. These are reusable templates, not evidence of historical model runs. Preview never persists a business request; explicit confirmation/manual submit reauthorizes before save.
+
 ## Objective
 Use AI to help identify SmartRent's problems, users, and product opportunities.
 

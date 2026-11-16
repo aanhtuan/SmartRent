@@ -1,5 +1,7 @@
 # 5.3 System Modeling & UML – SmartRent
 
+> Sprint 0 revision: see the [decision baseline](../sprint-0-decisions.md). New ownership/lifecycle/billing/preview policies are working baseline until the named review gate passes; this document is a design artifact, not implemented behavior. Canonical FR IDs follow Requirement Analysis.
+
 ## 1. Mục đích và phạm vi
 
 Phần này chuyển các requirements Chapter 3, product design Chapter 4 và Architecture Design/Patterns Chapter 5 thành các UML/model specifications. Các mô hình mô tả thiết kế, không phải implementation code hay API contract chi tiết.
@@ -62,3 +64,7 @@ Các artifact không tạo thêm chức năng ngoài phạm vi: không có banki
 - Logical model chỉ chứa entities/value concepts hỗ trợ requirements hiện có.
 
 Xem [README của UML artifacts](../../design/uml/README.md) để điều hướng toàn bộ model.
+
+## Confirmation boundary
+
+Read-only preview, missing-info and provider errors never create a business request by themselves. All references to saving a fallback mean explicit user-confirmed manual submission followed by reauthorization and commit. Follow the shared Maintenance API/sequence and D04 rather than treating an earlier orchestration example as automatic persistence.

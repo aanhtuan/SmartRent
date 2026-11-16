@@ -1,5 +1,7 @@
 # SmartRent Chapter 5 – UML Prompts
 
+> Current-use context: read the [Sprint 0 decision baseline](../../docs/sprint-0-decisions.md) and relevant resource contract first. Canonical FR IDs follow Requirement Analysis; new business defaults require their review gate. These are reusable templates, not evidence of historical model runs. Preview never persists a business request; explicit confirmation/manual submit reauthorizes before save.
+
 ## Purpose
 
 Bộ prompt tạo Use Case Model, Component Model, Class Model, Sequence Diagram và ERD/Data Model cho SmartRent, bảo đảm các mô hình thống nhất với yêu cầu và workflow hiện có.
@@ -61,7 +63,7 @@ Bạn là Software Architect. Tạo Sequence Diagram chi tiết cho Maintenance 
 Participants cần thể hiện rõ: Tenant, Frontend, Maintenance API/Controller, Authentication/Authorization, Maintenance Service, AI Integration Adapter, AI Provider, AI Result Validator, PostgreSQL/Repository và Notification Module. Giữ thứ tự chính:
 Tenant → Frontend → Maintenance API → Authorization → Maintenance Service → AI Integration → AI Provider → Validate AI Result → Database → Notification.
 
-Diagram phải mô tả request input, xác thực identity, kiểm tra tenant–room–active contract/ownership theo source, gọi provider với input tối thiểu, trả structured result, backend validate schema/enums/confidence/missing information, lưu business data bằng backend, commit rồi mới phát notification.
+Diagram phải tách read-only preview khỏi explicit confirmation: input/auth/tenancy -> Gemini minimal context -> validated preview/token (no business write/event) -> user confirm/manual choice -> reauthorize/token binding/key deduplication -> PENDING commit -> notification. Missing-info preview asks/retries without saving; provider failure offers manual confirmation. Model must not imply preview auto-creates a request.
 
 Thêm alt/opt branches cho: classification hợp lệ; thiếu thông tin; timeout/provider unavailable; response sai schema/validation. Khi AI lỗi, không tin output, giữ original description và cho phép request `PENDING` được lưu/manual handling theo requirements. Notification không được gửi như thể transaction đã thành công trước commit. Không cho AI bỏ qua authorization/business validation hoặc tự chuyển `PENDING → PROCESSING → COMPLETED`.
 

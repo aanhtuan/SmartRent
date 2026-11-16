@@ -1,0 +1,8 @@
+# C6-01 deliberately checks the original database-free HTTP foundation.
+# This exclusion is test-only. C6-03 exercises the real DB/JPA/Flyway context.
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+      - org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration

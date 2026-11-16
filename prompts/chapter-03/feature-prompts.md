@@ -1,5 +1,7 @@
 # Prompt – Feature Specification
 
+> Current-use context: read the [Sprint 0 decision baseline](../../docs/sprint-0-decisions.md) and relevant resource contract first. Canonical FR IDs follow Requirement Analysis; new business defaults require their review gate. These are reusable templates, not evidence of historical model runs. Preview never persists a business request; explicit confirmation/manual submit reauthorizes before save.
+
 ## Prompt
 You are a Senior Software/Product Analyst.
 
@@ -33,7 +35,7 @@ Developers must verify:
 Clearly define:
 - JSON input/output schema
 - Validation rules
-- Confidence threshold
+- Confidence policy (no numeric cutoff until reviewed evaluation supports one)
 - Missing information handling
 - Fallback when AI cannot classify a request
 - Fallback when the AI service is unavailable

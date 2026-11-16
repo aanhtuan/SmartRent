@@ -1,5 +1,7 @@
 # SmartRent – Use Case Diagram Specification
 
+> Sprint 0 revision: see the [decision baseline](../../docs/sprint-0-decisions.md). New ownership/lifecycle/billing/preview policies are working baseline until the named review gate passes; this document is a design artifact, not implemented behavior. Canonical FR IDs follow Requirement Analysis.
+
 ## Scope
 
 Use case dưới đây bao phủ các chức năng MVP đã nêu ở Chapter 3. **Manager/Landlord** đại diện cho role quản lý trong PRD (`Admin/Landlord`); không tạo Admin actor tách riêng vì chưa có requirement/use case độc lập cho actor đó. **System** tự động gửi notification sau event; **AI Provider** chỉ cung cấp phân tích ngoài hệ thống.
@@ -68,3 +70,7 @@ flowchart LR
 | Ask AI Assistant | Tenant, Manager/Landlord | Backend provides only caller-authorized context; no unsupported data or financial confirmation. |
 
 The optional classification relation means request submission remains possible if AI cannot respond. An insufficient-information result asks the tenant for the needed details; it does not allow the AI to invent content.
+
+## Confirmation boundary
+
+Read-only preview, missing-info and provider errors never create a business request by themselves. All references to saving a fallback mean explicit user-confirmed manual submission followed by reauthorization and commit. Follow the shared Maintenance API/sequence and D04 rather than treating an earlier orchestration example as automatic persistence.

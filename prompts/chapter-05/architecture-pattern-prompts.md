@@ -1,5 +1,7 @@
 # SmartRent Chapter 5 – Architecture Pattern Prompts
 
+> Current-use context: read the [Sprint 0 decision baseline](../../docs/sprint-0-decisions.md) and relevant resource contract first. Canonical FR IDs follow Requirement Analysis; new business defaults require their review gate. These are reusable templates, not evidence of historical model runs. Preview never persists a business request; explicit confirmation/manual submit reauthorizes before save.
+
 ## Purpose
 
 Bộ prompt dùng để so sánh Layered Architecture, Modular Monolith và Microservices, sau đó đưa ra architecture decision phù hợp với giai đoạn và yêu cầu thực tế của SmartRent.

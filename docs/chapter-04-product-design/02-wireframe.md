@@ -1,5 +1,7 @@
 # 4.2 Wireframe – SmartRent
 
+> Sprint 0 revision: see the [decision baseline](../sprint-0-decisions.md). New ownership/lifecycle/billing/preview policies are working baseline until the named review gate passes; this document is a design artifact, not implemented behavior. Canonical FR IDs follow Requirement Analysis.
+
 ## Mục tiêu
 Thiết kế low-fidelity wireframe cho các màn hình chính của Maintenance Request.
 
@@ -12,8 +14,8 @@ Thiết kế low-fidelity wireframe cho các màn hình chính của Maintenance
 | WF-04 | AI Classification Result | Tenant |
 | WF-05 | Maintenance Request Detail | Tenant/Landlord |
 | WF-06 | Landlord Maintenance Dashboard | Landlord |
-| WF-07 | AI Unavailable State | Tenant |
-| WF-08 | Missing Information State | Tenant |
+| WF-08 | AI Unavailable State | Tenant |
+| WF-07 | Missing Information State | Tenant |
 
 ## WF-01 Tenant Dashboard
 ```text
@@ -95,7 +97,7 @@ Thiết kế low-fidelity wireframe cho các màn hình chính của Maintenance
 | AI Summary                                     |
 | Bathroom pipe has a water leak.               |
 |                                                |
-| Timeline                                       |
+| Status overview                                       |
 | ● PENDING                                      |
 | ● PROCESSING                                   |
 | ○ COMPLETED                                    |
@@ -114,7 +116,7 @@ Thiết kế low-fidelity wireframe cho các màn hình chính của Maintenance
 +------------------------------------------------+
 ```
 
-## WF-07 AI Unavailable
+## WF-08 AI Unavailable
 ```text
 +------------------------------------------------+
 | Maintenance Request                            |
@@ -128,7 +130,7 @@ Thiết kế low-fidelity wireframe cho các màn hình chính của Maintenance
 +------------------------------------------------+
 ```
 
-## WF-08 Missing Information
+## WF-07 Missing Information
 ```text
 +------------------------------------------------+
 | More information needed                        |
@@ -151,3 +153,7 @@ Thiết kế low-fidelity wireframe cho các màn hình chính của Maintenance
 - Preserve the original user description.
 - Provide clear fallback states.
 - Keep status transitions understandable.
+
+## Preview/manual interaction baseline
+
+WF-04 review does not persist a request. Confirm calls the create API after reauthorization. Missing information is WF-07; unavailable AI is WF-08. The unavailable preview first offers explicit manual submission; the “request received/PENDING” panel appears only after successful confirmation. State overview is illustrative progression/current state, not an implemented timestamped history table.

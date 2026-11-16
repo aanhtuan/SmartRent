@@ -1,5 +1,7 @@
 # SmartRent Chapter 5 – REST API Prompts
 
+> Current-use context: read the [Sprint 0 decision baseline](../../docs/sprint-0-decisions.md) and relevant resource contract first. Canonical FR IDs follow Requirement Analysis; new business defaults require their review gate. These are reusable templates, not evidence of historical model runs. Preview never persists a business request; explicit confirmation/manual submit reauthorizes before save.
+
 ## Purpose
 
 Bộ prompt thiết kế REST API contract cho các domain SmartRent, nhất quán với requirements, authorization backend, PostgreSQL data model và AI Integration Boundary.
@@ -31,18 +33,14 @@ Dùng JSON, UUID cho resource IDs và ISO-8601 UTC cho timestamps nếu conventi
 Mọi endpoint protected phải kiểm tra token và quyền/ownership server-side; client-supplied ID không phải bằng chứng quyền. Trả kết quả dưới dạng bảng endpoint và specification chi tiết; ghi assumptions/open questions. Không viết controller/code.
 ```
 
-### 2. Đặc tả POST /api/maintenance-requests
+### 2. Đặc tả preview và explicit confirmation cho Maintenance Request
 
 ```text
-Hãy đặc tả endpoint `POST /api/maintenance-requests` cho SmartRent theo Feature Specification, Maintenance flow, API design và database model được cung cấp.
+Đặc tả hai endpoint theo normalized Maintenance API và D04:
+- POST /api/maintenance-requests/preview nhận room_id/original_description, authorize effective tenancy rồi gọi Gemini, validate output và trả preview_token/expiry/state; không tạo business row/event.
+- POST /api/maintenance-requests nhận room_id/original_description/submission_key/preview_token tùy chọn, là explicit user confirmation. Reauthorize hiện tại; verify token binding/signature/expiry; deduplicate key với canonical digest rồi lưu PENDING. Không gọi provider ở confirm. Token tamper/input mismatch 400, expired 409, missing-info token 422; no token là manual submit NOT_REQUESTED. Preview lỗi trả state UNAVAILABLE/INVALID; người dùng chọn confirm manual trước khi lưu.
 
-Bắt buộc mô tả đầy đủ: HTTP method, endpoint, purpose, authentication, authorization, request schema/example, response schema/example, validation, error cases và HTTP status codes.
-
-Request phải dùng các trường được source hỗ trợ, ví dụ original description/request text và room ID; không tự thêm field. Backend phải xác thực caller, xác nhận Tenant được phép tạo request cho room/contract tương ứng, kiểm tra dữ liệu và business rule trước khi gọi Maintenance Service/AI. Gửi tới AI chỉ dữ liệu tối thiểu qua AI Integration Boundary; validate output trước khi dùng.
-
-Đặc tả success và fallback: khi AI thành công, trả request ID và trạng thái ban đầu authoritative theo backend (`PENDING`); khi thiếu thông tin, mô tả response/next step đúng với Chapter 4; khi AI unavailable/invalid, không chặn việc tiếp nhận request nếu requirements quy định fallback, giữ original description, lưu request `PENDING` chưa phân loại để landlord xử lý thủ công và thông báo trạng thái AI rõ ràng.
-
-Liệt kê status code hợp lý cho validation/authentication/authorization/not-found/conflict/rate limit/internal error; phân biệt lỗi provider không được dùng để phá vỡ fallback của endpoint tạo request. Nêu error code/body nhất quán. AI không được bypass backend authorization/business validation, không ghi DB trực tiếp, không tự quyết định status/notification. Không viết code implementation.
+Với mỗi endpoint: method/path, purpose, authn/authz, request/response, validation, errors/status và no-side-effect behavior. First create 201, identical retry 200 existing request/no second notification, same key/different input 409. Missing-info preview asks/re-previews or offers manual submit without token. Keep original description, never trust client-provided AI fields. Do not choose token lifetime/model/threshold without G4 review. No controller/code implementation.
 ```
 
 ### 3. Đặc tả POST /api/maintenance-requests/{id}/classify

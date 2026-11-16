@@ -1,5 +1,7 @@
 # 3.2 Product Requirements Document (PRD) – SmartRent
 
+> Sprint 0 revision: see the [decision baseline](../sprint-0-decisions.md). New ownership/lifecycle/billing/preview policies are working baseline until the named review gate passes; this document is a design artifact, not implemented behavior. Canonical FR IDs follow Requirement Analysis.
+
 ## 1. Product Overview
 SmartRent is an AI-integrated rental property management system that supports landlords, property managers, and tenants in daily operational activities.
 
@@ -14,7 +16,7 @@ SmartRent is an AI-integrated rental property management system that supports la
 
 | Role | Primary Permissions |
 |---|---|
-| Admin/Landlord | Manage all data |
+| Landlord / property manager (`LANDLORD`) | Manage only assigned profiles and owned rental resources; no separate Admin role |
 | Tenant | View personal data and submit requests |
 | AI Assistant | Provide answers and analysis using authorized data |
 
@@ -36,15 +38,18 @@ Store and retrieve contract information.
 Track rent and payment status.
 
 ### FR-06 – Maintenance Request
-Tenants create maintenance requests; landlords view, update, and complete them.
+Tenants explicitly confirm creation of maintenance requests; processing belongs to FR-07.
 
-### FR-07 – Notification
+### FR-07 – Process Maintenance Request
+Authorized landlords process requests belonging to their properties through the allowed state transitions.
+
+### FR-08 – Notification
 The system sends notifications related to payments, contracts, and request processing.
 
-### FR-08 – AI Assistant
+### FR-09 – AI Assistant
 Users can ask questions in natural language.
 
-### FR-09 – AI Request Classification
+### FR-10 – AI Request Classification
 AI classifies maintenance requests and recommends priority levels.
 
 ## 5. Non-functional Requirements
@@ -84,3 +89,7 @@ Room, tenant, contract, rent, maintenance request, notification, and AI manageme
 - Users have valid accounts.
 - Room and tenant data are stored in the database.
 - AI accesses only the data authorized by the backend.
+
+## Sprint 0 scope clarification
+
+Property is the ownership container for Room management. The normalized MVP working baseline restricts each Tenant profile to one managing landlord and uses trusted account provisioning; multi-landlord tenant management or ownership transfer requires a replacement decision at G2. Monthly billing is manually entered whole VND with due date under D07; no automatic rent/proration or banking confirmation. D04 preview/confirm and D09 AI schema are working baseline pending their named review gates. See the decision register for legacy ID mapping and approved versus proposed status.

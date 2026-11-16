@@ -1,5 +1,7 @@
 # SmartRent Maintenance User Flow
 
+> Sprint 0 revision: see the [decision baseline](../../docs/sprint-0-decisions.md). New ownership/lifecycle/billing/preview policies are working baseline until the named review gate passes; this document is a design artifact, not implemented behavior. Canonical FR IDs follow Requirement Analysis.
+
 ## Main Flow
 ```text
 Tenant Login
@@ -17,6 +19,8 @@ Backend Authorization
 AI Classification
     ↓
 Review AI Result
+    ↓
+Explicit Confirm and Reauthorize
     ↓
 Save Request
     ↓
@@ -47,6 +51,8 @@ AI Classification
 Create Request
       ↓
 AI unavailable
+      ↓
+User confirms manual submit
       ↓
 Save request without classification
       ↓

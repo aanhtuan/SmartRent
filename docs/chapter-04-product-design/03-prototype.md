@@ -1,5 +1,7 @@
 # 4.3 Prototype – SmartRent
 
+> Sprint 0 revision: see the [decision baseline](../sprint-0-decisions.md). New ownership/lifecycle/billing/preview policies are working baseline until the named review gate passes; this document is a design artifact, not implemented behavior. Canonical FR IDs follow Requirement Analysis.
+
 ## Mục tiêu
 Mô phỏng interaction và state transition của Maintenance Request; chưa triển khai backend thật.
 
@@ -44,6 +46,8 @@ AI Classification
 Submit Request
       ↓
 AI Unavailable
+      ↓
+User Confirms Manual Submit
       ↓
 Save Request Without Classification
       ↓

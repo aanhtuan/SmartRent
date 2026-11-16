@@ -1,5 +1,7 @@
 # 4.1 User Flow – SmartRent
 
+> Sprint 0 revision: see the [decision baseline](../sprint-0-decisions.md). New ownership/lifecycle/billing/preview policies are working baseline until the named review gate passes; this document is a design artifact, not implemented behavior. Canonical FR IDs follow Requirement Analysis.
+
 ## Mục tiêu
 Thiết kế User Flow cho Maintenance Request có tích hợp AI Classification, nối tiếp requirements của Chapter 3.
 
@@ -29,6 +31,8 @@ AI Classification
     ↓
 Backend validates AI output
     ↓
+User confirms; backend reauthorizes
+    ↓
 Save Maintenance Request
     ↓
 Notify Landlord
@@ -43,6 +47,8 @@ Create Request
 AI Classification
     ↓
 AI Service Unavailable
+    ↓
+User Confirms Manual Submit
     ↓
 Save Request Without AI Classification
     ↓
@@ -65,7 +71,7 @@ Manual Landlord Handling
 |---|---|
 | Description too short | Ask for more information |
 | AI cannot classify | Save request for manual handling |
-| AI service unavailable | Save request without classification |
+| AI service unavailable | User confirms manual submit → Save request without classification |
 | Duplicate request | Inform user and allow appropriate handling |
 | Room no longer managed | Reject according to authorization rules |
 | Inactive contract | Prevent unauthorized request creation |

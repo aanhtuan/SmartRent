@@ -1,5 +1,7 @@
 # 4.4 AI Design Review – Maintenance Request
 
+> Sprint 0 revision: see the [decision baseline](../../docs/sprint-0-decisions.md). New ownership/lifecycle/billing/preview policies are working baseline until the named review gate passes; this document is a design artifact, not implemented behavior. Canonical FR IDs follow Requirement Analysis.
+
 ## Phạm vi
 
 Đánh giá User Flow, Wireframe và Prototype của Maintenance Request theo yêu cầu Chapter 3. AI đưa finding; Human Reviewer quyết định cuối cùng.
@@ -19,7 +21,7 @@
 - Giữ luồng người thuê tạo/theo dõi và chủ nhà xử lý yêu cầu.
 - Duy trì `PENDING`, `PROCESSING`, `COMPLETED`.
 - Chỉ chủ nhà được phân quyền mới chuyển trạng thái.
-- Thiếu thông tin thì yêu cầu bổ sung; AI lỗi thì vẫn lưu và xử lý thủ công.
+- Thiếu thông tin thì yêu cầu bổ sung; AI lỗi thì người thuê xác nhận gửi thủ công trước khi backend lưu PENDING và thông báo.
 - AI chỉ hỗ trợ phân loại/tóm tắt, không trực tiếp thực hiện hành động nghiệp vụ.
 
 ## Traceability

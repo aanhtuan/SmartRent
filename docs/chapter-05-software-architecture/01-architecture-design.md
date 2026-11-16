@@ -1,5 +1,7 @@
 # 5.1 Thiết kế Kiến trúc Phần mềm – SmartRent
 
+> Sprint 0 revision: see the [decision baseline](../sprint-0-decisions.md). New ownership/lifecycle/billing/preview policies are working baseline until the named review gate passes; this document is a design artifact, not implemented behavior. Canonical FR IDs follow Requirement Analysis.
+
 ## 1. Architecture Overview
 
 SmartRent sử dụng **Modular Monolith** với **Layered Architecture** và giao tiếp client–server qua **REST API**. Đây là một ứng dụng triển khai như một backend thống nhất, nhưng được chia thành các module nghiệp vụ có ranh giới rõ ràng. PostgreSQL là nguồn dữ liệu chính thức của hệ thống. AI được đặt sau AI Integration Module/Adapter Boundary; AI provider chỉ nhận dữ liệu tối thiểu mà backend cho phép và không được truy cập hệ thống nội bộ trực tiếp.
@@ -57,7 +59,7 @@ Frontend có thể hỗ trợ trải nghiệm bằng cách kiểm tra form bắt
 
 ## 6. Backend Architecture
 
-Backend là một deployable Modular Monolith gồm các module: `Identity & Access`, `Room`, `Tenant`, `Contract`, `Payment`, `Maintenance`, `Notification`, `AI Assistant` và `AI Integration`. Mỗi module có các layer sau:
+Backend là một deployable Modular Monolith gồm các module: `Identity & Access`, `Property`, `Room`, `Tenant`, `Contract`, `Payment`, `Maintenance`, `Notification`, `AI Assistant` và `AI Integration`. Mỗi module có các layer sau:
 
 ```text
 REST Controller
@@ -71,7 +73,7 @@ Controller không truy cập database trực tiếp. Application service điều
 
 ## 7. Database Layer
 
-PostgreSQL lưu dữ liệu authoritative: user/role, property/room, tenant relationship, contract, payment, maintenance request, lịch sử trạng thái và notification. Maintenance Request lưu mô tả gốc, room reference, creator, status, category/priority/summary AI (nếu hợp lệ), confidence, missing-information state và audit timestamps. AI output chỉ là metadata hỗ trợ, không phải nguồn quyền hay lệnh thực thi.
+PostgreSQL lưu dữ liệu authoritative: user/role, property/room, tenant relationship, contract, payment, maintenance request, current status/audit timestamps và notification. Maintenance Request lưu mô tả gốc, room reference, creator, status, category/priority/summary AI (nếu hợp lệ), confidence, missing-information state và audit timestamps. AI output chỉ là metadata hỗ trợ, không phải nguồn quyền hay lệnh thực thi.
 
 Repository layer áp dụng transaction cho các thay đổi business state liên quan. Ràng buộc khóa ngoại, enum/check constraint phù hợp và index theo các truy vấn thường dùng (owner/room, tenant, status, created time) bảo vệ integrity và hiệu năng. Tài khoản ứng dụng database có quyền tối thiểu; không có credential database nào được cấp cho external AI provider.
 
@@ -107,52 +109,32 @@ sequenceDiagram
     N-->>U: Deliver in-app / configured channel
 ```
 
-Notification chỉ được tạo sau khi transaction nghiệp vụ thành công: request mới thông báo landlord; thay đổi trạng thái thông báo tenant; sự kiện payment/contract quan trọng cũng đi qua cùng module. Lỗi gửi kênh ngoài không rollback Maintenance state; notification được lưu/pending để có thể retry theo chính sách vận hành.
+Notification chỉ được tạo sau khi transaction nghiệp vụ thành công: request mới thông báo landlord; thay đổi trạng thái thông báo tenant; sự kiện payment/contract quan trọng cũng đi qua cùng module. Lỗi gửi kênh ngoài không rollback Maintenance state; in-process delivery is best-effort across crashes; durable retry/recovery requires a separately reviewed design.
 
 ## 11. Maintenance Request Flow
 
-1. Tenant gửi mô tả và room qua Frontend → REST API.
-2. Backend authentication, validation và authorization xác minh tenant có quyền với room và hợp đồng còn hiệu lực.
-3. Maintenance Module tạo draft/use case; AI classification được gọi như bước hỗ trợ.
-4. Nếu output AI hợp lệ và đủ thông tin, backend lưu request với metadata đã validate. Nếu thiếu thông tin, backend trả yêu cầu bổ sung; không suy đoán để tạo classification đáng tin cậy.
-5. Khi request được tạo, backend gán trạng thái ban đầu `PENDING`, commit transaction và phát event notification cho landlord.
-6. Landlord được authorize chuyển request sang `PROCESSING`; khi công việc thực tế hoàn tất, landlord/manager được authorize mới có thể chuyển `COMPLETED`. Transition `CANCELLED` tuân theo policy nghiệp vụ.
+1. Tenant sends room/description for read-only preview; backend verifies effective tenancy before Gemini.
+2. Adapter returns validated suggestion, missing information or safe failure; preview returns no business request/notification.
+3. Tenant reviews, adds information/re-previews, or chooses manual submission.
+4. Explicit confirmation rechecks tenancy and signed preview binding/expiry (if supplied), then creates PENDING with submission-key deduplication in a short transaction.
+5. Only new successful commit emits notification; retry returns the existing request without a second event.
+6. Authorized manager transitions PENDING -> PROCESSING -> COMPLETED or PROCESSING -> CANCELLED under the reviewed policy.
 
 AI không thể tự tạo transition `PROCESSING`, `COMPLETED` hoặc tự hoàn tất Maintenance Request.
 
 ## 12. AI Classification Flow
 
-```mermaid
-sequenceDiagram
-    participant F as Frontend
-    participant B as Maintenance Backend
-    participant A as AI Integration Adapter
-    participant P as External AI Provider
-    participant D as PostgreSQL
-    F->>B: Submit description + room ID
-    B->>B: Authenticate, authorize, validate input
-    B->>A: Minimal permitted classification input
-    A->>P: Provider request
-    P-->>A: Structured suggested output
-    A-->>B: Parsed output
-    B->>B: Validate schema, enums, confidence and rules
-    alt valid and enough information
-        B->>D: Save PENDING request + AI metadata
-    else missing information
-        B-->>F: Request additional information
-    else invalid/unavailable
-        B->>D: Save PENDING request without trusted classification
-    end
-```
+See the shared [Maintenance sequence](../../design/uml/maintenance-sequence.md) and [API contract](../../design/api/maintenance-api.md) for preview, missing-information, confirmation and failure branches. Maintaining one detailed sequence avoids contradictory persistence timing.
 
 Confidence là tín hiệu hiển thị/hỗ trợ review, không tự nó kích hoạt critical action. Category/priority AI cũng chỉ là giá trị được backend xác nhận theo schema và vẫn có thể được landlord xử lý thủ công theo policy.
 
 ## 13. AI Failure / Fallback Flow
 
-Các lỗi gồm timeout, rate limit, network/provider error, response không parse được, output không đúng schema hoặc không đạt validation. Backend ghi audit/log an toàn (không ghi secret hoặc dữ liệu nhạy cảm không cần thiết), đánh dấu AI classification unavailable/invalid, sau đó:
+Các lỗi gồm timeout, rate limit, network/provider error, response không parse được, output không đúng schema hoặc không đạt validation. Backend ghi audit/log an toàn (không ghi secret hoặc dữ liệu nhạy cảm không cần thiết), đánh dấu AI classification unavailable/invalid, sau đó user explicitly confirms manual handling:
 
 ```text
 AI failure
+  → show fallback; await explicit confirmation and reauthorize
   → do not trust or persist AI recommendation as classification
   → save Maintenance Request with status PENDING and original description
   → create notification for landlord/manual queue

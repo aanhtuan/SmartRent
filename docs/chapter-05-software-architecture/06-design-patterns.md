@@ -1,5 +1,7 @@
 # 5.6 Design Patterns – SmartRent
 
+> Sprint 0 revision: see the [decision baseline](../sprint-0-decisions.md). New ownership/lifecycle/billing/preview policies are working baseline until the named review gate passes; this document is a design artifact, not implemented behavior. Canonical FR IDs follow Requirement Analysis.
+
 ## 1. Principle and decision summary
 
 > **Use a design pattern only when it solves a real design problem.**
@@ -63,7 +65,7 @@ MaintenanceController
 
 ### SmartRent use case and example component
 
-`MaintenanceService.createRequest` validates a Tenant’s active room contract, optionally requests classification, validates the result, writes the request with `PENDING`, and emits a notification event after successful commit. `MaintenanceService.changeStatus` verifies property management and allowed transition before persistence. Equivalent services coordinate Property, Room, Contract, Payment and Notification use cases.
+`MaintenanceService.previewRequest` authorizes effective tenancy and calls the AI Adapter without business persistence. `MaintenanceService.createRequest` handles explicit confirmation/manual submission: reauthorize, verify optional bound preview, deduplicate submission key, persist PENDING and emit only after new successful commit. It does not call Gemini within the write transaction. `MaintenanceService.changeStatus` verifies property management and allowed transition before persistence. Equivalent services coordinate Property, Room, Contract, Payment and Notification use cases.
 
 ### Benefits
 
@@ -205,3 +207,7 @@ The Service Layer remains the owner of orchestration. Repository is the only dat
 | 5.2 Modular Monolith | Patterns stay module-local; they do not create services/deployables. |
 | 5.3 UML / 5.4 Database | Repository respects entity/module ownership and FK/integrity constraints. |
 | 5.5 API | Service Layer owns endpoint use cases; classification endpoint never exposes provider/database access. |
+
+## Confirmation boundary
+
+Read-only preview, missing-info and provider errors never create a business request by themselves. All references to saving a fallback mean explicit user-confirmed manual submission followed by reauthorization and commit. Follow the shared Maintenance API/sequence and D04 rather than treating an earlier orchestration example as automatic persistence.

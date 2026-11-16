@@ -31,6 +31,10 @@ Keep Modular Monolith + Layered Architecture + REST API + PostgreSQL + AI Integr
 | D11 | WF-07 = Missing Information; WF-08 = AI Unavailable. | Documentation normalization. |
 | D12 | Preserve real historical review context; replace blanket Pass claims with current audit status. Prompt templates are design aids, not proof of past execution. | Evidence rule; applies now. |
 
+## Explicit task decision — maintenance repair work log
+
+On 2026-11-16, the Product Owner authorized a repair-work log, distinct from a full status timeline. A managing landlord can append the person who performed the work, work description, and server timestamp. The managing landlord and the tenant who submitted the request can read it; the authenticated landlord is recorded as the author. Entries do not alter maintenance status and cannot be updated or deleted through the application datasource. The performer is descriptive text because no technician account/role currently exists.
+
 ## Legacy requirement mapping
 
 | Legacy PRD ID / feature | Canonical ID |

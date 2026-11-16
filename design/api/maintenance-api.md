@@ -14,8 +14,16 @@ All endpoints require Bearer. Tenant creates only with effective own tenancy; Te
 | POST `/api/maintenance-requests/preview` | Read-only authorized Gemini preview | `{room_id,original_description}` -> 200 `{room_id,original_description,ai_classification_status,classification,preview_token,expires_at}` | Empty/invalid 400; role 403; ineligible tenancy 422; rate limit 429. Provider failure returns preview state UNAVAILABLE/INVALID with `classification:null`, no business row/event. |
 | POST `/api/maintenance-requests` | Explicit confirmation/manual create | `{room_id,original_description,submission_key,preview_token?}` -> 201 request; identical retry -> 200 existing request | Token tamper/input mismatch 400; expired preview 409; missing-info token 422; stale tenancy 422; same submission key with changed business input 409. No provider call here. |
 | GET `/api/maintenance-requests/{id}` | Scoped detail | UUID -> 200 request | Malformed 400; absent/out-of-scope 404. |
+| GET `/api/maintenance-requests/{id}/work-logs` | Read repair work log | Bounded pagination -> 200 `{items,page,page_size}`; each item has `{id,performed_by,work_description,created_at}` | Managing landlord and tenant who submitted the request may read; out-of-scope request 404. |
+| POST `/api/maintenance-requests/{id}/work-logs` | Append repair work log | `{performed_by,work_description}` -> 201 work-log item | Managing landlord only; tenant 403; other landlord 404; blank/overlong fields 400. `recorded_by_user_id` is derived from the authenticated landlord and is not client-settable. |
 | PATCH `/api/maintenance-requests/{id}/status` | Manager-only transition | `{status,cancellation_reason?}` -> 200 request | Invalid transition 422; Tenant 403; out-of-scope 404. PENDING -> PROCESSING -> COMPLETED; PROCESSING -> CANCELLED per G4 cancellation contract. After-commit event only. |
 | POST `/api/maintenance-requests/{id}/classify` | Authorized reclassification | `{additional_information?}` -> 200 request | Invalid field 400; out-of-scope 404; provider invalid/unavailable 502; failure leaves previous metadata/status intact. |
+
+## Repair work log
+
+The append-only work log records the entered name of the person who performed the work, a description of the work, the authenticated landlord who recorded it, and the server timestamp. The performer is free text because the current system has no technician account or role. The API returns the performer, description, and timestamp, but not the recorder's internal user ID.
+
+Only the managing landlord can append entries. That landlord and the tenant who submitted the maintenance request can read them, including after the rental contract ends. Entries do not change the maintenance status and do not create a status-transition timeline. The application database role has `SELECT` and `INSERT` only on the work-log table.
 
 ## Preview and validation
 

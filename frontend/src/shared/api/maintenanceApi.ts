@@ -7,6 +7,8 @@ import {
   MaintenancePreviewRequest,
   MaintenancePreviewResponse,
   MaintenanceStatusUpdateRequest,
+  MaintenanceWorkLog,
+  MaintenanceWorkLogCreateRequest,
   PageResponse,
 } from '../types';
 
@@ -53,6 +55,32 @@ export const maintenanceApi = {
 
   classify: async (id: string, data: MaintenanceClassifyRequest): Promise<Maintenance> => {
     return apiClient<Maintenance>(`/api/maintenance-requests/${id}/classify`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  listWorkLogs: async (
+    id: string,
+    params?: { page?: number; page_size?: number }
+  ): Promise<PageResponse<MaintenanceWorkLog>> => {
+    return apiClient<PageResponse<MaintenanceWorkLog>>(
+      `/api/maintenance-requests/${id}/work-logs`,
+      {
+        method: 'GET',
+        params: {
+          page: params?.page ?? 1,
+          page_size: params?.page_size ?? 20,
+        },
+      }
+    );
+  },
+
+  addWorkLog: async (
+    id: string,
+    data: MaintenanceWorkLogCreateRequest
+  ): Promise<MaintenanceWorkLog> => {
+    return apiClient<MaintenanceWorkLog>(`/api/maintenance-requests/${id}/work-logs`, {
       method: 'POST',
       body: JSON.stringify(data),
     });

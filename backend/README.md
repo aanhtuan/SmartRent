@@ -172,7 +172,7 @@ restore into the retained database or run `--clean` as part of this procedure.
 **Delivery verification has not backed up, restored, started or migrated the retained
 local volume.** Automated migration tests use disposable synthetic databases.
 Only after backup verification and operator acceptance should normal application
-startup apply V2–V9. This procedure covers schema evolution on PostgreSQL 17;
+startup apply V2–V16. This procedure covers schema evolution on PostgreSQL 17;
 a PostgreSQL major-version upgrade requires a separate migration/recovery plan.
 
 ## Database responsibilities and evolution
@@ -183,7 +183,8 @@ a PostgreSQL major-version upgrade requires a separate migration/recovery plan.
 - Hibernate `ddl-auto=validate`, OSIV off. Flyway clean disabled, no baseline-on-migrate.
 - V1 is immutable. V2–V8 add properties, rooms, trusted tenant assignment/profiles,
   contracts, payments, maintenance and notifications. V9 strengthens cancellation
-  integrity without rewriting an already exercised V7.
+  integrity without rewriting an already exercised V7. V16 adds append-only
+  maintenance work logs with application-role SELECT/INSERT only.
 - No arbitrary backfill assigns existing users to landlords. Nullable trusted
   assignment is populated only through the explicit development utility below or
   a separately authorized operational process. No public assignment endpoint exists.

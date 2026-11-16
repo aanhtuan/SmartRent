@@ -285,6 +285,100 @@ class BackendJourneyTests {
         409);
     success(HttpMethod.GET, "/api/maintenance-requests/" + request, null, other, 404);
     success(HttpMethod.GET, "/api/maintenance-requests/" + request, null, unrelatedTenant, 404);
+    var workLog =
+        success(
+            HttpMethod.POST,
+            "/api/maintenance-requests/" + request + "/work-logs",
+            Map.of(
+                "performed_by", "Synthetic repair technician",
+                "work_description", "Thay vòi nước bị rò."),
+            owner,
+            201);
+    String workLogId = workLog.path("id").asText();
+    UUID recordedByUserId =
+        UUID.fromString(
+            success(HttpMethod.GET, "/api/users/me", null, owner, 200).path("id").asText());
+    try (var connection = app();
+        var statement =
+            connection.prepareStatement(
+                "SELECT recorded_by_user_id FROM maintenance_work_logs WHERE id=?")) {
+      statement.setObject(1, UUID.fromString(workLogId));
+      try (var rows = statement.executeQuery()) {
+        assertThat(rows.next()).isTrue();
+        assertThat(rows.getObject(1, UUID.class)).isEqualTo(recordedByUserId);
+      }
+    }
+    assertThat(workLog.has("recorded_by_user_id")).isFalse();
+    success(
+        HttpMethod.POST,
+        "/api/maintenance-requests/" + request + "/work-logs",
+        Map.of(
+            "performed_by", "Synthetic electrician",
+            "work_description", "Kiểm tra lại hệ thống điện."),
+        owner,
+        201);
+    assertThat(
+            success(
+                    HttpMethod.GET,
+                    "/api/maintenance-requests/" + request + "/work-logs?page_size=1",
+                    null,
+                    tenant,
+                    200)
+                .path("items")
+                .size())
+        .isEqualTo(1);
+    assertThat(
+            success(
+                    HttpMethod.GET,
+                    "/api/maintenance-requests/" + request + "/work-logs?page=2&page_size=1",
+                    null,
+                    tenant,
+                    200)
+                .path("items")
+                .size())
+        .isEqualTo(1);
+    success(
+        HttpMethod.POST,
+        "/api/maintenance-requests/" + request + "/work-logs",
+        Map.of("performed_by", "Tenant", "work_description", "Attempted entry."),
+        tenant,
+        403);
+    success(
+        HttpMethod.GET, "/api/maintenance-requests/" + request + "/work-logs", null, other, 404);
+    success(
+        HttpMethod.POST,
+        "/api/maintenance-requests/" + request + "/work-logs",
+        Map.of("performed_by", "Other landlord", "work_description", "Attempted entry."),
+        other,
+        404);
+    success(
+        HttpMethod.POST,
+        "/api/maintenance-requests/" + request + "/work-logs",
+        Map.of("performed_by", " ", "work_description", "Invalid performer."),
+        owner,
+        400);
+    success(
+        HttpMethod.POST,
+        "/api/maintenance-requests/" + request + "/work-logs",
+        Map.of(
+            "performed_by",
+            "Untrusted author",
+            "work_description",
+            "Attempted author assignment.",
+            "recorded_by_user_id",
+            UUID.randomUUID().toString()),
+        owner,
+        400);
+    try (var connection = app();
+        var statement = connection.createStatement()) {
+      assertThatThrownBy(
+              () ->
+                  statement.executeUpdate(
+                      "UPDATE maintenance_work_logs SET performed_by='changed' WHERE id='"
+                          + workLog.path("id").asText()
+                          + "'"))
+          .isInstanceOf(java.sql.SQLException.class);
+    }
     success(
         HttpMethod.PATCH,
         "/api/maintenance-requests/" + request + "/status",
@@ -463,6 +557,12 @@ class BackendJourneyTests {
     success(
         HttpMethod.PATCH, "/api/contracts/" + contract, Map.of("status", "TERMINATED"), owner, 200);
     success(HttpMethod.GET, "/api/contracts?room_id=" + room, null, tenant, 200);
+    success(
+        HttpMethod.GET,
+        "/api/maintenance-requests/" + request + "/work-logs",
+        null,
+        tenant,
+        200);
     success(HttpMethod.GET, "/api/rooms/" + room, null, tenant, 404);
     success(HttpMethod.POST, "/api/maintenance-requests", manual, tenant, 200);
     success(

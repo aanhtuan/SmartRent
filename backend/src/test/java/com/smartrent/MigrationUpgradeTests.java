@@ -61,7 +61,7 @@ class MigrationUpgradeTests {
             .load();
     latest.migrate();
     latest.validate();
-    assertThat(latest.info().current().getVersion().toString()).isEqualTo("9");
+    assertThat(latest.info().current().getVersion().toString()).isEqualTo("16");
     assertThat(latest.info().applied()[0].getChecksum()).isEqualTo(checksum);
     assertThat(latest.migrate().migrationsExecuted).isZero();
     try (var c = DriverManager.getConnection(DB.getJdbcUrl(), "smartrent_app", APP);
@@ -90,6 +90,19 @@ class MigrationUpgradeTests {
             .isInstanceOf(SQLException.class);
         assertThatThrownBy(() -> statement.execute("SELECT * FROM flyway_schema_history"))
             .isInstanceOf(SQLException.class);
+        try (var privileges =
+            statement.executeQuery(
+                "SELECT"
+                    + " has_table_privilege(current_user,'maintenance_work_logs','SELECT'),"
+                    + " has_table_privilege(current_user,'maintenance_work_logs','INSERT'),"
+                    + " has_table_privilege(current_user,'maintenance_work_logs','UPDATE'),"
+                    + " has_table_privilege(current_user,'maintenance_work_logs','DELETE')")) {
+          assertThat(privileges.next()).isTrue();
+          assertThat(privileges.getBoolean(1)).isTrue();
+          assertThat(privileges.getBoolean(2)).isTrue();
+          assertThat(privileges.getBoolean(3)).isFalse();
+          assertThat(privileges.getBoolean(4)).isFalse();
+        }
       }
     }
   }

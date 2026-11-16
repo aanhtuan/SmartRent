@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { maintenanceApi, contractApi, mediaApi } from '../../shared/api';
+import { MaintenanceWorkLogSection } from './MaintenanceWorkLogSection';
 import {
   Maintenance,
   MaintenanceCreateRequest,
@@ -576,6 +577,13 @@ export const TenantMaintenance: React.FC = () => {
                 </p>
               </div>
             )}
+
+            <div className="border-t border-border pt-4">
+              <MaintenanceWorkLogSection
+                maintenanceRequestId={selectedDetail.id}
+                canAdd={false}
+              />
+            </div>
 
             <div className="pt-3 border-t border-border flex justify-end">
               <Button variant="outline" size="sm" onClick={() => setSelectedDetail(null)}>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { maintenanceApi } from '../../shared/api';
 import { Maintenance, MaintenanceStatusUpdateRequest, MaintenanceClassifyRequest } from '../../shared/types';
+import { MaintenanceWorkLogSection } from './MaintenanceWorkLogSection';
 import {
   Card,
   Button,
@@ -35,6 +36,7 @@ export const MaintenanceList: React.FC = () => {
   const [cancellingRequest, setCancellingRequest] = useState<Maintenance | null>(null);
   const [cancellationReason, setCancellationReason] = useState('');
   const [classifyingRequest, setClassifyingRequest] = useState<Maintenance | null>(null);
+  const [workLogRequest, setWorkLogRequest] = useState<Maintenance | null>(null);
   const [additionalInfo, setAdditionalInfo] = useState('');
   const [actionError, setActionError] = useState<string | null>(null);
 
@@ -275,7 +277,14 @@ export const MaintenanceList: React.FC = () => {
                   </div>
 
                   {/* Status Action Buttons */}
-                  <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                  <div className="flex flex-wrap items-center justify-end gap-2 shrink-0 self-end sm:self-center">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setWorkLogRequest(item)}
+                    >
+                      Nhật ký sửa chữa
+                    </Button>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -425,6 +434,21 @@ export const MaintenanceList: React.FC = () => {
           </div>
         </div>
       </Dialog>
+
+      {workLogRequest && (
+        <Dialog
+          isOpen={true}
+          onClose={() => setWorkLogRequest(null)}
+          title="Lịch sử sửa chữa"
+          description={workLogRequest.original_description}
+          maxWidth="lg"
+        >
+          <MaintenanceWorkLogSection
+            maintenanceRequestId={workLogRequest.id}
+            canAdd={true}
+          />
+        </Dialog>
+      )}
     </div>
   );
 };

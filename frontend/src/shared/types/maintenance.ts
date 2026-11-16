@@ -72,6 +72,18 @@ export interface Maintenance {
   updated_at: string;
 }
 
+export interface MaintenanceWorkLog {
+  id: string;
+  performed_by: string;
+  work_description: string;
+  created_at: string;
+}
+
+export interface MaintenanceWorkLogCreateRequest {
+  performed_by: string;
+  work_description: string;
+}
+
 export interface MaintenanceFilterParams {
   room_id?: string;
   status?: string;

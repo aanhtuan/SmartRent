@@ -3,6 +3,7 @@ package com.smartrent.maintenance.api;
 import com.smartrent.identity.application.Actor;
 import com.smartrent.maintenance.application.*;
 import com.smartrent.maintenance.domain.Maintenance;
+import com.smartrent.maintenance.domain.MaintenanceWorkLog;
 import com.smartrent.shared.api.*;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -17,11 +18,17 @@ import org.springframework.web.bind.annotation.*;
 public class MaintenanceController {
   private final MaintenanceService service;
   private final MaintenanceQueries queries;
+  private final MaintenanceWorkLogService workLogs;
   private final MaintenanceAiService ai;
 
-  public MaintenanceController(MaintenanceService s, MaintenanceQueries q, MaintenanceAiService a) {
+  public MaintenanceController(
+      MaintenanceService s,
+      MaintenanceQueries q,
+      MaintenanceWorkLogService workLogs,
+      MaintenanceAiService a) {
     service = s;
     queries = q;
+    this.workLogs = workLogs;
     ai = a;
   }
 
@@ -33,6 +40,11 @@ public class MaintenanceController {
   public record Status(String status, String cancellationReason) {}
 
   public record Classify(String additionalInformation) {}
+
+  public record WorkLogCreate(String performedBy, String workDescription) {}
+
+  public record WorkLogView(
+      UUID id, String performedBy, String workDescription, Instant createdAt) {}
 
   public record View(
       UUID id,
@@ -66,6 +78,11 @@ public class MaintenanceController {
         m.updatedAt);
   }
 
+  private WorkLogView workLogView(MaintenanceWorkLog workLog) {
+    return new WorkLogView(
+        workLog.id(), workLog.performedBy(), workLog.workDescription(), workLog.createdAt());
+  }
+
   @GetMapping
   Object list(
       @RequestParam(name = "room_id", required = false) UUID room,
@@ -97,6 +114,22 @@ public class MaintenanceController {
   @GetMapping("/{id}")
   Object get(@PathVariable UUID id) {
     return view(queries.visible(id, Actor.current()));
+  }
+
+  @GetMapping("/{id}/work-logs")
+  Object workLogs(
+      @PathVariable UUID id,
+      @RequestParam(defaultValue = "1") int page,
+      @RequestParam(name = "page_size", defaultValue = "20") int size) {
+    var result = workLogs.list(Actor.current(), id, page, size);
+    return new PageResponse<>(
+        result.items().stream().map(this::workLogView).toList(), result.page(), result.pageSize());
+  }
+
+  @PostMapping("/{id}/work-logs")
+  ResponseEntity<WorkLogView> addWorkLog(@PathVariable UUID id, @RequestBody WorkLogCreate body) {
+    var result = workLogs.add(Actor.current(), id, body.performedBy(), body.workDescription());
+    return ResponseEntity.status(201).body(workLogView(result));
   }
 
   @PatchMapping("/{id}/status")
